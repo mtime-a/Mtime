@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private FatherViewPager viewPager;
     private MenuItem menuItem;
 
+    //mlj
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
