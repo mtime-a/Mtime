@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         //绑定监听
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         viewPager = findViewById(R.id.vp);
@@ -76,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
         ***********************************
          */
+
+
         list.add(TestFragment.newInstance("首页"));
         list.add(Fragment_news.newInstance("马良及"));
         list.add(Fragment_sale.newInstance("卡片"));
@@ -130,4 +130,3 @@ public class MainActivity extends AppCompatActivity {
         pc.setIcon(R.mipmap.tu1);
     }
 }
-
