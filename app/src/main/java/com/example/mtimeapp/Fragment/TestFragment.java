@@ -32,6 +32,7 @@ public class TestFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         tv = (TextView) view.findViewById(R.id.fragment_test_tv);
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             String name = bundle.get("name").toString();

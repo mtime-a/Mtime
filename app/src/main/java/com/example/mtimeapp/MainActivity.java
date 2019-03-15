@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.example.mtimeapp.Adapter.ViewPagerAdapter;
 import com.example.mtimeapp.CustomView.FatherViewPager;
 import com.example.mtimeapp.Fragment.Fragment_PC;
+import com.example.mtimeapp.Fragment.Fragment_news;
 import com.example.mtimeapp.Fragment.Fragment_sale;
 import com.example.mtimeapp.Fragment.TestFragment;
 
@@ -24,11 +25,12 @@ public class MainActivity extends AppCompatActivity {
     private FatherViewPager viewPager;
     private MenuItem menuItem;
 
-    //mlj
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         //绑定监听
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         ***********************************
          */
         list.add(TestFragment.newInstance("首页"));
-        list.add(TestFragment.newInstance("钱包"));
+        list.add(Fragment_news.newInstance("马良及"));
         list.add(Fragment_sale.newInstance("卡片"));
         list.add(Fragment_PC.newInstance("行者"));
 
