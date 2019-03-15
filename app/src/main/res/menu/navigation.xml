@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_news"
+        android:icon="@mipmap/sanjiaoxing2"
+        android:title="今日热点" />
+    <item
+        android:id="@+id/navigation_film"
+        android:icon="@mipmap/tu3"
+        android:title="热门影评" />
+    <item
+        android:id="@+id/navigation_sale"
+        android:icon="@mipmap/wubianxing1"
+        android:title="上映购票" />
+    <item
+        android:id="@+id/navigation_pc"
+        android:icon="@mipmap/tu1"
+        android:title="个人中心" />
+
+</menu>
