@@ -1,5 +1,6 @@
 package com.example.mtimeapp.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,9 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mtimeapp.Log_RegActivity;
 import com.example.mtimeapp.R;
 
-public class Fragment_PC extends Fragment {
+public class Fragment_PC extends Fragment implements View.OnClickListener {
 
     private TextView tv_username;//显示用户名称
     private ImageView icon;//显示用户头像
@@ -49,10 +51,22 @@ public class Fragment_PC extends Fragment {
         //如果没登陆就隐藏用户名控件 并且将jump中文字更改
         tv_username.setVisibility(View.GONE);//GONE隐藏且不保留所占空间
 
+        jump.setOnClickListener(this);
         Bundle bundle = getArguments();
         if (bundle != null) {
             String name = bundle.get("name").toString();
             tv_username.setText(name);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.pc_jump:
+                Intent intent = new Intent();
+                intent.setClass(getContext(), Log_RegActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 }

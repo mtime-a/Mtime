@@ -1,15 +1,22 @@
 package com.example.mtimeapp.CustomView;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
 public class RoundImageView extends android.support.v7.widget.AppCompatImageView {
-
     float width, height;
 
     public RoundImageView(Context context) {
@@ -37,17 +44,17 @@ public class RoundImageView extends android.support.v7.widget.AppCompatImageView
     @Override
     protected void onDraw(Canvas canvas) {
 
-        if (width > 12 && height > 12) {
+        if (width > 20 && height > 20) {
             Path path = new Path();
-            path.moveTo(12, 0);
-            path.lineTo(width - 12, 0);
-            path.quadTo(width, 0, width, 12);
-            path.lineTo(width, height - 12);
-            path.quadTo(width, height, width - 12, height);
-            path.lineTo(12, height);
-            path.quadTo(0, height, 0, height - 12);
-            path.lineTo(0, 12);
-            path.quadTo(0, 0, 12, 0);
+            path.moveTo(20, 0);
+            path.lineTo(width - 20, 0);
+            path.quadTo(width, 0, width, 20);
+            path.lineTo(width, height - 20);
+            path.quadTo(width, height, width - 20, height);
+            path.lineTo(20, height);
+            path.quadTo(0, height, 0, height - 20);
+            path.lineTo(0, 20);
+            path.quadTo(0, 0, 20, 0);
             canvas.clipPath(path);
         }
 
