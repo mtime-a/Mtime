@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bizhi2"
     android:orientation="vertical">
 
     <FrameLayout
@@ -13,16 +12,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_margin="10dp"
-            android:src="@mipmap/close1"/>
-
-        <TextView
-            android:id="@+id/login_find_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center||end"
-            android:text="密码找回"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            android:src="@mipmap/close1" />
 
         <!--<TextView-->
         <!--android:layout_width="wrap_content"-->
@@ -32,7 +22,7 @@
         <!--android:text="找回密码"-->
         <!--android:textColor="@android:color/white"-->
         <!--android:textStyle="bold" />-->
-    </>
+    </FrameLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -137,27 +127,14 @@
             android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/login_login"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
-        <Button
-            android:id="@+id/login_login_Button"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:alpha="0.35"
-            android:text="登陆" />
-        <Button
-            android:id="@+id/login_register_Button"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:alpha="0.35"
-            android:text="注册" />
-    </FrameLayout>
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:alpha="0.35"
+        android:text="注册" />
 
 
     <FrameLayout
@@ -168,7 +145,7 @@
         android:layout_marginRight="120dp">
 
         <TextView
-            android:id="@+id/login_sign"
+            android:id="@+id/login_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="用户登陆"
@@ -176,11 +153,11 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/login_register"
+            android:id="@+id/login_find_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:text="用户注册"
+            android:text="找回密码"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
     </FrameLayout>
