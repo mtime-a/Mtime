@@ -41,8 +41,8 @@ public class Fragment_news extends Fragment {
     }
 
                //*******************************************************
-               //    这页都是我自己的习惯来的，结构可能有点诡异。
-               //           接口还不能用，大概会有不少bug
+               //    这页都是按我自己的习惯来的，结构可能有点诡异。
+               //           接口还不能用，还没有debug
                //*******************************************************
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class Fragment_news extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Bundle bundle = getArguments();                                                                //用Bundle传值，传了啥？之前代码还没翻
+        Bundle bundle = getArguments();                                                                //用Bundle传值，传了啥？之前代码还没翻到
         if (bundle != null) {
             name = bundle.get("name").toString();
         }
@@ -94,25 +94,28 @@ public class Fragment_news extends Fragment {
 
         try {
             JSONObject jsonObject = new JSONObject(JsonData);
+            String status = jsonObject.getString("status");
             mlist.clear();
-            JSONArray jsonArray = jsonObject.getJSONArray("list");
-            for (int i = 0; i < jsonArray.length(); i++){
-                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                int newsId = Integer.parseInt(jsonObject1.getString("news_id"));
-                String newsTitle = jsonObject1.getString("title");
-                String pub_time = jsonObject1.getString("pub_time");
-                String newsImage = jsonObject1.getString("picture");
-                HotNews hotNews = new HotNews();
-                hotNews.setNewsTitle(newsTitle);
-                hotNews.setNewsImage(newsImage);
-                hotNews.setPub_time(pub_time);
-                hotNews.setNewsId(newsId);
-                newsList.add(hotNews);
-            }
-            showResponse();
-        } catch (JSONException e) {
-            e.printStackTrace();
+            if (status.equals("ok")) {
+                JSONArray jsonArray = jsonObject.getJSONArray("list");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    int newsId = Integer.parseInt(jsonObject1.getString("news_id"));
+                    String newsTitle = jsonObject1.getString("title");
+                    String pub_time = jsonObject1.getString("pub_time");
+                    String newsImage = jsonObject1.getString("picture");
+                    HotNews hotNews = new HotNews();
+                    hotNews.setNewsTitle(newsTitle);
+                    hotNews.setNewsImage(newsImage);
+                    hotNews.setPub_time(pub_time);
+                    hotNews.setNewsId(newsId);
+                    newsList.add(hotNews);
+                }
+                showResponse();}
+            } catch(JSONException e){
+                e.printStackTrace();
         }
+
     }
     private void showResponse() {
         getActivity().runOnUiThread(new Runnable() {

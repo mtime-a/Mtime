@@ -6,6 +6,9 @@ public class HotNews {
     private String pub_time;
     private int newsId;
     public HotNews(){}
+    //*******************************
+    //为了传递今日热点信息而构造的方法
+    //*******************************
     public String getNewsTitle(){return newsTitle;}
 
     public void setNewsTitle(String newsTitle){

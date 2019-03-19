@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
          */
 
 
-        list.add(TestFragment.newInstance("首页"));
+        list.add(TestFragment.newInstance("今日热点"));
         list.add(Fragment_news.newInstance("马良及"));
         list.add(Fragment_sale.newInstance("卡片"));
         list.add(Fragment_PC.newInstance("行者"));
