@@ -6,11 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mtimeapp.CustomView.ChildViewpager;
 import com.example.mtimeapp.R;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.List;
 public class Fragment_sale extends Fragment {
 
     private TabLayout tabLayout;
-    private ChildViewpager viewPager;
+    private ViewPager viewPager;
 
     private Fragment_sale_book saleBook;
     private Fragment_sale_show saleShow;
