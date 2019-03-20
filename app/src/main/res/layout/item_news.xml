@@ -14,6 +14,7 @@
         android:orientation="vertical">
 
         <com.example.mtimeapp.CustomView.RoundImageView
+            android:id="@+id/item_news_picture"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_margin="15dp"
@@ -34,11 +35,13 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:id="@+id/item_news_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/kaiyan" />
 
                 <TextView
+                    android:id="@+id/item_news_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -48,6 +51,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/item_news_date"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="right|center"

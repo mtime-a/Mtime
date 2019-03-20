@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.mtimeapp.Adapter.ViewPagerAdapter;
 import com.example.mtimeapp.CustomView.FatherViewPager;
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPagerAdapter viewPagerAdapter;
     private FatherViewPager viewPager;
     private MenuItem menuItem;
-
+    private TextView textview;
 
 
     @Override
