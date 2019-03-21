@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.example.mtimeapp.CustomView.RoundImageView
+                android:id="@+id/pager_news_picture"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/dianyingtup" />
+
+            <TextView
+                android:id="@+id/pager_news_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="把哥哥推动或可以吗"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.example.mtimeapp.CustomView.CircleImageView
+                    android:id="@+id/pager_news_icon"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/dianyingtup" />
+
+                <TextView
+                    android:id="@+id/pager_news_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:text="行者"
+                    android:textSize="15dp" />
+            </LinearLayout>
+
+            <WebView
+                android:id="@+id/pager_news_web"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></WebView>
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="1dp"
+        android:src="#707070" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp">
+
+        <include
+            android:id="@+id/pager_news_write_comment"
+            layout="@layout/icon_comment" />
+
+        <ImageView
+            android:id="@+id/pager_news_comment"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="60dp"
+            android:src="@mipmap/pinglun" />
+
+        <ImageView
+            android:id="@+id/pager_news_love"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="60dp"
+            android:src="@mipmap/dianzan" />
+    </LinearLayout>
+</LinearLayout>

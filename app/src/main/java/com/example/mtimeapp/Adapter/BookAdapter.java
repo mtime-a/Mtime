@@ -11,13 +11,14 @@ import android.widget.TextView;
 import com.example.mtimeapp.R;
 
 import java.util.List;
+import java.util.Map;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     private Context context;
-    private List<String> list;
+    private List<Map<String, Object>> list;
 
-    public BookAdapter(Context context, List<String> list) {
+    public BookAdapter(Context context, List<Map<String, Object>> list) {
         this.context = context;
         this.list = list;
     }
@@ -32,9 +33,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull BookAdapter.ViewHolder viewHolder, int i) {
-        String name = list.get(i);
-
-        viewHolder.textView.setText(name);
     }
 
     @Override
@@ -44,12 +42,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            textView = itemView.findViewById(R.id.film_summary);
         }
     }
 }

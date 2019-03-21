@@ -6,19 +6,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mtimeapp.R;
 
 import java.util.List;
+import java.util.Map;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
 
     private Context context;
-    private List<String> list;
+    private List<Map<String, Object>> list;
 
-    public NewsAdapter(Context context, List<String> list) {
+    public NewsAdapter(Context context, List<Map<String, Object>> list) {
         this.context = context;
         this.list = list;
     }
@@ -33,9 +35,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull NewsAdapter.ViewHolder viewHolder, int i) {
-        String name = list.get(i);
 
-        viewHolder.textView.setText(name);
     }
 
     @Override
@@ -45,12 +45,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
+        ImageView picture;
+        TextView title;
+        TextView date;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            textView = itemView.findViewById(R.id.news_tv);
+            title = itemView.findViewById(R.id.item_news_title);
+            picture = itemView.findViewById(R.id.item_news_picture);
+            date = itemView.findViewById(R.id.item_news_date);
         }
     }
 }
+
+
+

@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:orientation="vertical"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="15dp">
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,6 +14,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/item_film_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="STADAY,MARCH 16" />
@@ -24,6 +25,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/item_film_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="惊奇队长"
@@ -31,6 +33,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/item_film_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="right|center"
@@ -40,6 +43,7 @@
         </FrameLayout>
 
         <com.example.mtimeapp.CustomView.RoundImageView
+            android:id="@+id/item_film_picture"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_margin="15dp"
@@ -49,7 +53,7 @@
             android:src="@drawable/dianyingtup" />
 
         <TextView
-            android:id="@+id/film_summary"
+            android:id="@+id/item_film_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
