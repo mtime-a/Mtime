@@ -8,16 +8,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.mtimeapp.CustomView.RoundImageView;
 import com.example.mtimeapp.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     private Context context;
-    private List<String> list;
+    private List<Map<String, Object>> list;
 
-    public BookAdapter(Context context, List<String> list) {
+    public BookAdapter(Context context, List<Map<String, Object>> list) {
         this.context = context;
         this.list = list;
     }
@@ -25,16 +29,20 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     @NonNull
     @Override
     public BookAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_film, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_sale_book, viewGroup, false);
         BookAdapter.ViewHolder holder = new BookAdapter.ViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull BookAdapter.ViewHolder viewHolder, int i) {
-        String name = list.get(i);
+        Map map = list.get(i);
 
-        viewHolder.textView.setText(name);
+        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);
+        viewHolder.title.setText(map.get("title").toString());
+        viewHolder.date.setText(map.get("date").toString());
+        viewHolder.info.setText(map.get("info").toString());
+        viewHolder.mark.setText(map.get("mark").toString());
     }
 
     @Override
@@ -44,12 +52,21 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
+        RoundImageView picture;
+        TextView date;
+        TextView info;
+        TextView title;
+        TextView mark;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            textView = itemView.findViewById(R.id.film_summary);
+            picture = itemView.findViewById(R.id.item_sale_book_picture);
+            date = itemView.findViewById(R.id.item_sale_book_date);
+            info = itemView.findViewById(R.id.item_sale_book_info);
+            title = itemView.findViewById(R.id.item_sale_book_title);
+            mark = itemView.findViewById(R.id.item_sale_book_mark);
+
         }
     }
 }

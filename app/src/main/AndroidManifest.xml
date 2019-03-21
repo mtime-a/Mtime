@@ -18,6 +18,8 @@
         </activity>
 
         <activity android:name=".Log_RegActivity" />
+        <activity android:name=".NewsActivity" />
+        <activity android:name=".FilmActivity" />
     </application>
 
 </manifest>
