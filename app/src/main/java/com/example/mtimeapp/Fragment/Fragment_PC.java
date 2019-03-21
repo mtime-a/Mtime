@@ -21,7 +21,6 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
     private ImageView setting;//设置
 
     public static Fragment_PC newInstance(String name) {
-
         //这个方法你可以将传进来的数据String name改下
         // 用bundle来运送一些东西到onViewCreated
         Bundle args = new Bundle();
