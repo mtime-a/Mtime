@@ -49,7 +49,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         TextView title;
         TextView date;
 
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 

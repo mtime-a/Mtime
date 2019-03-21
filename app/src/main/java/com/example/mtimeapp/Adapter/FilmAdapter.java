@@ -39,7 +39,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull FilmAdapter.ViewHolder viewHolder, int i) {
         Map map = new HashMap();
 
-        Glide.with(context).load(map.get("picture").toString()).into(viewHolder.picture);                  //展示图片，标题，发布时间。
+        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);                  //展示图片，标题，发布时间。
         viewHolder.title.setText(map.get("title").toString());
         viewHolder.info.setText(map.get("info").toString());
         viewHolder.mark.setText(map.get("mark").toString());
