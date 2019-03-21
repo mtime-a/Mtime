@@ -62,7 +62,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/item_film_name"
+                    android:id="@+id/item_author_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="行者"
@@ -91,7 +91,7 @@
                     android:src="@mipmap/pinglun" />
 
                 <TextView
-                    android:id="@+id/item_film_num"
+                    android:id="@+id/item_film_comment_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

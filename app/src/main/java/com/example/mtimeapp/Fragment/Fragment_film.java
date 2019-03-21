@@ -27,8 +27,8 @@ import okhttp3.Response;
 
 public class Fragment_film extends Fragment {
     private RecyclerView recyclerView;
-    private List<Film> mlist;
-    private List<Film> newsList = new ArrayList<>();
+  //  private List<Film> mlist;
+    private List<Film> filmList = new ArrayList<>();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +63,7 @@ public class Fragment_film extends Fragment {
         try {
             JSONObject jsonObject = new JSONObject(JsonData);
             String status = jsonObject.getString("status");
-            mlist.clear();
+            filmList.clear();
                 JSONArray jsonArray = jsonObject.getJSONArray("list");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
@@ -84,7 +84,7 @@ public class Fragment_film extends Fragment {
                     film.setAut_head(author_head);
                     film.setAut_name(author_name);
                     film.setComment_num(comment_num);
-                    mlist.add(film);
+                    filmList.add(film);
                 }
                 showResponse();
         } catch (JSONException e) {
@@ -96,10 +96,10 @@ public class Fragment_film extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-               // recyclerView = getView().findViewById(R.id.);               //初始化recycleView
+                recyclerView = getView().findViewById(R.id.fragment_film_recyclerview);               //初始化recycleView
                 LinearLayoutManager manager = new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-                FilmAdapter adapter = new FilmAdapter(getContext(),mlist);
+                FilmAdapter adapter = new FilmAdapter(getContext(),filmList);
                 recyclerView.setAdapter(adapter);
 
             }

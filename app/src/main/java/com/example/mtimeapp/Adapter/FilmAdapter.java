@@ -21,16 +21,26 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView filmImage;
+        ImageView autImage;                          //作者头像
         TextView filmTitle;
-        TextView filmSutitle;
+        TextView filmInfo;
+        TextView authorName;
+        TextView authorId;
+        TextView filmId;
+        TextView commentNum;
         View FilmView;
 
         public ViewHolder(View view) {
             super(view);
             FilmView = view;
-            filmTitle = (TextView)view.findViewById(R.id.film_title);       //标题
-            filmImage = (ImageView)view.findViewById(R.id.film_image);              //图片
-            filmSutitle = (TextView)view.findViewById(R.id.film_summary);         //副标题
+            filmTitle = (TextView)view.findViewById(R.id.item_film_title);                  //标题
+            filmImage = (ImageView)view.findViewById(R.id.item_film_picture);              //图片
+            filmInfo = (TextView)view.findViewById(R.id.item_film_info);                  //副标题
+            autImage = (ImageView)view.findViewById(R.id.item_film_icon);
+            authorName = (TextView)view.findViewById(R.id.item_author_name);
+            authorId = (TextView)view.findViewById(R.id.item_film_id);
+            commentNum = (TextView)view.findViewById(R.id.item_film_comment_num);
+
         }
     }
     public FilmAdapter(Context context, List<Film> list) {
@@ -50,8 +60,13 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Film film = mlist.get(i);
         Glide.with(context).load(film.getFilmImage()).into(viewHolder.filmImage);                  //展示图片，标题，发布时间。
+        Glide.with(context).load(film.getAut_head()).into(viewHolder.autImage);
         viewHolder.filmTitle.setText(film.getFilmTitle());
-        viewHolder.filmSutitle.setText(film.getFilmSubTitle());
+        viewHolder.filmInfo.setText(film.getFilmSubTitle());
+        viewHolder.authorName.setText(film.getAut_name());
+        viewHolder.authorId.setText(film.getAut_id());
+        viewHolder.commentNum.setText(film.getComment_num());
+
     }
 
     @Override

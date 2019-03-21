@@ -31,9 +31,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         public ViewHolder(View view) {
             super(view);
             NewsView = view;
-            newsTitle = (TextView)view.findViewById(R.id.news_title);       //新闻标题
-            newsImage = (ImageView)view.findViewById(R.id.news_image);              //新闻图片
-            pub_time = (TextView)view.findViewById(R.id.news_pub_time);         //新闻发布时间
+            newsTitle = (TextView)view.findViewById(R.id.item_news_title);       //新闻标题
+            newsImage = (ImageView)view.findViewById(R.id.item_news_picture);              //新闻图片
+            pub_time = (TextView)view.findViewById(R.id.item_news_date);         //新闻发布时间
         }
     }
 

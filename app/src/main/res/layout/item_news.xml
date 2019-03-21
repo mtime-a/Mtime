@@ -34,13 +34,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/item_news_icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/kaiyan" />
-
                 <TextView
+                    android:layout_marginLeft="20dp"
                     android:id="@+id/item_news_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

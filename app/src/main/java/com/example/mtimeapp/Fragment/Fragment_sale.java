@@ -46,8 +46,8 @@ public class Fragment_sale extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        tabLayout = view.findViewById(R.id.tab);
-        viewPager = view.findViewById(R.id.sale_vp);
+        tabLayout = view.findViewById(R.id.sale_tablayout);
+        viewPager = view.findViewById(R.id.sale_viewpager);
 
         saleBook = new Fragment_sale_book();
         saleShow = new Fragment_sale_show();

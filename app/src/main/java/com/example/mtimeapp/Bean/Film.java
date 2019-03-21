@@ -15,6 +15,7 @@ public class Film {
     private String aut_name;
     private String aut_head;
     private String comment_num;
+    private String comment_id;
     private String filmImage;
     public Film(){}
     public String getFilm_com_id(){ return film_com_id;}
@@ -48,5 +49,9 @@ public class Film {
     public String getFilmImage(){return filmImage;}
 
     public void setFilmImage(String filmImage){this.filmImage = filmImage;}
+
+    public String getComment_id(){return comment_id;}
+
+    public void setComment_id(String comment_id){this.comment_id = comment_id;}
 
 }

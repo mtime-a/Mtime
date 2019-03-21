@@ -29,7 +29,7 @@ public class Fragment_news extends Fragment {
 
     private RecyclerView recyclerView;
     private String name;
-    private List<HotNews>mlist;
+ //   private List<HotNews>mlist;
     private List<HotNews>newsList = new ArrayList<>();
 
     public static Fragment_news newInstance(String name) {
@@ -95,7 +95,7 @@ public class Fragment_news extends Fragment {
         try {
             JSONObject jsonObject = new JSONObject(JsonData);
             String status = jsonObject.getString("status");
-            mlist.clear();
+            newsList.clear();
             if (status.equals("ok")) {
                 JSONArray jsonArray = jsonObject.getJSONArray("list");
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -121,10 +121,10 @@ public class Fragment_news extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                recyclerView = getView().findViewById(R.id.news_recyclerview);               //初始化recycleView
+                recyclerView = getView().findViewById(R.id.fragment_news_recyclerview);               //初始化recycleView
                 LinearLayoutManager manager = new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-                NewsAdapter adapter = new NewsAdapter(getContext(),mlist);
+                NewsAdapter adapter = new NewsAdapter(getContext(),newsList);
                 recyclerView.setAdapter(adapter);
 
             }
