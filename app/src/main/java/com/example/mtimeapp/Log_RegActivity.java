@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Random;
+
 public class Log_RegActivity extends AppCompatActivity implements View.OnClickListener {
 
     private LinearLayout reg;
@@ -30,8 +32,10 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
     private ImageView close;
 
-    private String accout;
     private String password;
+    private String account;
+    private String verify_id;
+    private String UserId;
     private String email;
     private String code;
 
@@ -89,25 +93,58 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.close:
+                finish();
                 break;
             case R.id.log_btn:
-                accout = log_account.getText().toString();
-                password = log_password.getText().toString();
+               account = log_account.getText().toString();
+               password = log_password.getText().toString();
                 break;
-            case R.id.log_find_password:
+            case R.id.log_find_password:                            //还没写
                 break;
             case R.id.log_switch:
                 log.setVisibility(View.GONE);
                 reg.setVisibility(View.VISIBLE);
                 break;
-            case R.id.reg_btn:
+            case R.id.reg_btn:                                  //注册
+//            {
+//                "user_id": "用户id",
+//                    "user_name": "用户名",
+//                    "password": "经过加密的密码（加密算法待定）",
+//                    "verify_id": "验证码id",
+//                    "verify_code": "验证码值"
+//            }
+                account = reg_account.getText().toString();
+                password = reg_password.getText().toString();
+
+
                 break;
-            case R.id.reg_find_password:
+            case R.id.reg_find_password:                    //找回密码
                 break;
             case R.id.reg_switch:
                 reg.setVisibility(View.GONE);
                 log.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+    public String getStringRandom() {                                                  //下载的代码
+
+        Random random1 = new Random();
+        int length = random1.nextInt(10) + 6;
+        String val = "";
+        Random random = new Random();
+        //参数length，表示生成几位随机数
+        for(int i = 0; i < length; i++) {
+
+            String charOrNum = random.nextInt(2) % 2 == 0 ? "char" : "num";
+            //输出字母还是数字
+            if( "char".equalsIgnoreCase(charOrNum) ) {
+                //输出是大写字母还是小写字母
+                int temp = random.nextInt(2) % 2 == 0 ? 65 : 97;
+                val += (char)(random.nextInt(26) + temp);
+            } else if( "num".equalsIgnoreCase(charOrNum) ) {
+                val += String.valueOf(random.nextInt(10));
+            }
+        }
+        return val;
     }
 }
