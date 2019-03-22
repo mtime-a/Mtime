@@ -34,7 +34,7 @@ public class Fragment_film extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_news, container, false);
+        View view = inflater.inflate(R.layout.fragment_film, container, false);
         return view;
     }
 
@@ -42,7 +42,7 @@ public class Fragment_film extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.news_recyclerview);
+        recyclerView = view.findViewById(R.id.fragment_film_recyclerview);
 
         //initThread();
 

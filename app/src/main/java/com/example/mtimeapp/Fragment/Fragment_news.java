@@ -50,7 +50,7 @@ public class Fragment_news extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.news_recyclerview);
+        recyclerView = view.findViewById(R.id.fragment_news_recyclerview);
 
         //initThread();
         list=new ArrayList<>();
