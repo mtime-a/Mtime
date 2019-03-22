@@ -27,13 +27,13 @@ public class Fragment_sale extends Fragment {
     private List<Fragment> list_view;
     private List<String> list_title;
 
-    public static Fragment_sale newInstance(String name) {
-        Bundle args = new Bundle();
-        args.putString("name", name);
-        Fragment_sale fragment = new Fragment_sale();
-        fragment.setArguments(args);
-        return fragment;
-    }
+//    public static Fragment_sale newInstance(String name) {
+//        Bundle args = new Bundle();
+//        args.putString("name", name);
+//        Fragment_sale fragment = new Fragment_sale();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Nullable
     @Override

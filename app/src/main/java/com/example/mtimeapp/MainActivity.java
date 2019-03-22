@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private FatherViewPager viewPager;
     private MenuItem menuItem;
     private Fragment_film fragment_film;
+    private Fragment_news fragment_news;
+    private Fragment_sale fragment_sale;
+    private Fragment_PC fragment_pc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +70,15 @@ public class MainActivity extends AppCompatActivity {
         //添加Fragment
         List<Fragment> list = new ArrayList<>();
 
+        fragment_film = new Fragment_film();
+        fragment_pc = new Fragment_PC();
+        fragment_sale = new Fragment_sale();
+        fragment_news = new Fragment_news();
+
         list.add(fragment_film);
-        list.add(Fragment_news.newInstance("马良及"));
-        list.add(Fragment_sale.newInstance("卡片"));
-        list.add(Fragment_PC.newInstance("行者"));
+        list.add(fragment_news);
+        list.add(fragment_sale);
+        list.add(fragment_pc);
 
         //设置Adapter
         viewPagerAdapter.setList(list);

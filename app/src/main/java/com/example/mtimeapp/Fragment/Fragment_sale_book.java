@@ -43,7 +43,13 @@ public class Fragment_sale_book extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.book_recyclerview);
 
-        initThread();
+        //initThread();
+        list=new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            Map map = new HashMap();
+            map.put("title", "mlj" + i);
+            list.add(map);
+        }
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);

@@ -44,7 +44,14 @@ public class Fragment_film extends Fragment {
 
         recyclerView = view.findViewById(R.id.news_recyclerview);
 
-        initThread();
+        //initThread();
+
+        list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Map map = new HashMap();
+            map.put("title", "mlj" + i);
+            list.add(map);
+        }
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);

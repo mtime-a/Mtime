@@ -31,13 +31,13 @@ public class Fragment_news extends Fragment {
     private RecyclerView recyclerView;
     private List<Map<String, Object>> list;
 
-    public static Fragment_news newInstance(String name) {
-        Bundle args = new Bundle();
-        args.putString("name", name);
-        Fragment_news fragment = new Fragment_news();
-        fragment.setArguments(args);
-        return fragment;
-    }
+//    public static Fragment_news newInstance(String name) {
+//        Bundle args = new Bundle();
+//        args.putString("name", name);
+//        Fragment_news fragment = new Fragment_news();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Nullable
     @Override
@@ -52,7 +52,13 @@ public class Fragment_news extends Fragment {
 
         recyclerView = view.findViewById(R.id.news_recyclerview);
 
-        initThread();
+        //initThread();
+        list=new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            Map map = new HashMap();
+            map.put("title", "mlj" + i);
+            list.add(map);
+        }
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);

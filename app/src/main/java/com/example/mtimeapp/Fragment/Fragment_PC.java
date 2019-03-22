@@ -20,15 +20,15 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
     private TextView jump;//点击文本框跳转到登陆页面或者个人中心页面
     private ImageView setting;//设置
 
-    public static Fragment_PC newInstance(String name) {
-        //这个方法你可以将传进来的数据String name改下
-        // 用bundle来运送一些东西到onViewCreated
-        Bundle args = new Bundle();
-        args.putString("name", name);
-        Fragment_PC fragment = new Fragment_PC();
-        fragment.setArguments(args);
-        return fragment;
-    }
+//    public static Fragment_PC newInstance(String name) {
+//        //这个方法你可以将传进来的数据String name改下
+//        // 用bundle来运送一些东西到onViewCreated
+//        Bundle args = new Bundle();
+//        args.putString("name", name);
+//        Fragment_PC fragment = new Fragment_PC();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Nullable
     @Override
