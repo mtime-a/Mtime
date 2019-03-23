@@ -3,14 +3,24 @@ package com.example.mtimeapp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Random;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class Log_RegActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -34,10 +44,13 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
     private String password;
     private String account;
-    private String verify_id;
+    private String verify_id = null;
     private String UserId;
     private String email;
     private String code;
+    private String name;
+    private String waitTime;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,6 +113,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                password = log_password.getText().toString();
                 break;
             case R.id.log_find_password:                            //还没写
+                initThread();
                 break;
             case R.id.log_switch:
                 log.setVisibility(View.GONE);
@@ -115,6 +129,14 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 //            }
                 account = reg_account.getText().toString();
                 password = reg_password.getText().toString();
+                name = getStringRandom();
+                if(verify_id == null){
+                    //可以加图片
+                    Toast.makeText(this,"请先请求验证码",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    
+                }
 
 
                 break;
@@ -126,7 +148,8 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
-    public String getStringRandom() {                                                  //下载的代码
+    //取随机数
+    public String getStringRandom() {
 
         Random random1 = new Random();
         int length = random1.nextInt(10) + 6;
@@ -146,5 +169,35 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
         return val;
+    }
+    //请求验证码
+    private void initThread() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder().url("106.13.106.1/i/email_verify_code").build();
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    //解析返回值
+                    parseJSONWithJSONObject(responseData);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    private void parseJSONWithJSONObject(String JsonData) {
+        try {
+            JSONObject jsonObject = new JSONObject(JsonData);
+            //验证码id
+            verify_id = jsonObject.getString("id");
+            //等待时间（未解决）
+            waitTime = jsonObject.getString("wait");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

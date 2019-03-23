@@ -108,10 +108,18 @@
 
             <EditText
                 android:id="@+id/reg_mail"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="6"
                 android:layout_height="wrap_content"
                 android:hint="请输入邮箱"
                 android:textColorHint="@android:color/white" />
+            <Button
+                android:alpha="0.35"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:background="@mipmap/fasong1"
+                android:layout_height="40dp"
+                />
         </LinearLayout>
 
         <LinearLayout

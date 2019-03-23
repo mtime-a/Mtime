@@ -36,6 +36,12 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     public FilmAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_film, viewGroup, false);
         FilmAdapter.ViewHolder holder = new FilmAdapter.ViewHolder(view);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return holder;
     }
 
@@ -44,10 +50,10 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         Map map = list.get(i);
 
         viewHolder.title.setText(map.get("title").toString());
-//        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);                  //展示图片，标题，发布时间。
-//        viewHolder.info.setText(map.get("info").toString());
-//        viewHolder.mark.setText(map.get("mark").toString());
-//        viewHolder.date.setText(map.get("date").toString());
+        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);                  //展示图片，标题，发布时间。
+        viewHolder.info.setText(map.get("info").toString());
+        viewHolder.mark.setText(map.get("mark").toString());
+        viewHolder.date.setText(map.get("date").toString());
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

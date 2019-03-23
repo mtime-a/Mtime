@@ -53,7 +53,7 @@ public class Fragment_news extends Fragment {
         recyclerView = view.findViewById(R.id.fragment_news_recyclerview);
 
         //initThread();
-        list=new ArrayList<>();
+        list = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             Map map = new HashMap();
             map.put("title", "mlj" + i);
@@ -64,6 +64,7 @@ public class Fragment_news extends Fragment {
         recyclerView.setLayoutManager(manager);
         final NewsAdapter adapter = new NewsAdapter(getContext(), list);///需要传入什么东西
         recyclerView.setAdapter(adapter);
+
     }
 
     private void initThread() {
@@ -82,7 +83,6 @@ public class Fragment_news extends Fragment {
             }
         }).start();
     }
-
     private void parseJSONWithJSONObject(String JsonData) {
         try {
             list = new ArrayList<>();
