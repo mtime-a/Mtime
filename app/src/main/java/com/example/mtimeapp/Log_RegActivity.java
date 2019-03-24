@@ -267,7 +267,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                         }
                         JSONObject jsonObject = new JSONObject(response.toString());
                         int state  = Integer.parseInt(jsonObject.getString("result"));
-                        judgeState(state);
+                        judgeRegState(state);
                         reader.close();
                     }
                     conn.disconnect();
@@ -289,7 +289,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         return matcher.matches();
     }
     //判断返回状态
-    private void judgeState(int state){
+    private void judgeRegState(int state){
 //        0:注册成功
 //        1:用户名重复
 //        2:电子邮件已被注册
@@ -324,33 +324,19 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void postLogJsonData(){
-        account = reg_account.getText().toString();
-        password = reg_password.getText().toString();
-        name = getStringRandom();
-        if(verify_id == null){
-            //可以加图片(尚未美化)
-            Toast.makeText(this,"请先请求验证码",Toast.LENGTH_LONG).show();
-        }
-        else {
-            code = reg_code.getText().toString();
-            boolean judge = checkCode(code);
-            if(judge) {
-                try {
-//                {
-//                    "user_id": "用户id",
-//                        "user_name": "用户名",
-//                        "password": "经过加密的密码（加密算法待定）",
-//                        "verify_id": "验证码id",
-//                        "verify_code": "验证码值"
-//                }
+        account = log_account.getText().toString();
+        password = log_password.getText().toString();
+        try {
+//
+//  "account":"用户名",
+//  "email":"电子邮件",
+//  "password":"加密后的密码(加密算法待定)",
+//
                     //创建json
                     JSONObject body = new JSONObject();
-                    body.put("user_id", getStringRandom());
-                    body.put("user_name",name);
-                    body.put("password", password);
-                    body.put("verify_id",verify_id);
-                    body.put("verify_code",code);
-                    URL url = new URL("106.13.106.1/account/i/regisit");
+                    body.put("email",account);
+                    body.put("password",password);
+                    URL url = new URL("106.13.106.1/account/i/app_login");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setConnectTimeout(5000);
                     // 设置是否向httpUrlConnection输出
@@ -374,7 +360,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                         }
                         JSONObject jsonObject = new JSONObject(response.toString());
                         int state  = Integer.parseInt(jsonObject.getString("result"));
-                        judgeState(state);
+                        judgeLogState(state);
                         reader.close();
                     }
                     conn.disconnect();
@@ -384,9 +370,36 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }else {
-                Toast.makeText(this,"密码不符合要求，请重新设置密码",Toast.LENGTH_LONG).show();
-            }
+
+    }
+    private void judgeLogState(int state){
+//        0:登陆成功
+//        1:无效用户名
+//        2:无效的密码
+//        3:验证码错误
+//        4:账号被封禁
+//        5:已登录
+//        6：未知错误
+        if(state == 0 ){
+            Toast.makeText(this,"登陆成功",Toast.LENGTH_LONG).show();
+        }
+        if(state == 1 ){
+            Toast.makeText(this,"无效用户名",Toast.LENGTH_LONG).show();
+        }
+        if(state == 2 ){
+            Toast.makeText(this,"无效的密码",Toast.LENGTH_LONG).show();
+        }
+        if(state == 3 ){
+            Toast.makeText(this,"验证码错误",Toast.LENGTH_LONG).show();
+        }
+        if(state == 4 ){
+            Toast.makeText(this,"账号被封禁",Toast.LENGTH_LONG).show();
+        }
+        if(state == 5 ){
+            Toast.makeText(this,"登陆成功",Toast.LENGTH_LONG).show();
+        }
+        if(state == 6 ){
+            Toast.makeText(this,"未知错误",Toast.LENGTH_LONG).show();
         }
     }
 }
