@@ -1,5 +1,4 @@
 package com.example.mtimeapp;
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -15,11 +14,23 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Log_RegActivity extends AppCompatActivity implements View.OnClickListener {
@@ -30,6 +41,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
     private EditText reg_mail;
     private EditText reg_code;
     private Button reg_btn;
+    private Button reg_get_verify_code;
     private TextView reg_switch;
     private TextView reg_find_password;
 
@@ -93,6 +105,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         reg_switch = findViewById(R.id.reg_switch);
         reg_find_password = findViewById(R.id.reg_find_password);
         reg_btn = findViewById(R.id.reg_btn);
+        reg_get_verify_code = findViewById(R.id.reg_get_verify_code);
         //下面是关于log的监听
         log = findViewById(R.id.log);
         log_account = findViewById(R.id.log_account);
@@ -113,13 +126,15 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                password = log_password.getText().toString();
                 break;
             case R.id.log_find_password:                            //还没写
-                initThread();
                 break;
             case R.id.log_switch:
                 log.setVisibility(View.GONE);
                 reg.setVisibility(View.VISIBLE);
                 break;
+            case R.id.reg_get_verify_code:
+                initThread();
             case R.id.reg_btn:                                  //注册
+                postRegJsonData();
 //            {
 //                "user_id": "用户id",
 //                    "user_name": "用户名",
@@ -127,16 +142,16 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 //                    "verify_id": "验证码id",
 //                    "verify_code": "验证码值"
 //            }
-                account = reg_account.getText().toString();
-                password = reg_password.getText().toString();
-                name = getStringRandom();
-                if(verify_id == null){
-                    //可以加图片
-                    Toast.makeText(this,"请先请求验证码",Toast.LENGTH_LONG).show();
-                }
-                else {
-                    
-                }
+//                account = reg_account.getText().toString();
+//                password = reg_password.getText().toString();
+//                name = getStringRandom();
+//                if(verify_id == null){
+//                    //可以加图片(尚未美化)
+//                    Toast.makeText(this,"请先请求验证码",Toast.LENGTH_LONG).show();
+//                }
+//                else {
+//
+//                }
 
 
                 break;
@@ -199,5 +214,179 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             e.printStackTrace();
         }
 
+    }
+    //HttpURLConnection Post发送Json数据，接受返回值。
+    private void postRegJsonData(){
+        account = reg_account.getText().toString();
+        password = reg_password.getText().toString();
+        name = getStringRandom();
+        if(verify_id == null){
+            //可以加图片(尚未美化)
+            Toast.makeText(this,"请先请求验证码",Toast.LENGTH_LONG).show();
+        }
+        else {
+            code = reg_code.getText().toString();
+            boolean judge = checkCode(code);
+            if(judge) {
+                try {
+//                {
+//                    "user_id": "用户id",
+//                        "user_name": "用户名",
+//                        "password": "经过加密的密码（加密算法待定）",
+//                        "verify_id": "验证码id",
+//                        "verify_code": "验证码值"
+//                }
+                    //创建json
+                    JSONObject body = new JSONObject();
+                    body.put("user_id", getStringRandom());
+                    body.put("user_name",name);
+                    body.put("password", password);
+                    body.put("verify_id",verify_id);
+                    body.put("verify_code",code);
+                    URL url = new URL("106.13.106.1/account/i/regisit");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(5000);
+                    // 设置是否向httpUrlConnection输出
+                    conn.setDoOutput(true);
+                    // 设置是否从httpUrlConnection读入
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    DataOutputStream os = new DataOutputStream( conn.getOutputStream());
+                    String content = String.valueOf(body);
+                    os.writeBytes(content);
+                    os.flush();
+                    os.close();
+                    if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStreamReader in = new InputStreamReader(conn.getInputStream());
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream())); //获取输入流
+                        StringBuilder response = new StringBuilder();
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            response.append(line);
+                        }
+                        JSONObject jsonObject = new JSONObject(response.toString());
+                        int state  = Integer.parseInt(jsonObject.getString("result"));
+                        judgeState(state);
+                        reader.close();
+                    }
+                    conn.disconnect();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Toast.makeText(this,"密码不符合要求，请重新设置密码",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    //检验密码
+    public static boolean checkCode(String code){
+        Pattern pattern=Pattern.compile("[\\S]{8,16}$");
+        Matcher matcher=pattern.matcher(code);
+        return matcher.matches();
+    }
+    //判断返回状态
+    private void judgeState(int state){
+//        0:注册成功
+//        1:用户名重复
+//        2:电子邮件已被注册
+//        3:验证码错误
+//        4:无效的用户名
+//        5:无效的密码
+//        6:未知错误
+        if(state == 0 ){
+            Toast.makeText(this,"注册成功",Toast.LENGTH_LONG).show();
+        }
+        //***************************
+        //此处有个逻辑上的bug
+        //***************************
+        if(state == 1 ){
+            Toast.makeText(this,"用户名重复",Toast.LENGTH_LONG).show();
+        }
+        if(state == 2 ){
+            Toast.makeText(this,"电子邮箱已被注册",Toast.LENGTH_LONG).show();
+        }
+        if(state == 3 ){
+            Toast.makeText(this,"验证码错误",Toast.LENGTH_LONG).show();
+        }
+        if(state == 4 ){
+            Toast.makeText(this,"无效的用户名",Toast.LENGTH_LONG).show();
+        }
+        if(state == 5 ){
+            Toast.makeText(this,"无效的密码",Toast.LENGTH_LONG).show();
+        }
+        if(state == 6 ){
+            Toast.makeText(this,"未知错误",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void postLogJsonData(){
+        account = reg_account.getText().toString();
+        password = reg_password.getText().toString();
+        name = getStringRandom();
+        if(verify_id == null){
+            //可以加图片(尚未美化)
+            Toast.makeText(this,"请先请求验证码",Toast.LENGTH_LONG).show();
+        }
+        else {
+            code = reg_code.getText().toString();
+            boolean judge = checkCode(code);
+            if(judge) {
+                try {
+//                {
+//                    "user_id": "用户id",
+//                        "user_name": "用户名",
+//                        "password": "经过加密的密码（加密算法待定）",
+//                        "verify_id": "验证码id",
+//                        "verify_code": "验证码值"
+//                }
+                    //创建json
+                    JSONObject body = new JSONObject();
+                    body.put("user_id", getStringRandom());
+                    body.put("user_name",name);
+                    body.put("password", password);
+                    body.put("verify_id",verify_id);
+                    body.put("verify_code",code);
+                    URL url = new URL("106.13.106.1/account/i/regisit");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(5000);
+                    // 设置是否向httpUrlConnection输出
+                    conn.setDoOutput(true);
+                    // 设置是否从httpUrlConnection读入
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    DataOutputStream os = new DataOutputStream( conn.getOutputStream());
+                    String content = String.valueOf(body);
+                    os.writeBytes(content);
+                    os.flush();
+                    os.close();
+                    if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStreamReader in = new InputStreamReader(conn.getInputStream());
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream())); //获取输入流
+                        StringBuilder response = new StringBuilder();
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            response.append(line);
+                        }
+                        JSONObject jsonObject = new JSONObject(response.toString());
+                        int state  = Integer.parseInt(jsonObject.getString("result"));
+                        judgeState(state);
+                        reader.close();
+                    }
+                    conn.disconnect();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Toast.makeText(this,"密码不符合要求，请重新设置密码",Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

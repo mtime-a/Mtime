@@ -114,6 +114,7 @@
                 android:hint="请输入邮箱"
                 android:textColorHint="@android:color/white" />
             <Button
+                android:id="@+id/reg_get_verify_code"
                 android:alpha="0.35"
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -202,7 +203,7 @@
                 android:id="@+id/log_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="请输入账号"
+                android:hint="请输入邮箱"
                 android:textColorHint="@android:color/white" />
         </LinearLayout>
 
