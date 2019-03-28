@@ -1,5 +1,9 @@
 package com.example.mtimeapp;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +32,8 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -35,12 +41,12 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Log_RegActivity extends AppCompatActivity implements View.OnClickListener {
-
     private LinearLayout reg;
     private EditText reg_account;
     private EditText reg_password;
     private EditText reg_mail;
     private EditText reg_code;
+    private ImageView reg_send;
     private Button reg_btn;
     private Button reg_get_verify_code;
     private TextView reg_switch;
@@ -63,7 +69,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
     private String code;
     private String name;
     private String waitTime;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,6 +133,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.log_btn:
                account = log_account.getText().toString();
                password = log_password.getText().toString();
+               postLogJsonData();
                 break;
             case R.id.log_find_password:
                 intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);
@@ -137,6 +143,8 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 log.setVisibility(View.GONE);
                 reg.setVisibility(View.VISIBLE);
                 break;
+            case R.id.reg_send:
+                initThread();
             case R.id.reg_btn:                                  //注册
                 postRegJsonData();
 //            {
@@ -156,11 +164,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 //                else {
 //
 //                }
-            case R.id.reg_btn:
-                account = reg_account.getText().toString();
-                password = reg_password.getText().toString();
-                code = reg_code.getText().toString();
-                email = reg_mail.getText().toString();
 
 
                 break;
@@ -226,11 +229,15 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         }
 
     }
-    //HttpURLConnection Post发送Json数据，接受返回值。
+    //方法一：HttpURLConnection Post发送Json数据，接受返回值。
     private void postRegJsonData(){
         account = reg_account.getText().toString();
         password = reg_password.getText().toString();
-        name = getStringRandom();
+        name = account;
+        SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("theName",name);
+        editor.apply();
         if(verify_id == null){
             //可以加图片(尚未美化)
             Toast.makeText(this,"请先请求验证码",Toast.LENGTH_LONG).show();
@@ -293,6 +300,50 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
+    //方法二：使用okHttp发送接json数据
+    private void postRegJsonData2(){
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        try {
+            JSONObject body = new JSONObject();
+            String name  = getStringRandom();
+            SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("theName",name);
+            editor.apply();
+            body.put("user_id", name);
+            body.put("user_name", name);
+            body.put("password", password);
+            body.put("verify_id", verify_id);
+            body.put("verify_code", code);
+            RequestBody requestBody = RequestBody.create(JSON, String.valueOf(body));
+            Request request = new Request.Builder()
+                    .url("http://106.13.106.1/to_post")
+                    .post(requestBody)
+                    .build();
+            OkHttpClient okHttpClient = new OkHttpClient();
+            okHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("TAG", "获取数据失败");
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    int state;
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.toString());
+                        state  = Integer.parseInt(jsonObject.getString("result"));
+                        judgeRegState(state);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } );
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     //检验密码
     public static boolean checkCode(String code){
         Pattern pattern=Pattern.compile("[\\S]{8,16}$");
@@ -343,44 +394,44 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 //  "email":"电子邮件",
 //  "password":"加密后的密码(加密算法待定)",
 //
-                    //创建json
-                    JSONObject body = new JSONObject();
-                    body.put("email",account);
-                    body.put("password",password);
-                    URL url = new URL("106.13.106.1/account/i/app_login");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setConnectTimeout(5000);
-                    // 设置是否向httpUrlConnection输出
-                    conn.setDoOutput(true);
-                    // 设置是否从httpUrlConnection读入
-                    conn.setDoInput(true);
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json");
-                    DataOutputStream os = new DataOutputStream( conn.getOutputStream());
-                    String content = String.valueOf(body);
-                    os.writeBytes(content);
-                    os.flush();
-                    os.close();
-                    if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        InputStreamReader in = new InputStreamReader(conn.getInputStream());
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream())); //获取输入流
-                        StringBuilder response = new StringBuilder();
-                        String line = null;
-                        while ((line = reader.readLine()) != null) {
-                            response.append(line);
-                        }
-                        JSONObject jsonObject = new JSONObject(response.toString());
-                        int state  = Integer.parseInt(jsonObject.getString("result"));
-                        judgeLogState(state);
-                        reader.close();
-                    }
-                    conn.disconnect();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            //创建json
+            JSONObject body = new JSONObject();
+            body.put("email",account);
+            body.put("password",password);
+            URL url = new URL("106.13.106.1/account/i/app_login");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            // 设置是否向httpUrlConnection输出
+            conn.setDoOutput(true);
+            // 设置是否从httpUrlConnection读入
+            conn.setDoInput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            DataOutputStream os = new DataOutputStream( conn.getOutputStream());
+            String content = String.valueOf(body);
+            os.writeBytes(content);
+            os.flush();
+            os.close();
+            if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                InputStreamReader in = new InputStreamReader(conn.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream())); //获取输入流
+                StringBuilder response = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
                 }
+                JSONObject jsonObject = new JSONObject(response.toString());
+                int state  = Integer.parseInt(jsonObject.getString("result"));
+                judgeLogState(state);
+                reader.close();
+            }
+            conn.disconnect();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
     private void judgeLogState(int state){
