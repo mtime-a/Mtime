@@ -75,13 +75,13 @@ public class ChangPasswordActivity extends AppCompatActivity  {
 
     }
     private void postRegJsonData(){
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject body = new JSONObject();
             body.put("old_password", oldPassword);
             body.put("new_password", newPassword);
             body.put("verify_id", verify_id);
             body.put("verify_code", code);
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
             RequestBody requestBody = RequestBody.create(JSON, String.valueOf(body));
             Request request = new Request.Builder()
                     .url("http://106.13.106.1/to_post")
