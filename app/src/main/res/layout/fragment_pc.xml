@@ -19,8 +19,8 @@
 
     <com.example.mtimeapp.CustomView.CircleImageView
         android:id="@+id/pc_icon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:scaleType="centerCrop"
@@ -33,7 +33,7 @@
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:text="行者"
-        android:textSize="18dp"
+        android:textSize="25dp"
         android:textStyle="bold" />
 
     <TextView
@@ -42,7 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:text="查看个人主页  >" />
+        android:text="查看个人主页  >"
+        android:textSize="18dp" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -56,7 +57,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="我的评论" />
+        android:text="我的评论"
+        android:textSize="18dp" />
 
     <TextView
         android:id="@+id/pc_about_us"
@@ -64,6 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:text="关于我们" />
+        android:text="关于我们"
+        android:textSize="18dp" />
 
 </LinearLayout>

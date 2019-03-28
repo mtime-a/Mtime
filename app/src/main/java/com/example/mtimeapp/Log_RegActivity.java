@@ -1,4 +1,5 @@
 package com.example.mtimeapp;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -102,10 +103,10 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         reg_password = findViewById(R.id.reg_password);
         reg_mail = findViewById(R.id.reg_mail);
         reg_code = findViewById(R.id.reg_code);
+        reg_send = findViewById(R.id.reg_send);
         reg_switch = findViewById(R.id.reg_switch);
         reg_find_password = findViewById(R.id.reg_find_password);
         reg_btn = findViewById(R.id.reg_btn);
-        reg_get_verify_code = findViewById(R.id.reg_get_verify_code);
         //下面是关于log的监听
         log = findViewById(R.id.log);
         log_account = findViewById(R.id.log_account);
@@ -117,6 +118,9 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+
+        Intent intent = new Intent();
+
         switch (v.getId()) {
             case R.id.close:
                 finish();
@@ -125,14 +129,14 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                account = log_account.getText().toString();
                password = log_password.getText().toString();
                 break;
-            case R.id.log_find_password:                            //还没写
+            case R.id.log_find_password:
+                intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);
+                startActivity(intent);
                 break;
             case R.id.log_switch:
                 log.setVisibility(View.GONE);
                 reg.setVisibility(View.VISIBLE);
                 break;
-            case R.id.reg_get_verify_code:
-                initThread();
             case R.id.reg_btn:                                  //注册
                 postRegJsonData();
 //            {
@@ -152,10 +156,17 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 //                else {
 //
 //                }
+            case R.id.reg_btn:
+                account = reg_account.getText().toString();
+                password = reg_password.getText().toString();
+                code = reg_code.getText().toString();
+                email = reg_mail.getText().toString();
 
 
                 break;
-            case R.id.reg_find_password:                    //找回密码
+            case R.id.reg_find_password:
+                intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);
+                startActivity(intent);
                 break;
             case R.id.reg_switch:
                 reg.setVisibility(View.GONE);

@@ -92,16 +92,17 @@ public class Fragment_news extends Fragment {
                 JSONArray jsonArray = jsonObject.getJSONArray("list");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    int newsId = Integer.parseInt(jsonObject1.getString("news_id"));
-                    String newsTitle = jsonObject1.getString("title");
+                    Integer new_id = Integer.parseInt(jsonObject1.getString("new_id"));
+                    String title = jsonObject1.getString("title");
                     String pub_time = jsonObject1.getString("pub_time");
-                    String newsImage = jsonObject1.getString("picture");
+                    String picture = jsonObject1.getString("picture");
 
                     Map map = new HashMap();
-                    map.put("news_id", newsId);
-                    map.put("title", newsTitle);
+                    map.put("news_id", new_id);
+                    map.put("title", title);
                     map.put("pub_time", pub_time);
-                    map.put("picture", newsImage);
+                    map.put("picture", picture);
+
                     list.add(map);
                 }
                 showResponse();
@@ -120,7 +121,6 @@ public class Fragment_news extends Fragment {
                 recyclerView.setLayoutManager(manager);
                 NewsAdapter adapter = new NewsAdapter(getContext(), list);
                 recyclerView.setAdapter(adapter);
-
             }
         });
     }

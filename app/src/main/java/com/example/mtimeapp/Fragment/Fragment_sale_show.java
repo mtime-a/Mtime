@@ -44,7 +44,7 @@ public class Fragment_sale_show extends Fragment {
         recyclerView = view.findViewById(R.id.show_recyclerview);
 
         //initThread();
-        list=new ArrayList<>();
+        list = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             Map map = new HashMap();
             map.put("title", "mlj" + i);
@@ -90,6 +90,7 @@ public class Fragment_sale_show extends Fragment {
                 String showInfo = jsonObject1.getString("info");
                 String showFilmId = jsonObject1.getString("film_id");
                 String showMark = jsonObject1.getString("mark");
+                String release_date = jsonObject1.getString("release_date");
 
                 Map map = new HashMap();
                 map.put("title", showTitle);
@@ -97,6 +98,7 @@ public class Fragment_sale_show extends Fragment {
                 map.put("info", showInfo);
                 map.put("film_id", showFilmId);
                 map.put("mark", showMark);
+                map.put("release_date", release_date);
                 list.add(map);
             }
             showResponse();

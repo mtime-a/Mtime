@@ -115,7 +115,6 @@ public class Fragment_sale_book extends Fragment {
                 recyclerView.setLayoutManager(manager);
                 BookAdapter adapter = new BookAdapter(getContext(), list);
                 recyclerView.setAdapter(adapter);
-
             }
         });
     }

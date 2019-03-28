@@ -13,6 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name=".Fragment.ChangePasswordActivity"></activity>
+        <activity android:name=".PCActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,10 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".Log_RegActivity" />
         <activity android:name=".NewsActivity" />
         <activity android:name=".FilmActivity" />
+        <activity
+            android:name=".MyCommentsActivity"
+            android:label="我的评论"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity android:name=".FindPasswordActivity" />
+        <activity android:name=".ShowActivity" />
+        <activity android:name=".CommentsActivity"/>
+        <activity android:name=".BookActivity"/>
     </application>
 
 </manifest>

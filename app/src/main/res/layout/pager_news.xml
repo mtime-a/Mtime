@@ -18,40 +18,32 @@
                 android:id="@+id/pager_news_picture"
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
-                android:layout_margin="10dp"
+                android:layout_margin="15dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/dianyingtup" />
 
             <TextView
                 android:id="@+id/pager_news_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginLeft="15dp"
                 android:text="把哥哥推动或可以吗"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="25dp"
-                android:textStyle="bold" />
+                android:textColor="@android:color/black"
+                android:textSize="23dp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.example.mtimeapp.CustomView.CircleImageView
-                    android:id="@+id/pager_news_icon"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/dianyingtup" />
+                android:layout_marginRight="15dp">
 
                 <TextView
-                    android:id="@+id/pager_news_name"
+                    android:id="@+id/pager_news_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:text="行者"
+                    android:layout_gravity="right"
+                    android:text="Marth.5"
                     android:textSize="15dp" />
-            </LinearLayout>
+            </FrameLayout>
 
             <WebView
                 android:id="@+id/pager_news_web"
@@ -63,32 +55,35 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_margin="1dp"
-        android:src="#707070" />
+        android:src="#e6e6e6" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp">
+        android:layout_marginLeft="10dp">
 
         <include
             android:id="@+id/pager_news_write_comment"
             layout="@layout/icon_comment" />
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/pager_news_comment"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="60dp"
-            android:src="@mipmap/pinglun" />
+            android:layout_marginLeft="80dp">
 
-        <ImageView
-            android:id="@+id/pager_news_love"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="60dp"
-            android:src="@mipmap/dianzan" />
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@mipmap/pinglun" />
+
+            <TextView
+                android:id="@+id/pager_news_comment_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="50" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
