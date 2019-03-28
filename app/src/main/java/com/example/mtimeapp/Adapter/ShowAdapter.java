@@ -46,14 +46,15 @@ public class ShowAdapter extends RecyclerView.Adapter<ShowAdapter.ViewHolder> {
         holder.title.setText(map.get("title").toString());
 //        holder.date.setText(map.get("date").toString());
 //        holder.info.setText(map.get("info").toString());
-//        Glide.with(context).load(map.get("").toString()).into(holder.picture);
+//        Glide.with(context).load(map.get("image").toString()).into(holder.picture);
 //        holder.mark.setText(map.get("mark").toString());
+//        holder.date.setText(map.get("release_date").toString());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(context, FilmActivity.class);
+                intent.setClass(context, ShowActivity.class);
                 context.startActivity(intent);
             }
         });

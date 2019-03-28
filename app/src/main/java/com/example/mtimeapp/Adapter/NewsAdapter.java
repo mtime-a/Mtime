@@ -39,18 +39,19 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NewsAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull NewsAdapter.ViewHolder viewHolder, final int i) {
         Map map = list.get(i);
 
         viewHolder.title.setText(map.get("title").toString());
 //        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);
-//        viewHolder.date.setText(map.get("date").toString());
+//        viewHolder.date.setText(map.get("pub_time").toString());
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context, NewsActivity.class);
+                //intent.putExtra("news_id", list.get(i).get("news_id").toString());
                 context.startActivity(intent);
             }
         });

@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/homepager_back"
+        android:id="@+id/pc_homepage_back"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="10dp"
@@ -18,6 +18,7 @@
         android:orientation="vertical">
 
         <com.example.mtimeapp.CustomView.CircleImageView
+            android:id="@+id/pc_homepage_icon"
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:layout_gravity="center"
@@ -25,10 +26,11 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_margin="20dp"
-        android:background="#e6e6e6"
         android:layout_width="match_parent"
-        android:layout_height="1dp" />
+        android:layout_height="1dp"
+        android:layout_margin="20dp"
+        android:background="#e6e6e6" />
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,6 +69,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/pc_homepage_username"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="10dp"
@@ -117,6 +120,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/pc_homepage_id"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="10dp"
@@ -167,6 +171,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/pc_homepage_emil"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="10dp"
@@ -179,54 +184,54 @@
 
     </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:cardBackgroundColor="#FAFAFA"
-        app:cardCornerRadius="10dp">
+    <!--<android.support.v7.widget.CardView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--app:cardBackgroundColor="#FAFAFA"-->
+        <!--app:cardCornerRadius="10dp">-->
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="horizontal">-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+        <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content">-->
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="5dp"
-                    android:src="@mipmap/yonghuming" />
+        <!--<ImageView-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_margin="5dp"-->
+        <!--android:src="@mipmap/yonghuming" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="昵称"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:text="昵称"-->
+        <!--android:textSize="20dp"-->
+        <!--android:textStyle="bold" />-->
+        <!--</LinearLayout>-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <!--<FrameLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:gravity="right|center"
-                android:text="行者"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:gravity="right|center"-->
+        <!--android:text="行者"-->
+        <!--android:textSize="20dp"-->
+        <!--android:textStyle="bold" />-->
 
-        </FrameLayout>
+        <!--</FrameLayout>-->
 
-    </android.support.v7.widget.CardView>
+    <!--</android.support.v7.widget.CardView>-->
 
 </LinearLayout>

@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.mtimeapp.CustomView.CircleImageView;
+import com.example.mtimeapp.CustomView.RoundImageView;
 import com.example.mtimeapp.FilmActivity;
 import com.example.mtimeapp.Log_RegActivity;
 import com.example.mtimeapp.R;
@@ -40,20 +42,22 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FilmAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull FilmAdapter.ViewHolder viewHolder, final int i) {
         Map map = list.get(i);
 
         viewHolder.title.setText(map.get("title").toString());
-//        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);                  //展示图片，标题，发布时间。
-//        viewHolder.info.setText(map.get("info").toString());
-//        viewHolder.mark.setText(map.get("mark").toString());
-//        viewHolder.date.setText(map.get("date").toString());
+//        Glide.with(context).load(map.get("image")).into(viewHolder.picture);
+//        Glide.with(context).load(map.get("author_head")).into(viewHolder.author_head);
+//        viewHolder.subtitle.setText(map.get("subtitle").toString());
+//        viewHolder.author_name.setText(map.get("author_name").toString());
+//        viewHolder.comment_num.setText(map.get("comment_num").toString());
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context, FilmActivity.class);
+                //intent.putExtra("film_id", list.get(i).get("comment_id").toString());
                 context.startActivity(intent);
             }
         });
@@ -66,12 +70,13 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView picture;
+        RoundImageView picture;
         TextView title;
-        TextView info;
-        TextView date;
-        TextView mark;
+        TextView subtitle;
+        TextView author_name;
+        CircleImageView author_head;
         CardView cardView;
+        TextView comment_num;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,9 +84,10 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
             cardView = itemView.findViewById(R.id.item_film_card);
             picture = itemView.findViewById(R.id.item_film_picture);
             title = itemView.findViewById(R.id.item_film_title);
-            info = itemView.findViewById(R.id.item_film_info);
-            date = itemView.findViewById(R.id.item_film_date);
-            mark = itemView.findViewById(R.id.item_film_mark);
+            subtitle = itemView.findViewById(R.id.item_film_subtitle);
+            author_name = itemView.findViewById(R.id.item_film_username);
+            comment_num = itemView.findViewById(R.id.item_film_commentnum);
+            author_head = itemView.findViewById(R.id.item_film_icon);
         }
     }
 }

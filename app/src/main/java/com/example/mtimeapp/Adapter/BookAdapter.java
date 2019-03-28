@@ -42,8 +42,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         Map map = list.get(i);
 
         viewHolder.title.setText(map.get("title").toString());
-//        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);
-//        viewHolder.date.setText(map.get("date").toString());
+//        Glide.with(context).load(map.get("image")).into(viewHolder.picture);
+//        viewHolder.date.setText(map.get("release_date").toString());
 //        viewHolder.info.setText(map.get("info").toString());
 //        viewHolder.mark.setText(map.get("mark").toString());
 
