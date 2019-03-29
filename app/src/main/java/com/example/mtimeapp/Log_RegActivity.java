@@ -28,7 +28,56 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.security.auth.login.LoginException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Cookie;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,7 +97,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
     private EditText reg_code;
     private ImageView reg_send;
     private Button reg_btn;
-    private Button reg_get_verify_code;
     private TextView reg_switch;
     private TextView reg_find_password;
 
@@ -64,11 +112,12 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
     private String password;
     private String account;
     private String verify_id = null;
-    private String UserId;
+//    private String UserId;
     private String email;
     private String code;
     private String name;
     private String waitTime;
+    private String cookies;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,6 +139,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         reg_switch.setOnClickListener(this);
         reg_find_password.setOnClickListener(this);
         reg_btn.setOnClickListener(this);
+        reg_send.setOnClickListener(this);
     }
 
 
@@ -145,20 +195,25 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.reg_send:
                 initThread();
+                break;
             case R.id.reg_btn:                                  //注册
+                code = reg_code.getText().toString();
+                password = reg_password.getText().toString();
+                name  = reg_account.getText().toString();
+                email  = reg_mail.getText().toString();
                 boolean judge = checkCode(password);
                 if(judge){
-                    if(verify_id == null||verify_id.equals("")){
-                        //***********************************
-                        //可以把Toast做的好看一些
-                        //***********************************
-                        Toast.makeText(this,"请先获取验证码",Toast.LENGTH_LONG).show();
-                    }else {
-                        if(code == null||verify_id.equals("")){
+//                    if(verify_id == null||verify_id.equals("")){
+//                        //***********************************
+//                        //可以把Toast做的好看一些
+//                        //***********************************
+//                        Toast.makeText(this,"请先获取验证码",Toast.LENGTH_LONG).show();
+//                    }else {
+                        if(code == null||code.equals("")){
                             Toast.makeText(this,"请填入验证码",Toast.LENGTH_LONG).show();
                         }else {
                             postRegJsonData();
-                        }
+                     //   }
                     }
                 }else{
                     Toast.makeText(this,"请填入正确格式的密码",Toast.LENGTH_LONG).show();
@@ -188,10 +243,12 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void run() {
                 try {
+                    Log.e("TAG","2");
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("106.13.106.1/i/email_verify_code").build();
+                    Request request = new Request.Builder().url("http://106.13.106.1/i/email_verify_code/").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
+                    Log.e("TAG",responseData);
                     //解析返回值
                     parseJSONWithJSONObject(responseData);
                 } catch (Exception e) {
@@ -213,25 +270,39 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
     }
     private void postRegJsonData(){
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         try {
             JSONObject body = new JSONObject();
-            String name  = log_account.getText().toString();;
+            Log.e("TAG",name);
             SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("theName",name);
             editor.apply();
+//            {
+//                "user_id": "用户id",
+//                    "email":"email",
+//                    "user_name": "用户名",
+//                    "password": "经过加密的密码（加密算法待定）",
+//                    "verify_id": "验证码id",
+//                    "verify_code": "验证码值"
+//            }
             body.put("user_id", name);
+            body.put("email",email);
             body.put("user_name", name);
             body.put("password", password);
-            body.put("verify_id", verify_id);
+            //
+            body.put("verify_id", "123456");
+            //
             body.put("verify_code", code);
+            Log.e("TAG", String.valueOf(body));
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            OkHttpClient okHttpClient = new OkHttpClient();
             RequestBody requestBody = RequestBody.create(JSON, String.valueOf(body));
             Request request = new Request.Builder()
-                    .url("http://106.13.106.1/account/i/register")
+                    .url("http://106.13.106.1/account/i/register/")
                     .post(requestBody)
                     .build();
-            OkHttpClient okHttpClient = new OkHttpClient();
+            Log.e("TAG","12");
+
             okHttpClient.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -241,13 +312,14 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     int state;
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
-                        state  = Integer.parseInt(jsonObject.getString("result"));
-                        judgeRegState(state);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    Log.e("TAG", String.valueOf(response));
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(response.toString());
+//                        state  = Integer.parseInt(jsonObject.getString("result"));
+//                        judgeRegState(state);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             } );
 
@@ -304,12 +376,12 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             JSONObject body = new JSONObject();
             body.put("account", account);
             body.put("password", password);
+            final OkHttpClient okHttpClient = new OkHttpClient();
             RequestBody requestBody = RequestBody.create(JSON, String.valueOf(body));
-            Request request = new Request.Builder()
-                    .url("http://106.13.106.1/account/i/register")
+            final Request request = new Request.Builder()
+                    .url("http://106.13.106.1/account/i/app_login/")
                     .post(requestBody)
                     .build();
-            OkHttpClient okHttpClient = new OkHttpClient();
             okHttpClient.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -319,13 +391,31 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     int state;
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
-                        state = Integer.parseInt(jsonObject.getString("result"));
-                        judgeLogState(state);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    Log.e("TAG", String.valueOf(response));
+                        Log.e("TAG","ouhuo");
+                        Log.e("TAG",request.body().toString());
+                        Log.e("TAG",response.header("Set-Cookie").toString());
+                        Response response1 = okHttpClient.newCall(request).execute();
+                        cookies  = response.header("Set-Cookie");
+                        Log.e("TAG",cookies);
+                        //Headers headers = response.headers();
+//                        List<String> cookies = headers.get();
+//                        Headers headers = response.headers();
+//                        List<String> cookies=headers.values("Set-Cookie");
+//                        Log.e("TAG", String.valueOf(cookies));
+//                    if(cookies.size()>0){
+//                        String session=cookies.get(0);
+//                        String result=session.substring(0,session.indexOf(";"));
+//                        CliniciansApplication.setOkhttpCookie(result);
+//                    }
+
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(String.valueOf(response));
+//                        state =  jsonObject.getInt("result");
+//                        judgeLogState(state);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             });
 

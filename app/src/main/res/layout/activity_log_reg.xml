@@ -42,8 +42,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:text="登陆后即可查看收藏等更多内容"
-        android:textColor="@android:color/black" />
+        android:text="sign in for more information"
+        android:textColor="@android:color/black"
+        android:textStyle="bold|italic"/>
 
     <LinearLayout
         android:id="@+id/reg"
@@ -114,10 +115,10 @@
 
             <ImageView
                 android:id="@+id/reg_send"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="17dp"
+                android:layout_height="22dp"
                 android:layout_gravity="center"
-                android:src="@mipmap/qingqiu" />
+                android:background="@mipmap/qingqiu"/>
         </LinearLayout>
 
         <LinearLayout
