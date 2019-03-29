@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.mtimeapp.MyCommentsActivity;
 import com.example.mtimeapp.Log_RegActivity;
+import com.example.mtimeapp.PCActivity;
 import com.example.mtimeapp.R;
 import com.example.mtimeapp.ShowActivity;
 
@@ -89,7 +90,7 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.pc_jump:
                 //没登陆的时候就跳转到登陆页面
-                intent.setClass(getContext(), Log_RegActivity.class);
+                intent.setClass(getContext(), PCActivity.class);
                 //登陆了就跳转到个人中心
                 //intent.setClass(getContext(),PCActivity.class);
                 startActivity(intent);

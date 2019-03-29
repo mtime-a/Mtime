@@ -90,4 +90,3 @@ public class Fragment_sale extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
     }
 }
-

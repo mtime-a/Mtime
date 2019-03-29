@@ -35,17 +35,17 @@ import okhttp3.Response;
 
 public class NewsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private RoundImageView mPicture;
     private TextView mTitle;
     private TextView mComment_num;
     private LinearLayout mComment;
     private TextView mDate;
     private LinearLayout icon_comment;
-    private LinearLayout comment;
     private AlertDialog.Builder builder_text;
     private AlertDialog.Builder builder_list;
     private View view;
+
     private List<Map<String, Object>> list;
+
     private String news_id;
     private String title;
     private String body;
@@ -62,7 +62,8 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
 
         initUI();
 
-        initClick();
+        mComment.setOnClickListener(this);
+        icon_comment.setOnClickListener(this);
 
         initThread();
     }
@@ -111,17 +112,12 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void initClick() {
-        icon_comment.setOnClickListener(this);
-        comment.setOnClickListener(this);
-    }
-
     private void initUI() {
-        mPicture = findViewById(R.id.pager_news_picture);
         mTitle = findViewById(R.id.pager_news_title);
         mDate = findViewById(R.id.pager_news_date);
         icon_comment = findViewById(R.id.pager_news_write_comment);
-        comment = findViewById(R.id.pager_news_comment);
+        mComment = findViewById(R.id.pager_news_comment);
+        mComment_num = findViewById(R.id.pager_news_comment_num);
     }
 
     @Override
@@ -131,10 +127,10 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
                 initBuilder_text();
                 break;
             case R.id.pager_news_comment:
-                //initBuilder_list();
+//                initBuilder_list();
                 Intent intent = new Intent();
                 intent.setClass(NewsActivity.this, CommentsActivity.class);
-                intent.putExtra("news_id", news_id);
+                //intent.putExtra("news_id", news_id);
                 startActivity(intent);
                 break;
         }

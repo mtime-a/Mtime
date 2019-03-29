@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         fragment_sale = new Fragment_sale();
         fragment_news = new Fragment_news();
 
-        list.add(fragment_film);
         list.add(fragment_news);
+        list.add(fragment_film);
         list.add(fragment_sale);
         list.add(fragment_pc);
 

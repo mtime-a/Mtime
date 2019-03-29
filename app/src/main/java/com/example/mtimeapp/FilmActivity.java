@@ -37,17 +37,20 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     private CircleImageView mIcon;
     private TextView mName;
     private LinearLayout icon_comment;
-    private LinearLayout comment;
+    private LinearLayout mComment;
+    private TextView mComment_num;
     private AlertDialog.Builder builder_text;
     private AlertDialog.Builder builder_list;
     private View view;
     private List<Map<String, Object>> list;
+
     private String film_id;
     private String title;
     private String subtitle;
     private String body;
     private String author_name;
     private String author_head;
+    private String comment_num;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,13 +58,15 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.pager_film);
 
 //        Intent intent=new Intent();
-//        film_id=intent.getStringExtra("film_id");
+////        film_id=intent.getStringExtra("film_id");
+//        comment_num=intent.getStringExtra("comment_num")
 
         initUI();
 
-        initThread();
+        icon_comment.setOnClickListener(this);
+        mComment.setOnClickListener(this);
 
-        initClick();
+        initThread();
     }
 
     private void initThread() {
@@ -103,16 +108,13 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 mTitle.setText(title);
                 mName.setText(author_name);
+                mComment_num.setText(comment_num);
                 Glide.with(FilmActivity.this).load(author_head).into(mIcon);
                 //body还没用 subtitle也没用
             }
         });
     }
 
-    private void initClick() {
-        icon_comment.setOnClickListener(this);
-        comment.setOnClickListener(this);
-    }
 
     private void initUI() {
         mPicture = findViewById(R.id.pager_film_picture);
@@ -120,7 +122,8 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
         mIcon = findViewById(R.id.pager_film_icon);
         mName = findViewById(R.id.pager_film_name);
         icon_comment = findViewById(R.id.pager_film_write_comment);
-        comment = findViewById(R.id.pager_film_comment);
+        mComment = findViewById(R.id.pager_film_comment);
+        mComment_num = findViewById(R.id.pager_film_comment_num);
     }
 
     @Override
@@ -133,7 +136,8 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
                 //initBuilder_list();
                 Intent intent = new Intent();
                 intent.setClass(FilmActivity.this, CommentsActivity.class);
-                intent.putExtra("film_id", film_id);
+                //intent.putExtra("film_id", film_id);
+                startActivity(intent);
                 break;
         }
     }

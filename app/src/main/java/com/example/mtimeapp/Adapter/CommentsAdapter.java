@@ -36,9 +36,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull CommentsAdapter.ViewHolder viewHolder, int i) {
         Map map = list.get(i);
-//
+
 //        Glide.with(context).load(map.get("author_head")).into(viewHolder.icon);
-//        viewHolder.name.setText(map.get("author_name").toString());
+        viewHolder.name.setText(map.get("author_name").toString());
 //        viewHolder.content.setText(map.get("content").toString());
 //        viewHolder.time.setText(map.get("time").toString());
     }

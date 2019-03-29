@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -61,6 +62,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         reg_switch.setOnClickListener(this);
         reg_find_password.setOnClickListener(this);
         reg_btn.setOnClickListener(this);
+        reg_send.setOnClickListener(this);
     }
 
 
@@ -121,6 +123,9 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 email = reg_mail.getText().toString();
 
                 //执行注册的种种操作
+                break;
+            case R.id.reg_send:
+                //在这里
                 break;
             case R.id.reg_find_password:
                 intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);

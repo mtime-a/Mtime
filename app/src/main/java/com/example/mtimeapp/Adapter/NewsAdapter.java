@@ -43,8 +43,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         Map map = list.get(i);
 
         viewHolder.title.setText(map.get("title").toString());
-//        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);
-//        viewHolder.date.setText(map.get("pub_time").toString());
+        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);
+        viewHolder.date.setText(map.get("pub_time").toString());
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

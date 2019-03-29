@@ -53,7 +53,7 @@ public class Fragment_sale_show extends Fragment {
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
-        final BookAdapter adapter = new BookAdapter(getContext(), list);///需要传入什么东西
+        final ShowAdapter adapter = new ShowAdapter(getContext(), list);///需要传入什么东西
         recyclerView.setAdapter(adapter);
 
     }
@@ -64,7 +64,7 @@ public class Fragment_sale_show extends Fragment {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("106.13.106.1/film/i/ticketing_film").build();
+                    Request request = new Request.Builder().url("http://106.13.106.1/film/i/coming_film").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
@@ -116,7 +116,6 @@ public class Fragment_sale_show extends Fragment {
                 recyclerView.setLayoutManager(manager);
                 ShowAdapter adapter = new ShowAdapter(getContext(), list);
                 recyclerView.setAdapter(adapter);
-
             }
         });
     }
