@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.mtimeapp.CustomView.CircleImageView;
 import com.example.mtimeapp.CustomView.RoundImageView;
+import com.example.mtimeapp.Util.RichText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,8 +35,11 @@ import okhttp3.Response;
 public class FilmActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RoundImageView mPicture;
+    //private TextView mSubtitle;
+    private TextView mDate;
+    private TextView mWeb;
     private TextView mTitle;
-    private CircleImageView mIcon;
+    private RoundImageView mIcon;
     private TextView mName;
     private LinearLayout icon_comment;
     private LinearLayout mComment;
@@ -46,20 +51,23 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
 
     private String film_id;
     private String title;
-    private String subtitle;
+    //private String subtitle;
     private String body;
+    private String image;
     private String author_name;
     private String author_head;
     private String comment_num;
+    private String date;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pager_film);
 
-//        Intent intent=new Intent();
-////        film_id=intent.getStringExtra("film_id");
-//        comment_num=intent.getStringExtra("comment_num")
+        Intent intent = getIntent();
+        film_id = intent.getStringExtra("comment_id");
+
+        //comment_num = intent.getStringExtra("comment_num");
 
         initUI();
 
@@ -75,7 +83,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 try {                                                                                          //okHttp请求数据
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("106.13.106.1/film/i/film_review/" + film_id).build();
+                    Request request = new Request.Builder().url("http://39.96.208.176/film/i/film_review/?review_id=" + film_id).build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);                                                 //解析json的方法
@@ -90,12 +98,18 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
         try {
             JSONObject jsonObject = new JSONObject(JsonData);
 
-            title = jsonObject.getString("title");
-            subtitle = jsonObject.getString("subtitle");
-            body = jsonObject.getString("body");
-            author_name = jsonObject.getString("author_name");
-            author_head = jsonObject.getString("author_head");
+            String status = jsonObject.getString("status");
 
+            if (status.equals("ok")) {
+                title = jsonObject.getString("title");
+                //subtitle = jsonObject.getString("subtitle");
+                body = jsonObject.getString("body");
+                author_name = jsonObject.getString("author_name");
+                author_head = jsonObject.getString("author_head");
+                image = jsonObject.getString("image");
+                date = jsonObject.getString("create_time");
+                comment_num = jsonObject.getString("comment_num");
+            }
             showResponse();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -109,7 +123,11 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
                 mTitle.setText(title);
                 mName.setText(author_name);
                 mComment_num.setText(comment_num);
-                Glide.with(FilmActivity.this).load(author_head).into(mIcon);
+                mDate.setText(date);
+                //mSubtitle.setText(subtitle);
+                Glide.with(FilmActivity.this).load("http://39.96.208.176" + image).into(mPicture);
+                new RichText(FilmActivity.this, mWeb, body);
+                Glide.with(FilmActivity.this).load("http://39.96.208.176" + author_head).into(mIcon);
                 //body还没用 subtitle也没用
             }
         });
@@ -117,6 +135,8 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void initUI() {
+        mDate = findViewById(R.id.pager_film_date);
+        mWeb = findViewById(R.id.pager_film_web);
         mPicture = findViewById(R.id.pager_film_picture);
         mTitle = findViewById(R.id.pager_film_title);
         mIcon = findViewById(R.id.pager_film_icon);
@@ -124,6 +144,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
         icon_comment = findViewById(R.id.pager_film_write_comment);
         mComment = findViewById(R.id.pager_film_comment);
         mComment_num = findViewById(R.id.pager_film_comment_num);
+        //mSubtitle = findViewById(R.id.pager_film_subtitle);
     }
 
     @Override

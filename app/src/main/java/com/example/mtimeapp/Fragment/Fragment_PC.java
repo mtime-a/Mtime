@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,7 +53,6 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         initUI(view);
-
         //如果没登陆就隐藏用户名控件 并且将jump中文字更改
         tv_username.setVisibility(View.GONE);//GONE隐藏且不保留所占空间
 

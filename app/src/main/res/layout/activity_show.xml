@@ -60,6 +60,41 @@
                     android:layout_marginTop="15dp"
                     android:gravity="center"
                     android:text="7.5分" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp">
+
+                    <ImageView
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/pinglun" />
+
+                    <TextView
+                        android:id="@+id/pager_show_commented_members"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="7dp"
+                        android:text="50" />
+
+                    <ImageView
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/dafen" />
+
+                    <TextView
+                        android:id="@+id/pager_show_marked_members"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="7dp"
+                        android:text="50" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

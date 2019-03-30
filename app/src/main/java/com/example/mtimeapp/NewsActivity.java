@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,9 +17,15 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.mtimeapp.Adapter.FilmAdapter;
 import com.example.mtimeapp.CustomView.CircleImageView;
 import com.example.mtimeapp.CustomView.RoundImageView;
+import com.example.mtimeapp.Util.MyTagHandler;
+import com.example.mtimeapp.Util.RichText;
+import com.example.mtimeapp.Util.URLImageParser;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +46,8 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mComment_num;
     private LinearLayout mComment;
     private TextView mDate;
+    private TextView mWeb;
+    private RoundImageView mPicture;
     private LinearLayout icon_comment;
     private AlertDialog.Builder builder_text;
     private AlertDialog.Builder builder_list;
@@ -51,14 +60,15 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     private String body;
     private String pub_time;
     private String comment_num;
+    private String picture;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pager_news);
 
-//        Intent intent = getIntent();
-//        news_id = intent.getStringExtra("id");//这个是每条热门消息的ID
+        Intent intent = getIntent();
+        news_id = intent.getStringExtra("news_id");//这个是每条热门消息的ID
 
         initUI();
 
@@ -74,7 +84,7 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 try {                                                                                          //okHttp请求数据
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("106.13.106.1/news/i/news/" + news_id).build();
+                    Request request = new Request.Builder().url("http://39.96.208.176/news/i/news/?news_id=" + news_id).build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);                                                 //解析json的方法
@@ -85,15 +95,18 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
-    private void parseJSONWithJSONObject(String JsonData) {               //解析JSON数据
+    private void parseJSONWithJSONObject(String JsonData) {
         try {
             JSONObject jsonObject = new JSONObject(JsonData);
             String status = jsonObject.getString("status");
             //注意状态
-            title = jsonObject.getString("title");
-            body = jsonObject.getString("body");
-            pub_time = jsonObject.getString("pub_time");
-            comment_num = jsonObject.getString("comment_num");
+            if (status.equals("ok")) {
+                title = jsonObject.getString("title");
+                body = jsonObject.getString("body");
+                pub_time = jsonObject.getString("pub_time");
+                comment_num = jsonObject.getString("comment_num");
+                picture = jsonObject.getString("picture");
+            }
             showResponse();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -107,7 +120,9 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
                 mTitle.setText(title);
                 mDate.setText(pub_time);
                 mComment_num.setText(comment_num);
+                Glide.with(NewsActivity.this).load("http://39.96.208.176" + picture).into(mPicture);
                 //body还没用
+                new RichText(NewsActivity.this, mWeb, body);
             }
         });
     }
@@ -118,6 +133,8 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         icon_comment = findViewById(R.id.pager_news_write_comment);
         mComment = findViewById(R.id.pager_news_comment);
         mComment_num = findViewById(R.id.pager_news_comment_num);
+        mPicture = findViewById(R.id.pager_news_picture);
+        mWeb = findViewById(R.id.pager_news_web);
     }
 
     @Override
@@ -130,7 +147,7 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
 //                initBuilder_list();
                 Intent intent = new Intent();
                 intent.setClass(NewsActivity.this, CommentsActivity.class);
-                //intent.putExtra("news_id", news_id);
+                intent.putExtra("news_id", news_id);
                 startActivity(intent);
                 break;
         }

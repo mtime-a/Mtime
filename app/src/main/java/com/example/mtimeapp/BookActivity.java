@@ -1,9 +1,11 @@
 package com.example.mtimeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.mtimeapp.CustomView.RoundImageView;
@@ -31,14 +33,18 @@ public class BookActivity extends AppCompatActivity {
     private String time;
     private String film_id;
     private String mark;
+    private String marked_members;
+    private String comment_members;
+    private TextView mComments_num;
+    private TextView mMark_num;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
 
-//        Intent intent=new Intent();
-//        film_id=intent.getStringExtra("film_id");
+        Intent intent = getIntent();
+        film_id = intent.getStringExtra("film_id");
 
         initUI();
 
@@ -51,7 +57,7 @@ public class BookActivity extends AppCompatActivity {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://106.13.106.1/film/i/film/" + film_id).build();
+                    Request request = new Request.Builder().url("http://39.96.208.176/film/i/film/?film_id=" + film_id).build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
@@ -67,15 +73,19 @@ public class BookActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(JsonData);
             String status = jsonObject.getString("status");
             //注意状态
-            title = jsonObject.getString("title");
-            image = jsonObject.getString("image");
-            info = jsonObject.getString("info");
-            relase_date = jsonObject.getString("relase_date");
-            time = jsonObject.getString("time");
-            film_id = jsonObject.getString("film_id");
-            mark = jsonObject.getString("mark");
+            if (status.equals("ok")) {
+                title = jsonObject.getString("title");
+                image = jsonObject.getString("image");
+                //info = jsonObject.getString("info");
+                relase_date = jsonObject.getString("relase_date");
+                time = jsonObject.getString("time");
+                film_id = jsonObject.getString("film_id");
+                mark = jsonObject.getString("mark");
+                marked_members = jsonObject.getString("marked_members");
+                comment_members = jsonObject.getString("comment_members");
 
-            showResponse();
+                showResponse();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -89,7 +99,9 @@ public class BookActivity extends AppCompatActivity {
                 mDate.setText(relase_date);
                 mMark.setText(mark);
                 mTime.setText(time);
-                Glide.with(BookActivity.this).load(image).into(mPicture);
+                mComments_num.setText(comment_members);
+                mMark_num.setText(marked_members);
+                Glide.with(BookActivity.this).load("http://39.96.208.176" + image).into(mPicture);
                 //mInfo
                 //body还没用
             }
@@ -103,5 +115,7 @@ public class BookActivity extends AppCompatActivity {
         mInfo = findViewById(R.id.pager_book_info);
         mMark = findViewById(R.id.pager_book_mark);
         mTime = findViewById(R.id.pager_book_time);
+        mMark_num = findViewById(R.id.pager_book_marked_members);
+        mComments_num = findViewById(R.id.pager_book_commented_members);
     }
 }

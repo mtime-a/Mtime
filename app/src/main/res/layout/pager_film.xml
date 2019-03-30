@@ -22,39 +22,61 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/dianyingtup" />
 
-            <TextView
-                android:id="@+id/pager_film_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:text="把哥哥推动或可以吗"
-                android:textColor="@android:color/black"
-                android:textSize="23dp" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp">
-
-                <com.example.mtimeapp.CustomView.CircleImageView
-                    android:id="@+id/pager_film_icon"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:src="@drawable/dianyingtup" />
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/pager_film_name"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/pager_film_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:text="行者" />
+                    android:text="把哥哥推动或可以吗"
+                    android:textColor="@android:color/black"
+                    android:textSize="20dp" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+
+                        <com.example.mtimeapp.CustomView.RoundImageView
+                            android:id="@+id/pager_film_icon"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/dianyingtup" />
+
+                        <TextView
+                            android:id="@+id/pager_film_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:text="行者" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/pager_film_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|bottom"
+                        android:text="2019-10-22" />
+                </FrameLayout>
             </LinearLayout>
 
-            <WebView
+            <TextView
                 android:id="@+id/pager_film_web"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></WebView>
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp" />
         </LinearLayout>
     </ScrollView>
 

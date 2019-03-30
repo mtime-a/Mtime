@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,18 +47,18 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         Map map = list.get(i);
 
         viewHolder.title.setText(map.get("title").toString());
-//        Glide.with(context).load(map.get("image")).into(viewHolder.picture);
-//        Glide.with(context).load(map.get("author_head")).into(viewHolder.author_head);
-//        viewHolder.subtitle.setText(map.get("subtitle").toString());
-//        viewHolder.author_name.setText(map.get("author_name").toString());
-//        viewHolder.comment_num.setText(map.get("comment_num").toString());
+        Glide.with(context).load(map.get("image")).into(viewHolder.picture);
+        Glide.with(context).load(map.get("author_head").toString()).into(viewHolder.author_head);
+        viewHolder.subtitle.setText(map.get("subtitle").toString());
+        viewHolder.author_name.setText(map.get("author_name").toString());
+        viewHolder.comment_num.setText(map.get("comment_num").toString());
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context, FilmActivity.class);
-                //intent.putExtra("film_id", list.get(i).get("comment_id").toString());
+                intent.putExtra("comment_id", list.get(i).get("comment_id").toString());
                 context.startActivity(intent);
             }
         });
@@ -74,7 +75,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         TextView title;
         TextView subtitle;
         TextView author_name;
-        CircleImageView author_head;
+        RoundImageView author_head;
         CardView cardView;
         TextView comment_num;
 

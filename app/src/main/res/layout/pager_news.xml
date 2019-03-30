@@ -45,10 +45,11 @@
                     android:textSize="15dp" />
             </FrameLayout>
 
-            <WebView
+            <TextView
                 android:id="@+id/pager_news_web"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></WebView>
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp" />
         </LinearLayout>
     </ScrollView>
 
