@@ -63,12 +63,12 @@ public class Fragment_film extends Fragment {
         new Thread(new Runnable() {                                                                 //新线程联网
             @Override
             public void run() {
-                try {                                                                                          //okHttp请求数据
+                try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("106.13.106.1/film/i/hot_reviews_list").build();
+                    Request request = new Request.Builder().url("http://106.13.106.1/film/i/hot_reviews_list").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
-                    parseJSONWithJSONObject(responseData);                                                 //解析json的方法
+                    parseJSONWithJSONObject(responseData);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -77,8 +77,7 @@ public class Fragment_film extends Fragment {
         }).start();
     }
 
-    private void parseJSONWithJSONObject(String JsonData) {               //解析JSON数据
-
+    private void parseJSONWithJSONObject(String JsonData) {
         try {
             list = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(JsonData);
@@ -87,6 +86,7 @@ public class Fragment_film extends Fragment {
             JSONArray jsonArray = jsonObject.getJSONArray("list");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                //没给电影ID
                 String comment_id = jsonObject1.getString("comment_id");
                 String title = jsonObject1.getString("title");
                 String subtitle = jsonObject1.getString("subtitle");

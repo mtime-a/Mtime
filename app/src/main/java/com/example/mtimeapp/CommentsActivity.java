@@ -43,6 +43,12 @@ public class CommentsActivity extends AppCompatActivity {
 
 
         //initThread();
+        list=new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            Map map = new HashMap();
+            map.put("author_name", "mlj" + i);
+            list.add(map);
+        }
 
         LinearLayoutManager manager = new LinearLayoutManager(CommentsActivity.this);
         recyclerView.setLayoutManager(manager);

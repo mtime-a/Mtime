@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.mtimeapp.BookActivity;
 import com.example.mtimeapp.CustomView.RoundImageView;
 import com.example.mtimeapp.FilmActivity;
 import com.example.mtimeapp.R;
@@ -51,7 +52,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(context, FilmActivity.class);
+                intent.setClass(context, BookActivity.class);
                 context.startActivity(intent);
             }
         });

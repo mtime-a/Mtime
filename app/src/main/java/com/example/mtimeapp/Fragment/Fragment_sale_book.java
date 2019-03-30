@@ -26,6 +26,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+//Book是正在售票
 public class Fragment_sale_book extends Fragment {
 
     private RecyclerView recyclerView;
@@ -44,7 +45,7 @@ public class Fragment_sale_book extends Fragment {
         recyclerView = view.findViewById(R.id.book_recyclerview);
 
         //initThread();
-        list=new ArrayList<>();
+        list = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             Map map = new HashMap();
             map.put("title", "mlj" + i);
@@ -65,7 +66,7 @@ public class Fragment_sale_book extends Fragment {
                 try {
                     list = new ArrayList<>();
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("106.13.106.1/film/i/coming_film").build();
+                    Request request = new Request.Builder().url("http://106.13.106.1/film/i/ticketing_film").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);                                                 //解析json的方法
@@ -85,19 +86,19 @@ public class Fragment_sale_book extends Fragment {
             if (status.equals("ok")) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    String bookTitle = jsonObject1.getString("title");
-                    String bookImage = jsonObject1.getString("image");
-                    String bookInfo = jsonObject1.getString("info");
-                    String bookRelease_date = jsonObject1.getString("release_date");
-                    String bookId = jsonObject1.getString("film_id");
-                    String bookMark = jsonObject1.getString("mark");
+                    String title = jsonObject1.getString("title");
+                    String image = jsonObject1.getString("image");
+                    String info = jsonObject1.getString("info");
+                    String release_date = jsonObject1.getString("release_date");
+                    String film_id = jsonObject1.getString("film_id");
+                    String mark = jsonObject1.getString("mark");
                     Map map = new HashMap();
-                    map.put("title", bookTitle);
-                    map.put("image", bookImage);
-                    map.put("info", bookInfo);
-                    map.put("film_id", bookId);
-                    map.put("mark", bookMark);
-                    map.put("release_date", bookRelease_date);
+                    map.put("title", title);
+                    map.put("image", image);
+                    map.put("info", info);
+                    map.put("film_id", film_id);
+                    map.put("mark", mark);
+                    map.put("release_date", release_date);
                     list.add(map);
                 }
             }

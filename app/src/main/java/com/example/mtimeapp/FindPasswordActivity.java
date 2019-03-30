@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 public class FindPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -15,10 +16,11 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
     private EditText mEmil;
     private EditText mCode;
     private EditText mPassword;
-    private Button btn_commit;
+    private Button btn_push;
     private Button btn_finsh;
     private ImageView close;
-
+    private LinearLayout hide_finsh;
+    private LinearLayout hide_push;
     private String email;
     private String account;
     private String password;
@@ -34,13 +36,13 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
         initClick();
 
         btn_finsh.setVisibility(View.GONE);
-        mPassword.setVisibility(View.GONE);
+        hide_finsh.setVisibility(View.GONE);
 
     }
 
     private void initClick() {
         mSend.setOnClickListener(this);
-        btn_commit.setOnClickListener(this);
+        btn_push.setOnClickListener(this);
         btn_finsh.setOnClickListener(this);
         close.setOnClickListener(this);
     }
@@ -56,14 +58,12 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
                 //进行发送验证码请求
                 email = mEmil.getText().toString();
                 break;
-            case R.id.find_password_btn_commit:
+            case R.id.find_password_btn_push:
                 btn_finsh.setVisibility(View.VISIBLE);
-                mPassword.setVisibility(View.VISIBLE);
+                hide_finsh.setVisibility(View.VISIBLE);
 
-                btn_commit.setVisibility(View.GONE);
-                mCode.setVisibility(View.GONE);
-                mAccount.setVisibility(View.GONE);
-                mEmil.setVisibility(View.GONE);
+                hide_push.setVisibility(View.GONE);
+                btn_push.setVisibility(View.GONE);
                 //上面是隐藏与显示某些控件
 
                 //下面判断是不是能修改
@@ -83,8 +83,10 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
         mEmil = findViewById(R.id.find_password_mail);
         mCode = findViewById(R.id.find_password_code);
         mPassword = findViewById(R.id.find_password_password);
-        btn_commit = findViewById(R.id.find_password_btn_commit);
+        btn_push = findViewById(R.id.find_password_btn_push);
         btn_finsh = findViewById(R.id.find_password_btn_finsh);
         close = findViewById(R.id.find_password_close);
+        hide_finsh = findViewById(R.id.find_password_hide_finsh);
+        hide_push = findViewById(R.id.find_password_hide_push);
     }
 }
