@@ -30,16 +30,7 @@ import okhttp3.Response;
 public class Fragment_news extends Fragment {
 
     private RecyclerView recyclerView;
-    private List<Map<String, Object>> list = new ArrayList<>();
-
-
-//    public static Fragment_news newInstance(String name) {
-//        Bundle args = new Bundle();
-//        args.putString("name", name);
-//        Fragment_news fragment = new Fragment_news();
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
+    private List<Map<String, Object>> list;
 
     @Nullable
     @Override
@@ -55,17 +46,6 @@ public class Fragment_news extends Fragment {
         recyclerView = view.findViewById(R.id.fragment_news_recyclerview);
 
         initThread();
-//        list = new ArrayList<>();
-//        for (int i = 0; i < 100; i++) {
-//            Map map = new HashMap();
-//            map.put("title", "mlj" + i);
-//            list.add(map);
-//        }
-//
-//        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-//        recyclerView.setLayoutManager(manager);
-//        final NewsAdapter adapter = new NewsAdapter(getContext(), list);///需要传入什么东西
-//        recyclerView.setAdapter(adapter);
     }
 
     private void initThread() {
@@ -74,7 +54,7 @@ public class Fragment_news extends Fragment {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://106.13.106.1/news/i/hotpot_list").build();
+                    Request request = new Request.Builder().url("http://39.96.208.176/news/i/hotpot_list/").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
@@ -87,24 +67,25 @@ public class Fragment_news extends Fragment {
 
     private void parseJSONWithJSONObject(String JsonData) {
         try {
+            list = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(JsonData);
             String status = jsonObject.getString("status");
             if (status.equals("ok")) {
                 JSONArray jsonArray = jsonObject.getJSONArray("list");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    //Integer new_id = Integer.parseInt(jsonObject1.getString("new_id"));
+                    Integer news_id = Integer.parseInt(jsonObject1.getString("news_id"));
                     String title = jsonObject1.getString("title");
                     String content = jsonObject1.getString("content");
                     String pub_time = jsonObject1.getString("pub_time");
                     String picture = jsonObject1.getString("picture");
 
                     Map map = new HashMap();
-                    //map.put("news_id", new_id);
+                    map.put("news_id", news_id);
                     map.put("content", content);
                     map.put("title", title);
                     map.put("pub_time", pub_time);
-                    map.put("picture", "http://106.13.106.1" + picture);
+                    map.put("picture", "http://39.96.208.176" + picture);
 
                     list.add(map);
                 }
@@ -113,7 +94,6 @@ public class Fragment_news extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     private void showResponse() {

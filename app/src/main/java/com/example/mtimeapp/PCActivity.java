@@ -37,6 +37,8 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
     private AlertDialog.Builder builder_username;
     private View view;
 
+    private AlertDialog.Builder buider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +117,15 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                 break;
             case R.id.pc_homepage_icon:
                 //这里写拍照和从相册选择
+                buider = new AlertDialog.Builder(PCActivity.this);
+                final String arrItem[] = getResources().getStringArray(R.array.oem);
+                buider.setItems(arrItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(PCActivity.this, "你选择了第" + arrItem[which], Toast.LENGTH_LONG).show();
+                    }
+                });
+                buider.create().show();
                 break;
             case R.id.pc_homepage_username:
                 initBuilder_username();
@@ -137,4 +148,6 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         });
         builder_username.setView(view).create().show();
     }
+
+
 }

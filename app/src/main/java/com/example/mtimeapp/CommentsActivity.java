@@ -34,26 +34,24 @@ public class CommentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
 
-
-//        Intent intent = new Intent();
-//        news_id = intent.getStringExtra("news_id");
-
+        Intent intent = getIntent();
+        news_id = intent.getStringExtra("news_id");
 
         recyclerView = findViewById(R.id.comments_recyclerview);
 
-
         //initThread();
-        list=new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            Map map = new HashMap();
-            map.put("author_name", "mlj" + i);
-            list.add(map);
-        }
 
-        LinearLayoutManager manager = new LinearLayoutManager(CommentsActivity.this);
-        recyclerView.setLayoutManager(manager);
-        CommentsAdapter adapter = new CommentsAdapter(CommentsActivity.this, list);
-        recyclerView.setAdapter(adapter);
+//        list=new ArrayList<>();
+//        for (int i = 0; i < 20; i++) {
+//            Map map = new HashMap();
+//            map.put("author_name", "mlj" + i);
+//            list.add(map);
+//        }
+//
+//        LinearLayoutManager manager = new LinearLayoutManager(CommentsActivity.this);
+//        recyclerView.setLayoutManager(manager);
+//        CommentsAdapter adapter = new CommentsAdapter(CommentsActivity.this, list);
+//        recyclerView.setAdapter(adapter);
     }
 
     private void initThread() {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.mtimeapp.CustomView.RoundImageView;
 import com.example.mtimeapp.FilmActivity;
 import com.example.mtimeapp.Log_RegActivity;
 import com.example.mtimeapp.R;
@@ -40,21 +42,20 @@ public class ShowAdapter extends RecyclerView.Adapter<ShowAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ShowAdapter.ViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull ShowAdapter.ViewHolder holder, final int i) {
         Map map = list.get(i);
 
         holder.title.setText(map.get("title").toString());
-//        holder.date.setText(map.get("date").toString());
-//        holder.info.setText(map.get("info").toString());
-//        Glide.with(context).load(map.get("image").toString()).into(holder.picture);
-//        holder.mark.setText(map.get("mark").toString());
-//        holder.date.setText(map.get("release_date").toString());
+        Glide.with(context).load(map.get("image").toString()).into(holder.picture);
+        holder.mark.setText(map.get("mark").toString());
+        holder.date.setText(map.get("release_date").toString());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context, ShowActivity.class);
+                intent.putExtra("film_id", list.get(i).get("film_id").toString());
                 context.startActivity(intent);
             }
         });
@@ -67,9 +68,8 @@ public class ShowAdapter extends RecyclerView.Adapter<ShowAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView picture;
+        RoundImageView picture;
         TextView title;
-        TextView info;
         TextView date;
         TextView mark;
         CardView cardView;
@@ -80,7 +80,6 @@ public class ShowAdapter extends RecyclerView.Adapter<ShowAdapter.ViewHolder> {
             cardView = itemView.findViewById(R.id.item_sale_show_card);
             title = itemView.findViewById(R.id.item_sale_show_title);
             picture = itemView.findViewById(R.id.item_sale_show_picture);
-            info = itemView.findViewById(R.id.item_sale_show_info);
             date = itemView.findViewById(R.id.item_sale_show_date);
             mark = itemView.findViewById(R.id.item_sale_show_mark);
         }

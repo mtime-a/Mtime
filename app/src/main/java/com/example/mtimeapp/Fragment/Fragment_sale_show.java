@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +28,18 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+//这个是即将上映
 public class Fragment_sale_show extends Fragment {
     private RecyclerView recyclerView;
     private List<Map<String, Object>> list;
+    private String title;
+    private String image;
+    private String info;
+    private String film_id;
+    private String mark;
+    private String marked_members;
+    private String commented_members;
+    private String release_date;
 
     @Nullable
     @Override
@@ -43,19 +53,7 @@ public class Fragment_sale_show extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.show_recyclerview);
 
-        //initThread();
-        list = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            Map map = new HashMap();
-            map.put("title", "mlj" + i);
-            list.add(map);
-        }
-
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(manager);
-        final ShowAdapter adapter = new ShowAdapter(getContext(), list);///需要传入什么东西
-        recyclerView.setAdapter(adapter);
-
+        initThread();
     }
 
     private void initThread() {
@@ -64,7 +62,7 @@ public class Fragment_sale_show extends Fragment {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://106.13.106.1/film/i/coming_film").build();
+                    Request request = new Request.Builder().url("http://39.96.208.176/film/i/coming_film").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
@@ -82,30 +80,38 @@ public class Fragment_sale_show extends Fragment {
             list = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(JsonData);
             String status = jsonObject.getString("status");
-            JSONArray jsonArray = jsonObject.getJSONArray("list");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                String showTitle = jsonObject1.getString("title");
-                String showImage = jsonObject1.getString("image");
-                String showInfo = jsonObject1.getString("info");
-                String showFilmId = jsonObject1.getString("film_id");
-                String showMark = jsonObject1.getString("mark");
-                String release_date = jsonObject1.getString("release_date");
+            if (status.equals("ok")) {
+                JSONArray jsonArray = jsonObject.getJSONArray("list");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    title = jsonObject1.getString("title");
+                    image = jsonObject1.getString("image");
+                    info = jsonObject1.getString("info");
+                    film_id = jsonObject1.getString("film_id");
+                    mark = jsonObject1.getString("mark");
+                    marked_members = jsonObject1.getString("marked_members");
+                    commented_members = jsonObject1.getString("commented_members");
+                    release_date = jsonObject1.getString("release_date");
 
-                Map map = new HashMap();
-                map.put("title", showTitle);
-                map.put("image", showImage);
-                map.put("info", showInfo);
-                map.put("film_id", showFilmId);
-                map.put("mark", showMark);
-                map.put("release_date", release_date);
-                list.add(map);
+                    Map map = new HashMap();
+                    map.put("title", title);
+                    map.put("image", "http://39.96.208.176" + image);
+                    map.put("info", info);
+                    map.put("film_id", film_id);
+                    map.put("mark", mark);
+                    map.put("marked_members", marked_members);
+                    map.put("commented_members", commented_members);
+                    map.put("release_date", release_date);
+
+                    Log.d("mlj", "show");
+
+                    list.add(map);
+                }
+                showResponse();
             }
-            showResponse();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     private void showResponse() {
@@ -119,5 +125,4 @@ public class Fragment_sale_show extends Fragment {
             }
         });
     }
-
 }

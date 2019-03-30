@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.mtimeapp.CustomView.RoundImageView;
+import com.example.mtimeapp.Util.RichText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +33,8 @@ public class ShowActivity extends AppCompatActivity {
     private TextView mDate;
     private TextView mInfo;
     private TextView mMark;
+    private TextView mMark_num;
+    private TextView mComments_num;
 
     private String title;
     private String image;
@@ -40,14 +43,19 @@ public class ShowActivity extends AppCompatActivity {
     private String time;
     private String film_id;
     private String mark;
+    private String marked_members;
+    private String comment_members;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
 
-//        Intent intent=new Intent();
-//        film_id=intent.getStringExtra("film_id");
+
+        Intent intent = getIntent();
+        film_id = intent.getStringExtra("film_id");
+
+        Log.d("mlj","成功跳转3"+film_id);
 
         initUI();
 
@@ -60,7 +68,7 @@ public class ShowActivity extends AppCompatActivity {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://106.13.106.1/film/i/film/" + film_id).build();
+                    Request request = new Request.Builder().url("http://39.96.208.176/film/i/film/?film_id=" + film_id).build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
@@ -76,15 +84,19 @@ public class ShowActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(JsonData);
             String status = jsonObject.getString("status");
             //注意状态
-            title = jsonObject.getString("title");
-            image = jsonObject.getString("image");
-            info = jsonObject.getString("info");
-            relase_date = jsonObject.getString("relase_date");
-            time = jsonObject.getString("time");
-            film_id = jsonObject.getString("film_id");
-            mark = jsonObject.getString("mark");
+            if (status.equals("ok")) {
+                title = jsonObject.getString("title");
+                image = jsonObject.getString("image");
+                //info = jsonObject.getString("info");
+                relase_date = jsonObject.getString("relase_date");
+                time = jsonObject.getString("time");
+                film_id = jsonObject.getString("film_id");
+                mark = jsonObject.getString("mark");
+                marked_members = jsonObject.getString("marked_members");
+                comment_members = jsonObject.getString("comment_members");
 
-            showResponse();
+                showResponse();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -98,8 +110,10 @@ public class ShowActivity extends AppCompatActivity {
                 mDate.setText(relase_date);
                 mMark.setText(mark);
                 mTime.setText(time);
-                Glide.with(ShowActivity.this).load(image).into(mPicture);
-                //mInfo
+                mComments_num.setText(comment_members);
+                mMark_num.setText(marked_members);
+                Glide.with(ShowActivity.this).load("http://39.96.208.176" + image).into(mPicture);
+                //new RichText(ShowActivity.this, mInfo, info);
                 //body还没用
             }
         });
@@ -112,5 +126,7 @@ public class ShowActivity extends AppCompatActivity {
         mInfo = findViewById(R.id.pager_show_info);
         mMark = findViewById(R.id.pager_show_mark);
         mTime = findViewById(R.id.pager_show_time);
+        mMark_num = findViewById(R.id.pager_show_marked_members);
+        mComments_num = findViewById(R.id.pager_show_commented_members);
     }
 }

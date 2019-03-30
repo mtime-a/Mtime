@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,19 +45,7 @@ public class Fragment_film extends Fragment {
 
         recyclerView = view.findViewById(R.id.fragment_film_recyclerview);
 
-        //initThread();
-
-        list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Map map = new HashMap();
-            map.put("title", "mlj" + i);
-            list.add(map);
-        }
-
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(manager);
-        final FilmAdapter adapter = new FilmAdapter(getContext(), list);///需要传入什么东西
-        recyclerView.setAdapter(adapter);
+        initThread();
     }
 
     private void initThread() {
@@ -65,7 +54,7 @@ public class Fragment_film extends Fragment {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://106.13.106.1/film/i/hot_reviews_list").build();
+                    Request request = new Request.Builder().url("http://39.96.208.176/film/i/hot_review_list").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
@@ -81,17 +70,16 @@ public class Fragment_film extends Fragment {
         try {
             list = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(JsonData);
-            String status = jsonObject.getString("status");
+            //String status = jsonObject.getString("status");
             //注意状态
             JSONArray jsonArray = jsonObject.getJSONArray("list");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                //没给电影ID
                 String comment_id = jsonObject1.getString("comment_id");
                 String title = jsonObject1.getString("title");
                 String subtitle = jsonObject1.getString("subtitle");
                 String image = jsonObject1.getString("image");
-                String author_id = jsonObject1.getString("author_id");
+                //String author_id = jsonObject1.getString("author_id");
                 String author_name = jsonObject1.getString("author_name");
                 String author_head = jsonObject1.getString("author_head");
                 String comment_num = jsonObject1.getString("comment_num");
@@ -100,10 +88,10 @@ public class Fragment_film extends Fragment {
                 map.put("title", title);
                 map.put("comment_id", comment_id);
                 map.put("subtitle", subtitle);
-                map.put("author_id", author_id);
+                //map.put("author_id", author_id);
                 map.put("author_name", author_name);
-                map.put("image", image);
-                map.put("author_head", author_head);
+                map.put("image", "http://39.96.208.176" + image);
+                map.put("author_head", "http://39.96.208.176"+author_head);
                 map.put("comment_num", comment_num);
 
                 list.add(map);

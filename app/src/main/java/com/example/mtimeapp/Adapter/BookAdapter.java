@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,20 +40,20 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BookAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull BookAdapter.ViewHolder viewHolder, final int i) {
         Map map = list.get(i);
 
         viewHolder.title.setText(map.get("title").toString());
-//        Glide.with(context).load(map.get("image")).into(viewHolder.picture);
-//        viewHolder.date.setText(map.get("release_date").toString());
-//        viewHolder.info.setText(map.get("info").toString());
-//        viewHolder.mark.setText(map.get("mark").toString());
+        Glide.with(context).load(map.get("image")).into(viewHolder.picture);
+        viewHolder.date.setText(map.get("release_date").toString());
+        viewHolder.mark.setText(map.get("mark").toString());
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context, BookActivity.class);
+                intent.putExtra("film_id",list.get(i).get("film_id").toString());
                 context.startActivity(intent);
             }
         });
@@ -67,7 +68,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
         RoundImageView picture;
         TextView date;
-        TextView info;
         TextView title;
         TextView mark;
         CardView cardView;
@@ -78,7 +78,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             cardView = itemView.findViewById(R.id.item_sale_book_card);
             picture = itemView.findViewById(R.id.item_sale_book_picture);
             date = itemView.findViewById(R.id.item_sale_book_date);
-            info = itemView.findViewById(R.id.item_sale_book_info);
             title = itemView.findViewById(R.id.item_sale_book_title);
             mark = itemView.findViewById(R.id.item_sale_book_mark);
 
