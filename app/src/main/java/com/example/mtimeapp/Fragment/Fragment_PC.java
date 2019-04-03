@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.example.mtimeapp.ChangePasswordActivity;
 import com.example.mtimeapp.MyCommentsActivity;
 import com.example.mtimeapp.Log_RegActivity;
 import com.example.mtimeapp.PCActivity;

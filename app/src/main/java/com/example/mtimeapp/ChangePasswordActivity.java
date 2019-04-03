@@ -1,15 +1,15 @@
 package com.example.mtimeapp;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.example.mtimeapp.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,26 +24,30 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ChangPasswordActivity extends AppCompatActivity  {
+public class ChangePasswordActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private EditText mOld_password;
+    private EditText mNew_password;
+    private Button btn;
+    private ImageView close;
+
     private String verify_id = null;
     private String waitTime = null;
     private String code = null;
     private String oldPassword = null;
     private String newPassword = null;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
-        Button ChangePassword = findViewById(R.id.change_btn);
-        EditText oldPassword = findViewById(R.id.change_password);
-        EditText newPassword = findViewById(R.id.change_Rpassword);
 
-        ChangePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        initUI();
 
-            }
-        });
+        close.setOnClickListener(this);
+        btn.setOnClickListener(this);
+
+        initThread();
     }
     private void initThread() {
         new Thread(new Runnable() {
@@ -131,6 +135,24 @@ public class ChangPasswordActivity extends AppCompatActivity  {
         }
         if(state == 4 ){
             Toast.makeText(this,"未知错误",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void initUI() {
+        close = findViewById(R.id.change_password_close);
+        btn = findViewById(R.id.change_password_btn);
+        mNew_password = findViewById(R.id.change_password_new);
+        mOld_password = findViewById(R.id.change_password_old);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.change_password_close:
+                finish();
+                break;
+            case R.id.change_password_btn:
+                break;
         }
     }
 }

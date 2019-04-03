@@ -39,7 +39,7 @@ public class CommentsActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.comments_recyclerview);
 
-        //initThread();
+        initThread();
 
 //        list=new ArrayList<>();
 //        for (int i = 0; i < 20; i++) {
@@ -60,7 +60,7 @@ public class CommentsActivity extends AppCompatActivity {
             public void run() {
                 try {                                                                                          //okHttp请求数据
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("106.13.106.1/news/i/comment_list/" + news_id).build();
+                    Request request = new Request.Builder().url("http://39.96.208.176/news/i/comment_list/?news_id=" + news_id).build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);                                                 //解析json的方法
@@ -76,7 +76,7 @@ public class CommentsActivity extends AppCompatActivity {
         try {
             list = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(JsonData);
-            String status = jsonObject.getString("status");
+            //String status = jsonObject.getString("status");
             //注意状态
             JSONArray jsonArray = jsonObject.getJSONArray("list");
             for (int i = 0; i < jsonArray.length(); i++) {
