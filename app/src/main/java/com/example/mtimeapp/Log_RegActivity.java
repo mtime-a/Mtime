@@ -19,6 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mtimeapp.Fragment.Fragment_PC;
+import com.nostra13.universalimageloader.utils.L;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,42 +36,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.Authenticator;
-import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.CookieJar;
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.security.auth.login.LoginException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.Cookie;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.Route;
 
 public class Log_RegActivity extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout reg;
@@ -91,14 +72,15 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
     private String password;
     private String account;
-    private String verify_id = null;
-//    private String UserId;
+    private String msg;
     private String email;
     private String code;
     private String name;
-    private String state;
-    private String waitTime;
-    private String cookies;
+    private String nickName;
+    private String headImageUrl;
+    private String statu;
+    private String session;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -162,9 +144,13 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
                 break;
             case R.id.log_btn:
-               account = log_account.getText().toString();
-               password = log_password.getText().toString();
-               postLogJsonData();
+                account = log_account.getText().toString();
+                password = log_password.getText().toString();
+                SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("theName", account);
+                editor.apply();
+                postLogJsonData();
                 break;
             case R.id.log_find_password:
                 intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);
@@ -175,6 +161,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 reg.setVisibility(View.VISIBLE);
                 break;
             case R.id.reg_send:
+                email = reg_mail.getText().toString();
                 initThread();
                 break;
             case R.id.reg_btn:                                  //注册
@@ -182,36 +169,23 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 password = reg_password.getText().toString();
                 name  = reg_account.getText().toString();
                 email  = reg_mail.getText().toString();
+                SharedPreferences sharedPreferences1 = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor1 = sharedPreferences1.edit();
+                editor1.putString("theName", name);
+                editor1.apply();
                 boolean judge = checkCode(password);
                 if(judge){
-//                    if(verify_id == null||verify_id.equals("")){
-//                        //***********************************
-//                        //可以把Toast做的好看一些
-//                        //***********************************
-//                        Toast.makeText(this,"请先获取验证码",Toast.LENGTH_LONG).show();
-//                    }else {
                         if(code == null||code.equals("")){
                             Toast.makeText(this,"请填入验证码",Toast.LENGTH_LONG).show();
                         }else {
                             postRegJsonData();
-                     //   }
                     }
                 }else{
                     Toast.makeText(this,"请填入正确格式的密码",Toast.LENGTH_LONG).show();
                 }
-//            {
-//                "user_id": "用户id",
-//                    "user_name": "用户名",
-//                    "password": "经过加密的密码（加密算法待定）",
-//                    "verify_id": "验证码id",
-//                    "verify_code": "验证码值"
-//            }
 
                 break;
             case R.id.reg_find_password:
-//                SharedPreferences sps = getSharedPreferences("cookie", Context.MODE_PRIVATE);
-//                String name = sps.getString("cookie","" );
-//                Log.e("TAG",name);
                 intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);
                 startActivity(intent);
                 break;
@@ -227,11 +201,15 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void run() {
                 try {
-                    Log.e("TAG","2");
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://106.13.106.1/i/email_verify_code/").build();
+                    FormBody formBody = new FormBody.Builder()
+                            .add("email", email)
+                            .build();
+                    Request request = new Request.Builder()
+                            .url("http://132.232.78.106:8001/api/sendCheckCode/")//请求的url
+                            .post(formBody)
+                            .build();
                     Response response = client.newCall(request).execute();
-                    Headers headers = response.headers();
                     String responseData = response.body().string();
                     Log.e("TAG",responseData);
                     parseJSONWithJSONObject(responseData);
@@ -243,79 +221,80 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
     }
     private void parseJSONWithJSONObject(String JsonData) {
         try {
-            JSONObject jsonObject = new JSONObject(JsonData);
-            //验证码id
-            verify_id = jsonObject.getString("id");
-            Log.e("TAG",verify_id+"验证码ID");
-            //等待时间（未解决）
-            waitTime = jsonObject.getString("wait");
+            Log.e("TAG","解析json");
+            JSONArray jsonArray = new JSONArray(JsonData);
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            //**************************************
+            // 还有用
+            //  String status = jsonObject.getString("statu");
+            String code = jsonObject.getString("code");
+            Log.e("Code",code);
+            msg = jsonObject.getString("msg");
+            Log.e("TAG",msg);
+            showResponse(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+    }
+    private void showResponse(final String msg){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
+            }
+        });
     }
     private void postRegJsonData(){
-        try {
-            JSONObject body = new JSONObject();
+
+//            JSONObject body = new JSONObject();
             SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("theName", name);
             editor.apply();
-//            {
-//                "user_id": "用户id",
-//                    "email":"email",
-//                    "user_name": "用户名",
-//                    "password": "经过加密的密码（加密算法待定）",
-//                    "verify_id": "验证码id",
-//                    "verify_code": "验证码值"
-//            }
-            body.put("user_id", name);
-            body.put("email", email);
-            body.put("user_name", name);
-            body.put("password", password);
-            //
-            body.put("verify_id", "123456");
-            //
-            body.put("verify_code", code);
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            OkHttpClient okHttpClient = new OkHttpClient();
-            RequestBody requestBody = RequestBody.create(JSON, String.valueOf(body));
-            Request request = new Request.Builder()
-                    .url("http://106.13.106.1/account/i/register/")
-                    .post(requestBody)
+            OkHttpClient okHttpClient  = new OkHttpClient();
+            FormBody formBody = new FormBody.Builder()
+                    .add("username",name)
+                    .add("email", email)
+                    .add("password", password)
+                    .add("nickname",name)
+                    .add("vericode",code)
                     .build();
-            okHttpClient  = new OkHttpClient.Builder()
-                    .connectTimeout(60*60,TimeUnit.SECONDS)
-                    .cookieJar(cookieJar)
+            final Request request = new Request.Builder()
+                    .url("http://132.232.78.106:8001/api/register/")//请求的url
+                    .post(formBody)
                     .build();
             okHttpClient.newCall(request).enqueue(new Callback() {
+                //请求错误回调方法
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e("TAG", "获取数据失败");
+                    Log.e("TAG","获取数据失败");
                 }
+
                 @Override
-                public void onResponse(Call call,Response response) throws IOException {
-                    if(response.isSuccessful()){
-                       state = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(state);
-                                    String status = jsonObject.getString("result");
-                                    judgeRegState(status);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
+                public void onResponse(Call call, Response response) throws IOException {
+                    if(response.isSuccessful()) {
+                        try {
+                            String responseData = response.body().string();
+                            JSONObject jsonObject = new JSONObject(responseData);
+                            statu = jsonObject.getString("state");
+                            session = jsonObject.getString("session");
+                            String msg = jsonObject.getString("msg");
+
+                            SharedPreferences sps = getSharedPreferences ("Cookies", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sps.edit();
+                            editor.putString("cookie",session);
+                            editor.apply();
+
+                            showResponse(msg);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        judgeRegState(statu);
+                        postLogJsonData();
                     }
                 }
-            } );
+            });
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
     //检验密码
     public static boolean checkCode(String code){
@@ -323,145 +302,121 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         Matcher matcher=pattern.matcher(code);
         return matcher.matches();
     }
-    //判断返回状态
-    private void judgeRegState(String state){
-//        0:注册成功
-//        1:用户ID重复
-//        2:电子邮件已被注册
-//        3:验证码错误
-//        4:无效的昵称
-//        5:无效的密码
-//        6:未知错误
-//        7:无效的用户ID
-//        8:注册数据不完整
-//        9:josn格式错误
-        if(state.equals("0") ){
-            Toast.makeText(this,"注册成功",Toast.LENGTH_LONG).show();
-            finish();
-        }
-        if(state.equals("1") ){
-            Toast.makeText(this,"用户名重复,请重新选择用户名",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("2") ){
-            Toast.makeText(this,"电子邮箱已被注册",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("3") ){
-            Toast.makeText(this,"验证码错误",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("4") ){
-            Toast.makeText(this,"无效的用户名",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("5")){
-            Toast.makeText(this,"无效的密码",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("6")){
-            Toast.makeText(this,"未知错误",Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void postLogJsonData() {
-        account = log_account.getText().toString();
-        password = log_password.getText().toString();
-        try {
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            JSONObject body = new JSONObject();
-            body.put("user_key", account);
-            body.put("key_type","user_id");
-            body.put("password", password);
-            OkHttpClient okHttpClient = new OkHttpClient();
-            RequestBody requestBody = RequestBody.create(JSON, String.valueOf(body));
-            Request request = new Request.Builder()
-                    .url("http://106.13.106.1/account/i/login/")
-                    .post(requestBody)
-                    .build();
-            okHttpClient  = new OkHttpClient.Builder()
-                    .connectTimeout(60*60,TimeUnit.SECONDS)
-                    .cookieJar(cookieJar)
-                    .build();
-            okHttpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e("TAG", "获取数据失败");
+    //判断注册返回状态
+    private void judgeRegState(final String state){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(state.equals("1")){
+                    Toast.makeText(getApplicationContext(),"注册成功",Toast.LENGTH_LONG).show();
+                    SharedPreferences sps = getSharedPreferences("Cookies", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sps.edit();
+                    editor.putString("cookie", session);
+                    editor.apply();
+                    finish();
                 }
+                if(state.equals("-1")){
+                    Toast.makeText(getApplicationContext(),"验证码过期",Toast.LENGTH_LONG).show();
+                }
+                if(state.equals("-2")){
+                    Toast.makeText(getApplicationContext(),"验证码错误",Toast.LENGTH_LONG).show();
+                }
+                if(state.equals("404")){
+                    Toast.makeText(getApplicationContext(),"非法请求",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+//发送登录请求
+    private void postLogJsonData() {
+
+        OkHttpClient okHttpClient  = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20,TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .build();
+        FormBody formBody = new FormBody.Builder()
+                .add("username",account)
+                .add("password", password)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://132.232.78.106:8001/api/login/")
+                .post(formBody)
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("TAG", "获取数据失败");
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                if (response.isSuccessful()) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(responseData);
+                        JSONObject jsonObject = jsonArray.getJSONObject(0);
+                        statu = jsonObject.getString("statu");
+                        session = jsonObject.getString("session");
+                        nickName = jsonObject.getString("nickName");
+                        name = jsonObject.getString("username");
+                        headImageUrl = jsonObject.getString("headImage");
+
+//                        Fragment_PC fragment_pc = new Fragment_PC();
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("username",username);
+//                        bundle.putString("nickName",nickName);
+//                        bundle.putString("headImage",headImageUrl);
+//                        fragment_pc.setArguments(bundle);
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    judgeLogState(statu);
+                }
+            }
+        });
+    }
+    //判断登录状态
+    private void judgeLogState(String state){
+        if(state.equals("1")){
+            runOnUiThread(new Runnable() {
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    int state;
-                    final String response1 = response.body().string();
-                    Log.e("TAG", response1);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response1);
-                                String status = jsonObject.getString("result");
-                                judgeLogState(status);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                public void run() {
+                    Toast.makeText(getApplicationContext(),"登陆成功",Toast.LENGTH_LONG).show();
+                    SharedPreferences sps = getSharedPreferences("Cookies", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sps.edit();
+                    editor.putString("cookie", session);
+                    editor.apply();
+                    Intent intent = new Intent(Log_RegActivity.this,MainActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username",name);
+                    bundle.putString("nickName",nickName);
+                    bundle.putString("headImage",headImageUrl);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             });
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-        private void judgeLogState(String state){
-//            0:登陆成功
-//            1:无效用户ID
-//            2:无效的密码
-//            3:验证码错误
-//            4:账号被封禁
-//            5:已登录
-//            6：未知错误
-//            8: 登陆数据缺失
-//            9:json格式错误
-        if(state.equals("0") ){
-            Toast.makeText(this,"登陆成功",Toast.LENGTH_LONG).show();
             finish();
         }
-        if(state.equals("1")){
-            Toast.makeText(this,"无效用户名",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("2")){
-            Toast.makeText(this,"无效的密码",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("3")){
-            Toast.makeText(this,"验证码错误",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("4")){
-            Toast.makeText(this,"账号被封禁",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("5")){
-            Toast.makeText(this,"登陆成功",Toast.LENGTH_LONG).show();
-        }
-        if(state.equals("6")){
-            Toast.makeText(this,"未知错误",Toast.LENGTH_LONG).show();
-        }
     }
-    CookieJar cookieJar = new CookieJar() {
-        private final Map<String, List<Cookie>> cookiesMap = new HashMap<String, List<Cookie>>();
-        @Override
-        public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-            String host = url.host();
-            List<Cookie> cookiesList = cookiesMap.get(host);
-            if (cookiesList != null){
-                cookiesMap.remove(host);
-            }
-            for(Cookie cookie : cookies){
-                Log.e("TAG saveFromResponse",cookie.toString());
-                SharedPreferences sps = getSharedPreferences("cookie", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sps.edit();
-                editor.putString("cookies", cookie.toString());
-                editor.commit();
-            }
-        }
-        @Override
-        public List<Cookie> loadForRequest(HttpUrl url) {
-            List<Cookie> cookiesList = cookiesMap.get(url.host());
-            return cookiesList != null ? cookiesList : new ArrayList<Cookie>();
-        }
-    };
+//    CookieJar cookieJar = new CookieJar() {
+//        @Override
+//        public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+//            String host = url.host();
+//            List<Cookie> cookiesList = cookiesMap.get(host);
+//            if (cookiesList != null){
+//                cookiesMap.remove(host);
+//            }
+//            for(Cookie cookie : cookies){
+//                Log.e("TAG saveFromResponse",cookie.toString());
+//            }
+//        }
+//        @Override
+//        public List<Cookie> loadForRequest(HttpUrl url) {
+//            List<Cookie> cookiesList = cookiesMap.get(url.host());
+//            return cookiesList != null ? cookiesList : new ArrayList<Cookie>();
+//        }
+//    };
+
 }

@@ -1,11 +1,14 @@
 package com.example.mtimeapp;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.mtimeapp.CustomView.CircleImageView;
 import com.example.mtimeapp.CustomView.RoundImageView;
+import com.nostra13.universalimageloader.utils.L;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +28,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class PCActivity extends AppCompatActivity implements View.OnClickListener {
-    private CircleImageView mIcon;
+    private ImageView mIcon;
     private TextView mUsername;
     private TextView mId;
     private TextView mEmil;
@@ -44,6 +48,9 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pc_homepage);
 
+        SharedPreferences sps = getSharedPreferences( "theUser",Context.MODE_PRIVATE);
+        user_id = sps.getString("theName","" );
+        Log.e("TAG name",user_id);
 //        Intent intent = new Intent();
 //        user_id = intent.getStringExtra("user_id");
 
@@ -53,7 +60,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         mUsername.setOnClickListener(this);
         back.setOnClickListener(this);
 
-        //initThread();
+       // initThread();
     }
 
     private void initThread() {
@@ -61,9 +68,11 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
             @Override
             public void run() {
                 try {                                                                                          //okHttp请求数据
+                    Log.e("TAG","子线程");
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("106.13.106.1/account/i/user/info/" + user_id).build();
+                    Request request = new Request.Builder().url("http://106.13.106.1/account/i/user/info/" + user_id).build();
                     Response response = client.newCall(request).execute();
+                    Log.e("TAG", String.valueOf(response));
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);                                                 //解析json的方法
                 } catch (Exception e) {
@@ -76,12 +85,11 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
     private void parseJSONWithJSONObject(String JsonData) {               //解析JSON数据
         try {
             JSONObject jsonObject = new JSONObject(JsonData);
-
             user_id = jsonObject.getString("user_id");
             username = jsonObject.getString("username");
             icon = jsonObject.getString("head");
             email = jsonObject.getString("email");
-
+            Log.e("TAG",icon);
             showResponse();
         } catch (JSONException e) {
             e.printStackTrace();
