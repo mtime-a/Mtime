@@ -53,7 +53,7 @@ public class Fragment_sale_show extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.show_recyclerview);
 
-        initThread();
+       // initThread();
     }
 
     private void initThread() {

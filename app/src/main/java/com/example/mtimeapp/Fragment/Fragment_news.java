@@ -45,7 +45,7 @@ public class Fragment_news extends Fragment {
 
         recyclerView = view.findViewById(R.id.fragment_news_recyclerview);
 
-        initThread();
+       // initThread();
     }
 
     private void initThread() {

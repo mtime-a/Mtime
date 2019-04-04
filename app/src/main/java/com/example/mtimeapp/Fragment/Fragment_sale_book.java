@@ -63,7 +63,7 @@ public class Fragment_sale_book extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.book_recyclerview);
 
-        initThread();
+       // initThread();
     }
 
     private void initThread() {

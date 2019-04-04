@@ -45,7 +45,7 @@ public class Fragment_film extends Fragment {
 
         recyclerView = view.findViewById(R.id.fragment_film_recyclerview);
 
-        initThread();
+       // initThread();
     }
 
     private void initThread() {
