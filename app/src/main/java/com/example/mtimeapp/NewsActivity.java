@@ -6,28 +6,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.mtimeapp.Adapter.FilmAdapter;
-import com.example.mtimeapp.CustomView.CircleImageView;
+import com.example.mtimeapp.Adapter.CommentsActivity;
 import com.example.mtimeapp.CustomView.RoundImageView;
-import com.example.mtimeapp.Util.MyTagHandler;
 import com.example.mtimeapp.Util.RichText;
-import com.example.mtimeapp.Util.URLImageParser;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

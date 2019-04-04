@@ -1,4 +1,4 @@
-package com.example.mtimeapp;
+package com.example.mtimeapp.Adapter;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,8 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.example.mtimeapp.Adapter.CommentsAdapter;
-import com.example.mtimeapp.Adapter.FilmAdapter;
+import com.example.mtimeapp.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -32,7 +32,7 @@
             android:theme="@style/Theme.AppCompat.Light" />
         <activity android:name=".FindPasswordActivity" />
         <activity android:name=".ShowActivity" />
-        <activity android:name=".CommentsActivity" />
+        <activity android:name=".Adapter.CommentsActivity" />
         <activity android:name=".BookActivity" />
     </application>
 

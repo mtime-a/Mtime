@@ -26,7 +26,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ChangPasswordActivity extends AppCompatActivity  {
+public class ChangePasswordActivity extends AppCompatActivity  {
     private String verify_id = null;
     private String waitTime = null;
     private String code = null;
