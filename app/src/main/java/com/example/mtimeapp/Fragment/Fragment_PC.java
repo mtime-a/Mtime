@@ -19,13 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.mtimeapp.ChangePasswordActivity;
 import com.example.mtimeapp.MyCommentsActivity;
 import com.example.mtimeapp.Log_RegActivity;
 import com.example.mtimeapp.PCActivity;
 import com.example.mtimeapp.R;
-import com.example.mtimeapp.ShowActivity;
-import com.nostra13.universalimageloader.utils.L;
+
 
 public class Fragment_PC extends Fragment implements View.OnClickListener {
 
@@ -38,9 +36,9 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
 
     private int op = 0;//判断登录状态
     private String name;
-    private String headImage;
     private String nickName;
     private String cookie;
+    private String headImage;
 
 
     @Nullable
@@ -70,21 +68,23 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
 
         SharedPreferences sps = getActivity().getSharedPreferences("Cookies", Context.MODE_PRIVATE);
         cookie = sps.getString("cookie", "");
-        ///？？？？？？？？？？？？？？？？？？？？？？？？？
+        //？？？？？？？？？？？？？？？？？？？？？？？？？
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("theUser", Context.MODE_PRIVATE);
         name = sharedPreferences.getString("theName", "");
+        nickName = sharedPreferences.getString("theNickname", "");
+        headImage = "http://132.232.78.106:8001/media/" + sharedPreferences.getString("theHeadImag","");
 
-        Bundle bundle = getActivity().getIntent().getExtras();
-
-        if (bundle != null) {
-            name = bundle.getString("username");
-            headImage = "http://132.232.78.106:8001/media/" + bundle.getString("headImage");
-            nickName = bundle.getString("nickName");
-            //tv_username.setText(nickName);
-            Log.e("TAG Resume", nickName);
-            Log.e("TAG Resume", name);
-            Glide.with(this).load(headImage).into(icon);
-        }
+//        Bundle bundle = getActivity().getIntent().getExtras();
+//
+//        if (bundle != null) {
+//            name = bundle.getString("username");
+//            headImage = "http://132.232.78.106:8001/media/" + bundle.getString("headImage");
+//            nickName = bundle.getString("nickName");
+//            //tv_username.setText(nickName);
+//            Log.e("TAG Resume", nickName);
+//            Log.e("TAG Resume", name);
+//            Glide.with(this).load(headImage).into(icon);
+//        }
 
         if (cookie.equals("")) {
             op = 0;//未登录
@@ -93,6 +93,7 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
             op = 1;//已经登录
             tv_username.setVisibility(View.VISIBLE);
             tv_username.setText(nickName);
+           // Glide.with(this).load(headImage).into(icon);
         }
     }
 
@@ -119,13 +120,13 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.pc_jump:
                 //登陆了就跳转到个人中心
-                if (op == 1)
+                if (op == 1){
                     intent.setClass(getContext(), PCActivity.class);
-
+                    startActivity(intent);
+                }
                     //没登陆的时候就跳转到登陆页面
-                else intent.setClass(getContext(), Log_RegActivity.class);
+                else ToastAndRemind();
 
-                startActivity(intent);
                 break;
             case R.id.pc_icon:
                 //登陆了就跳转到个人中心
@@ -135,25 +136,24 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
                     bundle.putString("name", name);
                     bundle.putString("nickName", nickName);
                     intent.putExtras(bundle);
+                    startActivity(intent);
                 }
                 //没登陆的时候就跳转到登陆页面
-                else intent.setClass(getContext(), Log_RegActivity.class);
+                else ToastAndRemind();
 
-                startActivity(intent);
                 break;
             case R.id.pc_comments:
                 //登陆了就跳转到我的评论
-                if (op == 1)
+                if (op == 1) {
                     intent.setClass(getContext(), MyCommentsActivity.class);
-
+                    startActivity(intent);
+                }
                     //没登陆的时候就跳转到登陆页面
-                else intent.setClass(getContext(), Log_RegActivity.class);
+                else ToastAndRemind();
 
-                startActivity(intent);
                 break;
             case R.id.pc_about_us:
                 //intent.setClass(getContext(),AboutmeActivity.class);
-                //startActivity(intent);
                 break;
             case R.id.pc_setting:
                 PopupMenu menu = new PopupMenu(getContext(), v);
@@ -179,15 +179,15 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
                                 flag = true;
                                 break;
                             case R.id.menu_password:
-                                if (op == 1)
+                                if (op == 1){
                                     intent.setClass(getContext(), ChangePasswordActivity.class);
+                                    startActivity(intent);
+                                }
                                 else {
-                                    intent.setClass(getContext(), Log_RegActivity.class);
-                                    Toast.makeText(getContext(), "请先登录", Toast.LENGTH_SHORT).show();
+                                    ToastAndRemind();
                                 }
                                 //修改密码时候的操作
                                 flag = true;
-                                startActivity(intent);
                                 break;
                             default:
                                 flag = false;
@@ -197,6 +197,12 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
                 });
                 break;
         }
+    }
+    public void ToastAndRemind(){
+            Toast.makeText(getContext(),"还未登陆，请先登录",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent();
+            intent.setClass(getContext(),Log_RegActivity.class);
+            startActivity(intent);
     }
 }
 

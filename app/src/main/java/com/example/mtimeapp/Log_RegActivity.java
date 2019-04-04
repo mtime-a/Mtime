@@ -146,12 +146,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.log_btn:
                 account = log_account.getText().toString();
                 password = log_password.getText().toString();
-
-                SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("theName", account);
-                editor.apply();
-
                 postLogJsonData();
 
                 break;
@@ -266,10 +260,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
     //发送注册信息
     private void postRegJsonData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("theName", name);
-        editor.apply();
 
         Log.d("mljcode", code);
 
@@ -301,13 +291,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                         JSONObject jsonObject = new JSONObject(responseData);
                         statu = jsonObject.getString("state");
                         session = jsonObject.getString("session");
-                        String msg = jsonObject.getString("msg");
-
-                        SharedPreferences sps = getSharedPreferences("Cookies", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sps.edit();
-                        editor.putString("cookie", session);
-                        editor.apply();
-
+                       // String msg = jsonObject.getString("msg");
                         judgeRegState(statu);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -375,11 +359,25 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                         JSONArray jsonArray = new JSONArray(responseData);
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
                         statu = jsonObject.getString("statu");
-                        session = jsonObject.getString("session");
-                        nickName = jsonObject.getString("nickName");
-                        username = jsonObject.getString("username");
-                        headImageUrl = jsonObject.getString("headImage");
+                        if(statu.equals("1")) {
+                            session = jsonObject.getString("session");
+                            nickName = jsonObject.getString("nickName");
+                            email = jsonObject.getString("email");
+                            username = jsonObject.getString("username");
+                            headImageUrl = jsonObject.getString("headImage");
 
+                            SharedPreferences sps = getSharedPreferences("Cookies", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sps.edit();
+                            editor.putString("cookie", session);
+                            editor.apply();
+                            SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                            editor1.putString("theName", username);
+                            editor1.putString("theNickname", nickName);
+                            editor1.putString("theHeadImage", headImageUrl);
+                            editor1.putString("theEmail", email);
+                            editor1.apply();
+                        }
                         judgeLogState(statu);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -397,21 +395,18 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             public void run() {
                 if (state.equals("1")) {
                     Toast.makeText(Log_RegActivity.this, "登陆成功", Toast.LENGTH_LONG).show();
-
-                    SharedPreferences sps = getSharedPreferences("Cookies", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sps.edit();
-                    editor.putString("cookie", session);
-                    editor.apply();
-
                     Intent intent = new Intent();
                     intent.setClass(Log_RegActivity.this, PCActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("username", username);
-                    bundle.putString("nickName", nickName);
-                    bundle.putString("headImage", headImageUrl);
-                    intent.putExtra("UserMessage",bundle);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("username", username);
+//                    bundle.putString("nickName", nickName);
+//                    bundle.putString("headImage", headImageUrl);
+//                    intent.putExtra("UserMessage",bundle);
                     startActivity(intent);
                     finish();
+                }
+                if(state.equals("-1")){
+                    Toast.makeText(Log_RegActivity.this, "账号不存在,请先注册", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -424,24 +419,5 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         return matcher.matches();
     }
 
-
-//    CookieJar cookieJar = new CookieJar() {
-//        @Override
-//        public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-//            String host = url.host();
-//            List<Cookie> cookiesList = cookiesMap.get(host);
-//            if (cookiesList != null){
-//                cookiesMap.remove(host);
-//            }
-//            for(Cookie cookie : cookies){
-//                Log.e("TAG saveFromResponse",cookie.toString());
-//            }
-//        }
-//        @Override
-//        public List<Cookie> loadForRequest(HttpUrl url) {
-//            List<Cookie> cookiesList = cookiesMap.get(url.host());
-//            return cookiesList != null ? cookiesList : new ArrayList<Cookie>();
-//        }
-//    };
 
 }
