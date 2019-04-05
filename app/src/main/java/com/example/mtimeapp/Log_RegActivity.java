@@ -70,7 +70,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
     private ImageView close;
 
-    private String password;
+    private String password = null;
     private String account = null;
     private String msg;
     private String email;
@@ -147,7 +147,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 account = log_account.getText().toString();
                 password = log_password.getText().toString();
                 postLogJsonData();
-
                 break;
             case R.id.log_find_password:
                 intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);
@@ -170,11 +169,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 password = reg_password.getText().toString();
                 name = reg_account.getText().toString();
                 email = reg_mail.getText().toString();
-
-                SharedPreferences sharedPreferences1 = getSharedPreferences("theUser", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor1 = sharedPreferences1.edit();
-                editor1.putString("theName", name);
-                editor1.apply();
 
                 if (checkCode(password)) {
                     if (code == null || code.equals("")) {
@@ -219,6 +213,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                             .build();
 
                     Request request = new Request.Builder()
+                            .addHeader("Connection","close")
                             .url("http://132.232.78.106:8001/api/sendCheckCode/")
                             .post(formBody)
                             .build();
@@ -238,30 +233,37 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         try {
             JSONArray jsonArray = new JSONArray(JsonData);
             JSONObject jsonObject = jsonArray.getJSONObject(0);
-            //  String status = jsonObject.getString("statu");
-            //String msg = jsonObject.getString("msg");
+            String status = jsonObject.getString("statu");
+            String msg = jsonObject.getString("msg");
 
-            code = jsonObject.getString("code");//全局变量要让注册状态时候的code有数据
-
-            showResponse(code);
+//            code = jsonObject.getString("code");//全局变量要让注册状态时候的code有数据
+//
+//            showResponse(code);
+            judgeCodeState(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
-    private void showResponse(final String code) {
+    private void judgeCodeState(final String msg){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                reg_code.setText(code);
+                Toast.makeText(Log_RegActivity.this, msg, Toast.LENGTH_LONG).show();
             }
         });
     }
 
+//    private void showResponse(final String code) {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                reg_code.setText(code);
+//            }
+//        });
+//    }
+
     //发送注册信息
     private void postRegJsonData() {
-
-        Log.d("mljcode", code);
 
         OkHttpClient okHttpClient = new OkHttpClient();
         FormBody formBody = new FormBody.Builder()
@@ -290,8 +292,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                         String responseData = response.body().string();
                         JSONObject jsonObject = new JSONObject(responseData);
                         statu = jsonObject.getString("state");
-                        session = jsonObject.getString("session");
-                       // String msg = jsonObject.getString("msg");
+                        String msg = jsonObject.getString("msg");
                         judgeRegState(statu);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -330,9 +331,9 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
-                .connectTimeout(20, TimeUnit.SECONDS)
-                .writeTimeout(20, TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
                 .build();
 
         FormBody formBody = new FormBody.Builder()
@@ -340,20 +341,24 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 .add("password", password)
                 .build();
 
+        Log.e("Log",account + password);
         Request request = new Request.Builder()
                 .url("http://132.232.78.106:8001/api/login/")
                 .post(formBody)
+                .addHeader("Connection","close")
                 .build();
 
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                postLogJsonData();
                 Log.e("TAG", "获取数据失败");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
+                Log.e("Log_Reg",responseData);
                 if (response.isSuccessful()) {
                     try {
                         JSONArray jsonArray = new JSONArray(responseData);
@@ -366,17 +371,18 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                             username = jsonObject.getString("username");
                             headImageUrl = jsonObject.getString("headImage");
 
-                            SharedPreferences sps = getSharedPreferences("Cookies", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sps.edit();
-                            editor.putString("cookie", session);
-                            editor.apply();
                             SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                            editor1.putString("theName", username);
-                            editor1.putString("theNickname", nickName);
-                            editor1.putString("theHeadImage", headImageUrl);
-                            editor1.putString("theEmail", email);
-                            editor1.apply();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("cookie",session);
+                            editor.putString("theName", username);
+                            editor.putString("theNickname", nickName);
+                            editor.putString("theHeadImage", headImageUrl);
+                            editor.putString("theEmail", email);
+                            editor.apply();
+                        }
+                        else {
+                            String msg = jsonObject.getString("msg");
+                            Log.e("Log_Reg",msg);
                         }
                         judgeLogState(statu);
                     } catch (JSONException e) {
@@ -408,16 +414,18 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 if(state.equals("-1")){
                     Toast.makeText(Log_RegActivity.this, "账号不存在,请先注册", Toast.LENGTH_LONG).show();
                 }
+                if(state.equals("-2")){
+                    Toast.makeText(Log_RegActivity.this, "密码不正确", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
 
     //检验密码
     private boolean checkCode(String code) {
+        //限制密码
         Pattern pattern = Pattern.compile("[\\S]{8,16}$");
         Matcher matcher = pattern.matcher(code);
         return matcher.matches();
     }
-
-
 }

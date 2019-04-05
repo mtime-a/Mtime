@@ -54,17 +54,16 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
     private View view;
 
     private AlertDialog.Builder buider;
+    public static final int TAKE_PHOTO = 1;
+    public static final int CHOOSE_PHOTO = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pc_homepage);
 
-
-        SharedPreferences sps = getSharedPreferences("Cookies", Context.MODE_PRIVATE);
-        cookie = sps.getString("cookie", "");
-        //？？？？？？？？？？？？？？？？？？？？？？？？？
         SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+        cookie = sharedPreferences.getString("cookie", "");
         username = sharedPreferences.getString("theName", "");
         nickName = sharedPreferences.getString("theNickname", "");
         email = sharedPreferences.getString("theEmail","");
@@ -89,51 +88,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         mId.setText(username);
       //  Glide.with(this).load(headImage).into(mIcon);
     }
-    //    private void initThread() {
-//        new Thread(new Runnable() {                                                                 //新线程联网
-//            @Override
-//            public void run() {
-//                try {                                                                                          //okHttp请求数据
-//                    Log.e("TAG","子线程");
-//                    OkHttpClient client = new OkHttpClient();
-//                    Request request = new Request.Builder().url("http://106.13.106.1/account/i/user/info/" + user_id).build();
-//                    Response response = client.newCall(request).execute();
-//                    Log.e("TAG", String.valueOf(response));
-//                    String responseData = response.body().string();
-//                    parseJSONWithJSONObject(responseData);                                                 //解析json的方法
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-//    }
 
-//    private void parseJSONWithJSONObject(String JsonData) {               //解析JSON数据
-//        try {
-//            JSONObject jsonObject = new JSONObject(JsonData);
-//            user_id = jsonObject.getString("user_id");
-//            username = jsonObject.getString("username");
-//            icon = jsonObject.getString("head");
-//            email = jsonObject.getString("email");
-//            Log.e("TAG",icon);
-//            showResponse();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private void showResponse() {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Glide.with(PCActivity.this).load(icon).into(mIcon);
-//                mEmil.setText(email);
-//                mUsername.setText(username);
-//                mId.setText(user_id);
-//                //body还没用
-//            }
-//        });
-//    }
 
     private void initUI() {
         mIcon = findViewById(R.id.pc_homepage_icon);
@@ -156,7 +111,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                 buider.setItems(arrItem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(PCActivity.this, "你选择了第" + arrItem[which], Toast.LENGTH_LONG).show();
+                        Toast.makeText(PCActivity.this, "你选择了" + arrItem[which], Toast.LENGTH_LONG).show();
                     }
                 });
                 buider.create().show();
@@ -171,20 +126,19 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         builder_username = new AlertDialog.Builder(PCActivity.this);
         builder_username.setTitle("请输入新昵称");
         view = LayoutInflater.from(PCActivity.this).inflate(R.layout.dialog, null);
+        final EditText editText = view.findViewById(R.id.text);
         builder_username.setPositiveButton("修改", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //***************************
-                //将获取的用户名放入nickName
-                //***************************
-                nickName = "emmmmmmmmmm";
+                nickName = editText.getText().toString();
+                Log.e("PC",nickName);
                 changNickname(nickName);
 
             }
         });
         builder_username.setView(view).create().show();
     }
-    private void changNickname(String nick){
+    private void changNickname(final String nick){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -197,7 +151,9 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                 .add("session", cookie)
                 .build();
 
+        Log.e("PC ",cookie + nick);
         Request request = new Request.Builder()
+                .addHeader("Connection","close")
                 .url("http://132.232.78.106:8001/api/changeNickName/")
                 .post(formBody)
                 .build();
@@ -205,6 +161,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+
                 Log.e("TAG", "获取数据失败");
             }
 
@@ -218,11 +175,12 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                         String msg = jsonObject.getString("msg");
                         judgeChangNicknameState(msg);
                         if(statu.equals("1")) {
+                            String nick = jsonObject.getString("nickName");
                             SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("theNickname", nickName);
+                            editor.putString("theNickname", nick);
                             editor.apply();
-                            mUsername.setText(nickName);
+                            mUsername.setText(nick);
                         }
 
                     } catch (JSONException e) {

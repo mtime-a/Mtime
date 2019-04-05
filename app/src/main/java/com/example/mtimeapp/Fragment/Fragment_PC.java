@@ -17,11 +17,15 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.mtimeapp.ChangePasswordActivity;
+import com.example.mtimeapp.MainActivity;
 import com.example.mtimeapp.MyCommentsActivity;
 import com.example.mtimeapp.Log_RegActivity;
 import com.example.mtimeapp.PCActivity;
 import com.example.mtimeapp.R;
+
+import java.time.LocalDate;
 
 
 public class Fragment_PC extends Fragment implements View.OnClickListener {
@@ -65,13 +69,11 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
 
-        SharedPreferences sps = getActivity().getSharedPreferences("Cookies", Context.MODE_PRIVATE);
-        cookie = sps.getString("cookie", "");
-        //？？？？？？？？？？？？？？？？？？？？？？？？？
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("theUser", Context.MODE_PRIVATE);
+        cookie = sharedPreferences.getString("cookie","");
         name = sharedPreferences.getString("theName", "");
         nickName = sharedPreferences.getString("theNickname", "");
-        headImage = "http://132.232.78.106:8001/media/" + sharedPreferences.getString("theHeadImag","");
+        headImage = "http://132.232.78.106:8001/media/" + sharedPreferences.getString("theHeadImage","");
 
 //        Bundle bundle = getActivity().getIntent().getExtras();
 //
@@ -92,7 +94,7 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
             op = 1;//已经登录
             tv_username.setVisibility(View.VISIBLE);
             tv_username.setText(nickName);
-           // Glide.with(this).load(headImage).into(icon);
+            Glide.with(this).load(headImage).into(icon);
         }
     }
 
@@ -166,15 +168,29 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
                         Intent intent = new Intent();
                         switch (item.getItemId()) {
                             case R.id.menu_exit:
-                                cookie = "";
+                                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("theUser", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("cookie","");
+                                editor.putString("theName", "");
+                                editor.putString("theNickname", "");
+                                editor.putString("theHeadImage","");
+                                editor.putString("theEmail","");
+                                editor.apply();
+                                cookie = null;
+                                name = null;
+                                nickName = null;
+                                headImage = null;
+                                intent.setClass(getContext(), MainActivity.class);
+                                startActivity(intent);
                                 Toast.makeText(getContext(), "退出成功", Toast.LENGTH_SHORT).show();
                                 flag = true;
                                 break;
                             case R.id.menu_change:
                                 //切换账号时候的操作
-                                cookie = "";
-                                Toast.makeText(getContext(), "退出成功", Toast.LENGTH_SHORT).show();
+//                                cookie = "";
+//                                Toast.makeText(getContext(), "退出成功", Toast.LENGTH_SHORT).show();
                                 intent.setClass(getContext(), Log_RegActivity.class);
+                                startActivity(intent);
                                 flag = true;
                                 break;
                             case R.id.menu_password:
