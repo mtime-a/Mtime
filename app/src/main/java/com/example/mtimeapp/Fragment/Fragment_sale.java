@@ -41,7 +41,6 @@ public class Fragment_sale extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d("mlj","加了个Attach  sale");
     }
 
     @Nullable
