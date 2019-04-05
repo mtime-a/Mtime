@@ -81,6 +81,9 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
                 account = mAccount.getText().toString();
                 postChangePassword();
                 break;
+            case R.id.close:
+                finish();
+                break;
         }
     }
 
