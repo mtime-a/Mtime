@@ -146,8 +146,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.log_btn:
                 account = log_account.getText().toString();
                 password = log_password.getText().toString();
-                postLogJsonData();
-
+                postLogJsonData();//发送登录请求
                 break;
             case R.id.log_find_password:
                 intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);
@@ -156,25 +155,20 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.log_switch:
                 log.setVisibility(View.GONE);
                 reg.setVisibility(View.VISIBLE);
-                log_account.setText("");
+                log_account.setText("");//切换时初始化EditText
                 log_password.setText("");
                 break;
 
             case R.id.reg_send:
                 email = reg_mail.getText().toString();
                 Toast.makeText(Log_RegActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
-                RequestCode();
+                RequestCode();//请求验证码
                 break;
-            case R.id.reg_btn:                                  //注册
+            case R.id.reg_btn:
                 code = reg_code.getText().toString();
                 password = reg_password.getText().toString();
                 name = reg_account.getText().toString();
                 email = reg_mail.getText().toString();
-
-                SharedPreferences sharedPreferences1 = getSharedPreferences("theUser", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor1 = sharedPreferences1.edit();
-                editor1.putString("theName", name);
-                editor1.apply();
 
                 if (checkCode(password)) {
                     if (code == null || code.equals("")) {
@@ -238,8 +232,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         try {
             JSONArray jsonArray = new JSONArray(JsonData);
             JSONObject jsonObject = jsonArray.getJSONObject(0);
-            //  String status = jsonObject.getString("statu");
-            //String msg = jsonObject.getString("msg");
 
             code = jsonObject.getString("code");//全局变量要让注册状态时候的code有数据
 
@@ -260,8 +252,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
     //发送注册信息
     private void postRegJsonData() {
-
-        Log.d("mljcode", code);
 
         OkHttpClient okHttpClient = new OkHttpClient();
         FormBody formBody = new FormBody.Builder()
@@ -291,12 +281,10 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                         JSONObject jsonObject = new JSONObject(responseData);
                         statu = jsonObject.getString("state");
                         session = jsonObject.getString("session");
-                       // String msg = jsonObject.getString("msg");
                         judgeRegState(statu);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         });
@@ -359,26 +347,15 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                         JSONArray jsonArray = new JSONArray(responseData);
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
                         statu = jsonObject.getString("statu");
-                        if(statu.equals("1")) {
+                        if (statu.equals("1")) {
                             session = jsonObject.getString("session");
                             nickName = jsonObject.getString("nickName");
                             email = jsonObject.getString("email");
                             username = jsonObject.getString("username");
                             headImageUrl = jsonObject.getString("headImage");
 
-                            SharedPreferences sps = getSharedPreferences("Cookies", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sps.edit();
-                            editor.putString("cookie", session);
-                            editor.apply();
-                            SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                            editor1.putString("theName", username);
-                            editor1.putString("theNickname", nickName);
-                            editor1.putString("theHeadImage", headImageUrl);
-                            editor1.putString("theEmail", email);
-                            editor1.apply();
+                            judgeLogState(statu);
                         }
-                        judgeLogState(statu);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -395,19 +372,24 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             public void run() {
                 if (state.equals("1")) {
                     Toast.makeText(Log_RegActivity.this, "登陆成功", Toast.LENGTH_LONG).show();
+
+                    SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("username", username);
+                    editor.putString("nickName", nickName);
+                    editor.putString("headImageUrl", headImageUrl);
+                    editor.putString("email", email);
+                    editor.putString("cookie", session);
+                    editor.apply();
+
                     Intent intent = new Intent();
                     intent.setClass(Log_RegActivity.this, PCActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("username", username);
-//                    bundle.putString("nickName", nickName);
-//                    bundle.putString("headImage", headImageUrl);
-//                    intent.putExtra("UserMessage",bundle);
                     startActivity(intent);
                     finish();
-                }
-                if(state.equals("-1")){
+                } else if (state.equals("-1")) {
                     Toast.makeText(Log_RegActivity.this, "账号不存在,请先注册", Toast.LENGTH_LONG).show();
-                }
+                } else
+                    Toast.makeText(Log_RegActivity.this, "未知错误", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -418,6 +400,4 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         Matcher matcher = pattern.matcher(code);
         return matcher.matches();
     }
-
-
 }

@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -26,41 +28,50 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ChangePasswordActivity extends AppCompatActivity  {
-    private String verify_id = null;
-    private String waitTime = null;
-    private String code = null;
-    private String oldPassword = null;
-    private String newPassword = null;
+public class ChangePasswordActivity extends AppCompatActivity {
+    private Button mBtn;
+    private EditText mNewPassword;
+    private EditText mOldPassword;
+
+    private String oldpassword;
+    private String newpassword;
     private String cookie;
     private String statu;
     private String username;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
-        Button ChangePassword = findViewById(R.id.change_btn);
-        final EditText OldPassword = findViewById(R.id.change_password);
-        final EditText NewPassword = findViewById(R.id.change_Rpassword);
 
-        SharedPreferences sps = getSharedPreferences("Cookies", Context.MODE_PRIVATE);
+        initUI();
+
+        SharedPreferences sps = getSharedPreferences("theUser", Context.MODE_PRIVATE);
         cookie = sps.getString("cookie", "");
-        SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
-        username = sharedPreferences.getString("theName", "");
+        username = sps.getString("username", "");
 
-        ChangePassword.setOnClickListener(new View.OnClickListener() {
+        mBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                oldPassword = OldPassword.getText().toString();
-                newPassword = NewPassword.getText().toString();
-                initThread();
+                requestChangePassword();//修改密码
             }
         });
     }
-    private void initThread() {
+
+    private void initUI() {
+        mBtn = findViewById(R.id.change_btn);
+        mNewPassword = findViewById(R.id.change_newpassword);
+        mOldPassword = findViewById(R.id.change_oldpassword);
+    }
+
+    private void requestChangePassword() {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                oldpassword = mOldPassword.getText().toString();
+                newpassword = mNewPassword.getText().toString();
+
                 OkHttpClient okHttpClient = new OkHttpClient.Builder()
                         .retryOnConnectionFailure(true)
                         .connectTimeout(20, TimeUnit.SECONDS)
@@ -69,10 +80,10 @@ public class ChangePasswordActivity extends AppCompatActivity  {
                         .build();
 
                 FormBody formBody = new FormBody.Builder()
-                        .add("oldPassword",oldPassword)
-                        .add("newPassword",newPassword)
-                        .add("username",username)
-                        .add("session",cookie)
+                        .add("oldPassword", oldpassword)
+                        .add("newPassword", newpassword)
+                        .add("username", username)
+                        .add("session", cookie)
                         .build();
 
                 Request request = new Request.Builder()
@@ -93,8 +104,8 @@ public class ChangePasswordActivity extends AppCompatActivity  {
                             try {
                                 JSONObject jsonObject = new JSONObject(responseData);
                                 statu = jsonObject.getString("state");
-                                String msg = jsonObject.getString("msg");
-                                judgeChangPasswordState(msg);
+//                                String msg = jsonObject.getString("msg");
+                                judgeChangPasswordState(statu);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -104,13 +115,19 @@ public class ChangePasswordActivity extends AppCompatActivity  {
             }
         }).start();
     }
+
     private void judgeChangPasswordState(final String state) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(),state,Toast.LENGTH_LONG).show();
+                if (state == "1")
+                    Toast.makeText(ChangePasswordActivity.this, "修改成功", Toast.LENGTH_LONG).show();
+                else if (state == "2")
+                    Toast.makeText(ChangePasswordActivity.this, "原密码错误", Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(ChangePasswordActivity.this, "未知错误", Toast.LENGTH_LONG).show();
             }
         });
     }
-   
+
 }

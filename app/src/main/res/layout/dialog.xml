@@ -4,21 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/layout"
-        android:orientation="vertical"
+    <EditText
+        android:id="@+id/dialog_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/text"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_margin="20dp"
-            android:background="@android:color/white"
-            android:gravity="start"
-            android:hint="请输入文字" />
-
-    </LinearLayout>
+        android:layout_height="150dp"
+        android:layout_margin="20dp"
+        android:background="@android:color/white"
+        android:gravity="start"
+        android:hint="请输入文字" />
 
 </LinearLayout>
