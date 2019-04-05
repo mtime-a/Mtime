@@ -79,6 +79,7 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
                 password = mPassword.getText().toString();
                 code = mCode.getText().toString();
                 account = mAccount.getText().toString();
+                postChangePassword();
                 break;
         }
     }
@@ -147,16 +148,18 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
         btn_push = findViewById(R.id.find_password_btn_push);
         close = findViewById(R.id.find_password_close);
     }
-    private void postRegJsonData() {
+    private void postChangePassword() {
 
         OkHttpClient okHttpClient = new OkHttpClient();
         FormBody formBody = new FormBody.Builder()
                 .add("username", account)
                 .add("newPwd",password)
-                .add("vericode", code)
+                .add("code", code)
                 .build();
+
+        Log.e("FindPassword",code);
         Request request = new Request.Builder()
-                .url("http://132.232.78.106:8001/api/register/")//请求的url
+                .url("http://132.232.78.106:8001/api/changePwd/")//请求的url
                 .post(formBody)
                 .build();
 
@@ -174,7 +177,7 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
                         String responseData = response.body().string();
                         JSONArray jsonArray = new JSONArray(responseData);
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
-                        statu = jsonObject.getString("state");
+                        statu = jsonObject.getString("statu");
                         String msg = jsonObject.getString("msg");
                         judgeState(msg);
                     } catch (JSONException e) {
@@ -186,12 +189,18 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
         });
 
     }
-    private void judgeState(String msg){
-        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
-        if(statu.equals(1)){
-        Intent intent = new Intent();
-        intent.setClass(this,Log_RegActivity.class);
-        startActivity(intent);
-        }
+    private void judgeState(final String msg){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
+                if(statu.equals(1)){
+                    Intent intent = new Intent();
+                    intent.setClass(getApplicationContext(),Log_RegActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
     }
 }
