@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -37,10 +38,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     public void onBindViewHolder(@NonNull CommentsAdapter.ViewHolder viewHolder, int i) {
         Map map = list.get(i);
 
-//        Glide.with(context).load(map.get("author_head")).into(viewHolder.icon);
-        viewHolder.name.setText(map.get("author_name").toString());
-//        viewHolder.content.setText(map.get("content").toString());
-//        viewHolder.time.setText(map.get("time").toString());
+        Glide.with(context).load(map.get("autherHeadPhoto")).into(viewHolder.autherHeadPhoto);
+        viewHolder.author.setText(map.get("author").toString());
+        viewHolder.title.setText(map.get("content").toString());
+        viewHolder.time.setText(map.get("Time").toString());
     }
 
     @Override
@@ -50,18 +51,18 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name;
-        TextView content;
+        TextView author;
+        TextView title;
         TextView time;
-        CircleImageView icon;
+        ImageView autherHeadPhoto;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            name = itemView.findViewById(R.id.item_comment_name);
-            content = itemView.findViewById(R.id.item_comment_content);
+            author = itemView.findViewById(R.id.item_comment_name);
+            title = itemView.findViewById(R.id.item_comment_content);
             time = itemView.findViewById(R.id.item_comment_time);
-            icon = itemView.findViewById(R.id.item_comment_icon);
+            autherHeadPhoto = itemView.findViewById(R.id.item_comment_icon);
         }
     }
 }

@@ -47,7 +47,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         Map map = list.get(i);
 
         viewHolder.title.setText(map.get("title").toString());
-        Glide.with(context).load(map.get("image")).into(viewHolder.picture);
+        Glide.with(context).load(map.get("poster")).into(viewHolder.picture);
         Glide.with(context).load(map.get("author_head").toString()).into(viewHolder.author_head);
         viewHolder.subtitle.setText(map.get("subtitle").toString());
         viewHolder.author_name.setText(map.get("author_name").toString());

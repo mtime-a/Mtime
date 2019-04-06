@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <com.example.mtimeapp.CustomView.CircleImageView
+    <ImageView
         android:id="@+id/item_comment_icon"
         android:layout_width="45dp"
         android:layout_height="45dp"
@@ -48,10 +48,16 @@
         <TextView
             android:id="@+id/item_comment_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginTop="5dp"
             android:text="发的斯拉夫卡上的洛夫卡了的反抗拉萨扩大"
             android:textColor="@android:color/black"
             android:textSize="20dp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="3dp"
+            android:src="@android:color/darker_gray" />
     </LinearLayout>
 </LinearLayout>

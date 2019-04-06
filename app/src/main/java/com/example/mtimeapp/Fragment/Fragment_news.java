@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.mtimeapp.Adapter.NewsAdapter;
 import com.example.mtimeapp.R;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,6 +36,7 @@ public class Fragment_news extends Fragment {
 
     private RecyclerView recyclerView;
     private List<Map<String, Object>> list;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Nullable
     @Override
@@ -46,53 +50,67 @@ public class Fragment_news extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.fragment_news_recyclerview);
-       // initThread();
+        swipeRefreshLayout = view.findViewById(R.id.fragment_news_swipe);
+
+        initData();
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initData();
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void initThread() {
+    private void initData() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://39.96.208.176/news/i/hotpot_list/").build();
+                    Request request = new Request.Builder().url("http://132.232.78.106:8001/api/getNewsList/").build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    initData();
                 }
             }
         }).start();
     }
+
     private void parseJSONWithJSONObject(String JsonData) {
         try {
             list = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(JsonData);
-            String status = jsonObject.getString("status");
-            if (status.equals("ok")) {
-                JSONArray jsonArray = jsonObject.getJSONArray("list");
+            String status = jsonObject.getString("state");
+            if (status.equals("1")) {
+                JSONArray jsonArray = jsonObject.getJSONArray("result");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    Integer news_id = Integer.parseInt(jsonObject1.getString("news_id"));
-                    String title = jsonObject1.getString("title");
-                    String content = jsonObject1.getString("content");
-                    String pub_time = jsonObject1.getString("pub_time");
-                    String picture = jsonObject1.getString("picture");
+                    Integer id = Integer.parseInt(jsonObject1.getString("id"));
+                    String Title = jsonObject1.getString("Title");
+                    String author = jsonObject1.getString("author");
+                    String Time = jsonObject1.getString("Time");
+                    String photo = jsonObject1.getString("photo");
 
                     Map map = new HashMap();
-                    map.put("news_id", news_id);
-                    map.put("content", content);
-                    map.put("title", title);
-                    map.put("pub_time", pub_time);
-                    map.put("picture", "http://39.96.208.176" + picture);
+                    map.put("id", id);
+                    map.put("Title", Title);
+                    map.put("author", author);
+                    map.put("Time", Time);
+                    map.put("photo", "http://132.232.78.106:8001/media/" + photo);
 
                     list.add(map);
                 }
-                showResponse();
+                showResponse();//子线程进行UI操作
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.d("mlj", "第2个");
         }
     }
 

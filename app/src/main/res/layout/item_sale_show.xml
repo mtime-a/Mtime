@@ -17,8 +17,8 @@
 
         <com.example.mtimeapp.CustomView.RoundImageView
             android:id="@+id/item_sale_show_picture"
-            android:layout_width="150dp"
-            android:layout_height="200dp"
+            android:layout_width="112dp"
+            android:layout_height="150dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="15dp"

@@ -47,13 +47,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         Glide.with(context).load(map.get("image")).into(viewHolder.picture);
         viewHolder.date.setText(map.get("release_date").toString());
         viewHolder.mark.setText(map.get("mark").toString());
-
+        viewHolder.info.setText(map.get("info").toString());
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context, BookActivity.class);
-                intent.putExtra("film_id",list.get(i).get("film_id").toString());
+                intent.putExtra("film_id", list.get(i).get("film_id").toString());
                 context.startActivity(intent);
             }
         });
@@ -71,10 +71,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         TextView title;
         TextView mark;
         CardView cardView;
+        TextView info;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            info = itemView.findViewById(R.id.item_sale_book_info);
             cardView = itemView.findViewById(R.id.item_sale_book_card);
             picture = itemView.findViewById(R.id.item_sale_book_picture);
             date = itemView.findViewById(R.id.item_sale_book_date);

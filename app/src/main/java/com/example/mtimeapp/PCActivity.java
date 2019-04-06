@@ -138,6 +138,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         });
         builder_username.setView(view).create().show();
     }
+
     private void changNickname(final String nick){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)

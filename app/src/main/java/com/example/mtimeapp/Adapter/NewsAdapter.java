@@ -42,16 +42,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull NewsAdapter.ViewHolder viewHolder, final int i) {
         Map map = list.get(i);
 
-        viewHolder.title.setText(map.get("title").toString());
-        Glide.with(context).load(map.get("picture")).into(viewHolder.picture);
-        viewHolder.date.setText(map.get("pub_time").toString());
-
+        viewHolder.title.setText(map.get("Title").toString());
+        Glide.with(context).load(map.get("photo")).into(viewHolder.picture);
+        viewHolder.date.setText(map.get("Time").toString());
+        viewHolder.author.setText(map.get("author").toString());
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context, NewsActivity.class);
-                intent.putExtra("news_id", list.get(i).get("news_id").toString());
+                intent.putExtra("id", list.get(i).get("id").toString());
                 context.startActivity(intent);
             }
         });
@@ -68,6 +68,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         TextView title;
         TextView date;
         CardView cardView;
+        TextView author;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,6 +77,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             title = itemView.findViewById(R.id.item_news_title);
             picture = itemView.findViewById(R.id.item_news_picture);
             date = itemView.findViewById(R.id.item_news_date);
+            author = itemView.findViewById(R.id.item_news_author);
         }
     }
 }

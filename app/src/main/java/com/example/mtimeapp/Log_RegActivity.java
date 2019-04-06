@@ -213,7 +213,7 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                             .build();
 
                     Request request = new Request.Builder()
-                            .addHeader("Connection","close")
+                            .addHeader("Connection", "close")
                             .url("http://132.232.78.106:8001/api/sendCheckCode/")
                             .post(formBody)
                             .build();
@@ -237,14 +237,14 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             String msg = jsonObject.getString("msg");
 
 //            code = jsonObject.getString("code");//全局变量要让注册状态时候的code有数据
-//
 //            showResponse(code);
             judgeCodeState(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-    private void judgeCodeState(final String msg){
+
+    private void judgeCodeState(final String msg) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -341,30 +341,29 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 .add("password", password)
                 .build();
 
-        Log.e("Log",account + password);
+        Log.e("Log", account + password);
         Request request = new Request.Builder()
                 .url("http://132.232.78.106:8001/api/login/")
                 .post(formBody)
-                .addHeader("Connection","close")
+                .addHeader("Connection", "close")
                 .build();
 
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                postLogJsonData();
                 Log.e("TAG", "获取数据失败");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                Log.e("Log_Reg",responseData);
+                Log.e("Log_Reg", responseData);
                 if (response.isSuccessful()) {
                     try {
                         JSONArray jsonArray = new JSONArray(responseData);
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
                         statu = jsonObject.getString("statu");
-                        if(statu.equals("1")) {
+                        if (statu.equals("1")) {
                             session = jsonObject.getString("session");
                             nickName = jsonObject.getString("nickName");
                             email = jsonObject.getString("email");
@@ -373,16 +372,15 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
 
                             SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("cookie",session);
+                            editor.putString("cookie", session);
                             editor.putString("theName", username);
                             editor.putString("theNickname", nickName);
                             editor.putString("theHeadImage", headImageUrl);
                             editor.putString("theEmail", email);
                             editor.apply();
-                        }
-                        else {
+                        } else {
                             String msg = jsonObject.getString("msg");
-                            Log.e("Log_Reg",msg);
+                            Log.e("Log_Reg", msg);
                         }
                         judgeLogState(statu);
                     } catch (JSONException e) {
@@ -411,10 +409,10 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                     startActivity(intent);
                     finish();
                 }
-                if(state.equals("-1")){
+                if (state.equals("-1")) {
                     Toast.makeText(Log_RegActivity.this, "账号不存在,请先注册", Toast.LENGTH_LONG).show();
                 }
-                if(state.equals("-2")){
+                if (state.equals("-2")) {
                     Toast.makeText(Log_RegActivity.this, "密码不正确", Toast.LENGTH_LONG).show();
                 }
             }
@@ -427,5 +425,14 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         Pattern pattern = Pattern.compile("[\\S]{8,16}$");
         Matcher matcher = pattern.matcher(code);
         return matcher.matches();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent();
+        intent.setClass(Log_RegActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

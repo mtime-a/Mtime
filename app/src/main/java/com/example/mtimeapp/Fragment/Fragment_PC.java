@@ -70,10 +70,10 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
         super.onResume();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("theUser", Context.MODE_PRIVATE);
-        cookie = sharedPreferences.getString("cookie","");
+        cookie = sharedPreferences.getString("cookie", "");
         name = sharedPreferences.getString("theName", "");
         nickName = sharedPreferences.getString("theNickname", "");
-        headImage = "http://132.232.78.106:8001/media/" + sharedPreferences.getString("theHeadImage","");
+        headImage = "http://132.232.78.106:8001/media/" + sharedPreferences.getString("theHeadImage", "");
 
 //        Bundle bundle = getActivity().getIntent().getExtras();
 //
@@ -121,11 +121,11 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.pc_jump:
                 //登陆了就跳转到个人中心
-                if (op == 1){
+                if (op == 1) {
                     intent.setClass(getContext(), PCActivity.class);
                     startActivity(intent);
                 }
-                    //没登陆的时候就跳转到登陆页面
+                //没登陆的时候就跳转到登陆页面
                 else ToastAndRemind();
 
                 break;
@@ -149,7 +149,7 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
                     intent.setClass(getContext(), MyCommentsActivity.class);
                     startActivity(intent);
                 }
-                    //没登陆的时候就跳转到登陆页面
+                //没登陆的时候就跳转到登陆页面
                 else ToastAndRemind();
 
                 break;
@@ -169,17 +169,7 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
                         switch (item.getItemId()) {
                             case R.id.menu_exit:
                                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences("theUser", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("cookie","");
-                                editor.putString("theName", "");
-                                editor.putString("theNickname", "");
-                                editor.putString("theHeadImage","");
-                                editor.putString("theEmail","");
-                                editor.apply();
-                                cookie = null;
-                                name = null;
-                                nickName = null;
-                                headImage = null;
+                                sharedPreferences.edit().clear().commit();
                                 intent.setClass(getContext(), MainActivity.class);
                                 startActivity(intent);
                                 Toast.makeText(getContext(), "退出成功", Toast.LENGTH_SHORT).show();
@@ -187,18 +177,15 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
                                 break;
                             case R.id.menu_change:
                                 //切换账号时候的操作
-//                                cookie = "";
-//                                Toast.makeText(getContext(), "退出成功", Toast.LENGTH_SHORT).show();
                                 intent.setClass(getContext(), Log_RegActivity.class);
                                 startActivity(intent);
                                 flag = true;
                                 break;
                             case R.id.menu_password:
-                                if (op == 1){
+                                if (op == 1) {
                                     intent.setClass(getContext(), ChangePasswordActivity.class);
                                     startActivity(intent);
-                                }
-                                else {
+                                } else {
                                     ToastAndRemind();
                                 }
                                 //修改密码时候的操作
@@ -213,11 +200,12 @@ public class Fragment_PC extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-    public void ToastAndRemind(){
-            Toast.makeText(getContext(),"还未登陆，请先登录",Toast.LENGTH_LONG).show();
-            Intent intent = new Intent();
-            intent.setClass(getContext(),Log_RegActivity.class);
-            startActivity(intent);
+
+    public void ToastAndRemind() {
+        Toast.makeText(getContext(), "还未登陆，请先登录", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent();
+        intent.setClass(getContext(), Log_RegActivity.class);
+        startActivity(intent);
     }
 }
 

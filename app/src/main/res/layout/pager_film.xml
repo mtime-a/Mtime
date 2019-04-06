@@ -96,20 +96,45 @@
 
         <LinearLayout
             android:id="@+id/pager_film_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginLeft="80dp">
+            android:layout_marginLeft="30dp"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:layout_gravity="center"
                 android:src="@mipmap/pinglun" />
 
             <TextView
                 android:id="@+id/pager_film_comment_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:text="50" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pager_film_love"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/dianzan" />
+
+            <TextView
+                android:id="@+id/pager_film_love_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
                 android:text="50" />
         </LinearLayout>

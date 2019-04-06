@@ -23,7 +23,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
                     android:layout_marginVertical="10dp"
-                    android:text="热门消息"
+                    android:text="热门影评"
                     android:textColor="@android:color/black" />
 
                 <ImageView
@@ -34,8 +34,14 @@
         </FrameLayout>
     </android.support.v7.widget.Toolbar>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragment_film_recyclerview"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_film_swipe"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_film_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
