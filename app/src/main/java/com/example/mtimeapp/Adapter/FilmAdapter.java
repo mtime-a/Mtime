@@ -44,7 +44,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull FilmAdapter.ViewHolder viewHolder, final int i) {
-        Map map = list.get(i);
+        final Map map = list.get(i);
 
         viewHolder.title.setText(map.get("title").toString());
         Glide.with(context).load(map.get("poster")).into(viewHolder.picture);
@@ -58,8 +58,10 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context, FilmActivity.class);
-                intent.putExtra("comment_id", list.get(i).get("comment_id").toString());
+                intent.putExtra("comment_id", map.get("comment_id").toString());
                 context.startActivity(intent);
+
+                Log.e("FilmAdapter",map.get("comment_id").toString());
             }
         });
     }

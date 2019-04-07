@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.mtimeapp.CustomView.RoundImageView;
 import com.example.mtimeapp.Util.RichText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,6 +62,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     private String clickNum;
     private String replyNum;
     private String content;
+    private ArrayList<Map<String, Object>> list_comment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         film_id = intent.getStringExtra("comment_id");
-
+        Log.e("FilmActivity",film_id);
         initUI();
 
         icon_comment.setOnClickListener(this);
@@ -78,7 +80,12 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
 
         SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
         cookie = sharedPreferences.getString("cookie", "");
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
         if (cookie.equals("")) {
             Toast.makeText(FilmActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent();
@@ -96,19 +103,19 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
                 try {                                                                                          //okHttp请求数据
                     OkHttpClient okHttpClient = new OkHttpClient.Builder()
                             .retryOnConnectionFailure(true)
-                            .connectTimeout(20, TimeUnit.SECONDS)
-                            .writeTimeout(20, TimeUnit.SECONDS)
-                            .readTimeout(20, TimeUnit.SECONDS)
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .writeTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(10, TimeUnit.SECONDS)
                             .build();
 
                     FormBody formBody = new FormBody.Builder()
                             .add("id", film_id)
-                            .add("operaType", "0")
+                            //.add("operaType", "0")
                             .add("session", cookie)
                             .build();
 
                     Request request = new Request.Builder()
-                            .url("http://132.232.78.106:8001/api/getPointNews/")
+                            .url("http://132.232.78.106:8001/api/getPointFilmReview/")
                             .post(formBody)
                             .addHeader("Connection", "close")
                             .build();
@@ -200,6 +207,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent();
                 intent.setClass(FilmActivity.this, CommentsActivity.class);
                 intent.putExtra("id", film_id);
+                intent.putExtra("type","film");
                 startActivity(intent);
                 break;
             case R.id.pager_film_love:

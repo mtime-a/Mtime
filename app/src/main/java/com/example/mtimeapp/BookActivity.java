@@ -62,6 +62,19 @@ public class BookActivity extends AppCompatActivity {
 
         initUI();
 
+//        if (cookie.equals("")) {
+//            Toast.makeText(BookActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+//            Intent intent1 = new Intent();
+//            intent1.setClass(BookActivity.this, Log_RegActivity.class);
+//            startActivity(intent1);
+//            finish();
+//        } else
+//            initData();//加载详情的内容
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (cookie.equals("")) {
             Toast.makeText(BookActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent();

@@ -107,6 +107,7 @@ public class Fragment_film extends Fragment {
                     map.put("author_head", "http://132.232.78.106:8001" + author_head);
                     map.put("poster", "http://132.232.78.106:8001" + poster);//海报
 
+                    Log.d("FilmFragment commentId", comment_id);
                     list.add(map);
                 }
                 showResponse();//子线程进行UI操作

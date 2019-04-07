@@ -40,6 +40,7 @@ public class CommentsActivity extends AppCompatActivity {
     private String statu;
     private ArrayList<Map<String, Object>> list_comment;
     private String id;
+    private String type;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class CommentsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         id = intent.getStringExtra("id");//电影id或者新闻id
+        type = intent.getStringExtra("type");
 
         recyclerView = findViewById(R.id.comments_recyclerview);
 
@@ -60,11 +62,15 @@ public class CommentsActivity extends AppCompatActivity {
             intent1.setClass(CommentsActivity.this, Log_RegActivity.class);
             startActivity(intent1);
         } else
-            initData();//加载评论的内容
+            if(type.equals("news")){
+                initData("http://132.232.78.106:8001/api/getPointNews/");//加载评论的内容
+            }else if(type.equals("film")){
+                initData("http://132.232.78.106:8001/api/getPointFilmReview/");
+        }
 
     }
 
-    private void initData() {
+    private void initData(final String url) {
         new Thread(new Runnable() {                                                                 //新线程联网
             @Override
             public void run() {
@@ -83,7 +89,7 @@ public class CommentsActivity extends AppCompatActivity {
                             .build();
 
                     Request request = new Request.Builder()
-                            .url("http://132.232.78.106:8001/api/getPointNews/")
+                            .url(url)
                             .post(formBody)
                             .addHeader("Connection", "close")
                             .build();

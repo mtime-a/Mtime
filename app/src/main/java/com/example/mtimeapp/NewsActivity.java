@@ -83,6 +83,12 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         cookie = sharedPreferences.getString("cookie", "");
 
         Log.d("mlj", "cookie" + cookie);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (cookie.equals("")) {
             Toast.makeText(NewsActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent();
@@ -203,6 +209,7 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent();
                 intent.setClass(NewsActivity.this, CommentsActivity.class);
                 intent.putExtra("id", news_id);
+                intent.putExtra("type","news");
                 startActivity(intent);
                 break;
             case R.id.pager_news_love:
