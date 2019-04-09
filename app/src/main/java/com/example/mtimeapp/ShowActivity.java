@@ -1,6 +1,8 @@
 package com.example.mtimeapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -64,24 +66,31 @@ public class ShowActivity extends AppCompatActivity {
     private String mark;
     private String marked_members;
     private String comment_members;
+    private String cookie;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
 
-
         Intent intent = getIntent();
         film_id = intent.getStringExtra("film_id");
 
-        Log.d("mlj","成功跳转3"+film_id);
+        SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+        cookie = sharedPreferences.getString("cookie", "");
 
         initUI();
 
-        initThread();
+        initClick();
+
+        initDate();
     }
 
-    private void initThread() {
+    private void initClick() {
+
+    }
+
+    private void initDate() {
         new Thread(new Runnable() {                                                                 //新线程联网
             @Override
             public void run() {

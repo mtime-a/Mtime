@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.mtimeapp.Adapter.FilmAdapter;
 import com.example.mtimeapp.R;
+import com.example.mtimeapp.Util.CheckNet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,14 +49,17 @@ public class Fragment_film extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.fragment_film_swipe);
         recyclerView = view.findViewById(R.id.fragment_film_recyclerview);
 
-        initData();
+        if (new CheckNet(getContext()).initNet())
+            initData();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                initData();
+                if (new CheckNet(getContext()).initNet()) {
+                    initData();
+                    Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+                }
                 swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -127,5 +131,12 @@ public class Fragment_film extends Fragment {
                 recyclerView.setAdapter(adapter);
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (new CheckNet(getContext()).initNet())
+            initData();
     }
 }

@@ -48,8 +48,8 @@ public class CommentsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comments);
 
         Intent intent = getIntent();
-        id = intent.getStringExtra("id");//电影id或者新闻id
         type = intent.getStringExtra("type");
+        id = intent.getStringExtra("id");//电影id或者新闻id
 
         recyclerView = findViewById(R.id.comments_recyclerview);
 
@@ -61,11 +61,13 @@ public class CommentsActivity extends AppCompatActivity {
             Intent intent1 = new Intent();
             intent1.setClass(CommentsActivity.this, Log_RegActivity.class);
             startActivity(intent1);
-        } else
-            if(type.equals("news")){
+        } else {
+            if (type.equals("news"))
                 initData("http://132.232.78.106:8001/api/getPointNews/");//加载评论的内容
-            }else if(type.equals("film")){
-                initData("http://132.232.78.106:8001/api/getPointFilmReview/");
+            else if (type.equals("film"))
+                initData("http://132.232.78.106:8001/api/getPointFilm/");
+            else
+                Toast.makeText(CommentsActivity.this, "未知错误", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -84,7 +86,7 @@ public class CommentsActivity extends AppCompatActivity {
 
                     FormBody formBody = new FormBody.Builder()
                             .add("id", id)
-                            .add("operaType", "0")
+                            //.add("operaType", "0")
                             .add("session", cookie)
                             .build();
 
@@ -93,6 +95,8 @@ public class CommentsActivity extends AppCompatActivity {
                             .post(formBody)
                             .addHeader("Connection", "close")
                             .build();
+
+                    Log.d("mlj", "request" + request.toString());
 
                     okHttpClient.newCall(request).enqueue(new Callback() {
                         @Override
@@ -105,6 +109,9 @@ public class CommentsActivity extends AppCompatActivity {
 
                             if (response.isSuccessful()) {
                                 String responseData = response.body().string();
+
+                                Log.d("mlj", "dasffadsfasd" + responseData);
+
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseData);
                                     statu = jsonObject.getString("state");

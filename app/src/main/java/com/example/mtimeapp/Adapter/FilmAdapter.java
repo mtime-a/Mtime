@@ -59,6 +59,8 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
                 Intent intent = new Intent();
                 intent.setClass(context, FilmActivity.class);
                 intent.putExtra("comment_id", map.get("comment_id").toString());
+                intent.putExtra("picture",map.get("poster").toString());
+                intent.putExtra("author_head",map.get("author_head").toString());
                 context.startActivity(intent);
 
                 Log.e("FilmAdapter",map.get("comment_id").toString());

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,9 +82,6 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
 
         SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
         cookie = sharedPreferences.getString("cookie", "");
-
-        Log.d("mlj", "cookie" + cookie);
-
     }
 
     @Override
@@ -209,7 +207,7 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent();
                 intent.setClass(NewsActivity.this, CommentsActivity.class);
                 intent.putExtra("id", news_id);
-                intent.putExtra("type","news");
+                intent.putExtra("type", "news");
                 startActivity(intent);
                 break;
             case R.id.pager_news_love:
@@ -223,16 +221,80 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         builder_text = new AlertDialog.Builder(NewsActivity.this);
         builder_text.setTitle("评论");
         view = LayoutInflater.from(NewsActivity.this).inflate(R.layout.dialog, null);
+        final EditText editText = view.findViewById(R.id.text);
         builder_text.setPositiveButton("发表", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                //从这里上传到服务器
-
-                Toast.makeText(NewsActivity.this, "发表成功", Toast.LENGTH_LONG).show();
+                String content = editText.getText().toString();
+                postReplyRequest_short(content);
             }
         });
         builder_text.setView(view).create().show();
+    }
+
+    private void postReplyRequest_short(final String content) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)
+                            .connectTimeout(20, TimeUnit.SECONDS)
+                            .writeTimeout(20, TimeUnit.SECONDS)
+                            .readTimeout(20, TimeUnit.SECONDS)
+                            .build();
+
+                    FormBody formBody = new FormBody.Builder()
+                            .add("id", news_id)
+                            .add("content", content)
+                            .add("session", cookie)
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url("http://132.232.78.106:8001/api/replyPointNews/")
+                            .post(formBody)
+                            .addHeader("Connection", "close")
+                            .build();
+
+                    okHttpClient.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.e("TAG", "获取数据失败");
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String responseData = response.body().string();
+                            if (response.isSuccessful()) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(responseData);
+                                    String statu = jsonObject.getString("state");
+                                    if (statu.equals("1")) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(NewsActivity.this, "发表成功", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    } else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(NewsActivity.this, "发表失败", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override

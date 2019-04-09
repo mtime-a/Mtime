@@ -130,7 +130,7 @@
                 android:src="@mipmap/dianzan" />
 
             <TextView
-                android:id="@+id/pager_book_mark_num"
+                android:id="@+id/pager_book_love_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

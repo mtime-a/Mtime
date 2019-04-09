@@ -1,6 +1,7 @@
 package com.example.mtimeapp.Fragment;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,11 +22,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -74,14 +77,32 @@ public class Fragment_sale_book extends Fragment {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://132.232.78.106:8001/api/getFilmList/")
-                            .addHeader("head","1")
-                            .addHeader("type","0")
-                            .addHeader("number","3")
+                    HttpUrl url=HttpUrl.parse("http://132.232.78.106:8001/api/getFilmList/");
+                    assert url != null;
+                    url.newBuilder()
+                            .addQueryParameter("type","0")
+                            .addQueryParameter("head","0")
+                            .addQueryParameter("number","3")
                             .build();
-                    Response response = client.newCall(request).execute();
+                    Request request=new Request.Builder()
+                            .url(url)
+//                            .addHeader("head", "1")
+//                            .addHeader("type", "1")
+//                            .addHeader("number", "3")
+                            .build();
+                    Response response=client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
+
+//                    OkHttpClient client = new OkHttpClient();
+//                    Request request = new Request.Builder().url("http://132.232.78.106:8001/api/getFilmList/")
+//                            .addHeader("head", "1")
+//                            .addHeader("type", "1")
+//                            .addHeader("number", "3")
+//                            .build();
+//                    Response response = client.newCall(request).execute();
+//                    String responseData = response.body().string();
+//                    parseJSONWithJSONObject(responseData);
                 } catch (Exception e) {
                     e.printStackTrace();
                     initData();

@@ -41,6 +41,7 @@ import okhttp3.Response;
 public class FilmActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RoundImageView mPicture;
+    private RoundImageView mAuthor_icon;
     private TextView mDate;
     private TextView mWeb;
     private TextView mTitle;
@@ -63,6 +64,8 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     private String replyNum;
     private String content;
     private ArrayList<Map<String, Object>> list_comment;
+    private String picture;
+    private String author_head;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +74,9 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         film_id = intent.getStringExtra("comment_id");
-        Log.e("FilmActivity",film_id);
+        picture = intent.getStringExtra("picture");
+        author_head = intent.getStringExtra("author_head");
+        Log.d("mljmljmlj", picture);
         initUI();
 
         icon_comment.setOnClickListener(this);
@@ -177,7 +182,11 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
                 mComment_num.setText(replyNum);
                 mLove_num.setText(clickNum);
                 mDate.setText(Time);
-                Glide.with(FilmActivity.this).load("http://132.232.78.106:8001/media/" + photo).into(mPicture);
+                if (photo.equals("None"))
+                    Glide.with(FilmActivity.this).load(picture).into(mPicture);
+                else
+                    Glide.with(FilmActivity.this).load("http://132.232.78.106:8001/media/" + photo).into(mPicture);
+                Glide.with(FilmActivity.this).load(author_head).into(mAuthor_icon);
                 new RichText(FilmActivity.this, mWeb, content);
             }
         });
@@ -185,6 +194,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void initUI() {
+        mAuthor_icon = findViewById(R.id.pager_film_icon);
         mLove = findViewById(R.id.pager_film_love);
         mLove_num = findViewById(R.id.pager_film_love_num);
         mDate = findViewById(R.id.pager_film_date);
@@ -207,7 +217,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent();
                 intent.setClass(FilmActivity.this, CommentsActivity.class);
                 intent.putExtra("id", film_id);
-                intent.putExtra("type","film");
+                intent.putExtra("type", "film");
                 startActivity(intent);
                 break;
             case R.id.pager_film_love:
