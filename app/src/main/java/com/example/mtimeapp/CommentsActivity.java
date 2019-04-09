@@ -129,6 +129,11 @@ public class CommentsActivity extends AppCompatActivity {
                                             map.put("autherHeadPhoto", "http://132.232.78.106:8001/media/" + autherHeadPhoto);
                                             map.put("Time", Time);
                                             map.put("content", content);
+                                            if(type.equals("news")){
+                                                map.put("type","news");
+                                            }else if(type.equals("film")){
+                                                map.put("type","film");
+                                            }
 
                                             list_comment.add(map);
                                         }

@@ -62,7 +62,6 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     private String clickNum;
     private String replyNum;
     private String content;
-    private ArrayList<Map<String, Object>> list_comment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

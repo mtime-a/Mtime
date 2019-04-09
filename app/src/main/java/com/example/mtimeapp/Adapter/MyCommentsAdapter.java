@@ -41,6 +41,7 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
     private List<Map<String, Object>> list;
     private String cookie;
     private String statu;
+    int op = 0;
 
     public MyCommentsAdapter(Context context, List<Map<String, Object>> list) {
         this.context = context;
@@ -80,7 +81,14 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.e("MyCommentsAdapter","删除news");
                     deleteComment(map.get("id").toString(),"0");
+                    if(op == 1){
+                        list.remove(i);
+                        notifyItemRemoved(i);
+                        notifyDataSetChanged();
+                        op = 0;
+                    }
                 }
             });
         }
@@ -100,7 +108,15 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.e("MyCommentsAdapter","删除news");
                     deleteComment(map.get("id").toString(),"1");
+                    Log.e("MyCommentsAdapter",map.get("id").toString());
+                    if(op == 1){
+                    list.remove(i);
+                    notifyItemRemoved(i);
+                    notifyDataSetChanged();
+                    op = 0;
+                    }
                 }
             });
         }
@@ -178,6 +194,7 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
                         String msg = jsonObject.getString("msg");
                        // judgeState(statu);
                         Log.e("Adapter",msg);
+                        op = 1;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
