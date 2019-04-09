@@ -109,7 +109,7 @@ public class MyCommentsActivity extends AppCompatActivity {
                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                 String id = jsonObject1.getString("id");
                 String content = jsonObject1.getString("content");
-                String filmId = jsonObject1.getString("filmId");
+                String filmId = jsonObject1.getString("firmId");
                 String filmName = jsonObject1.getString("firmName");
                 String Time = jsonObject1.getString("Time");
                 list_film = new ArrayList<>();
@@ -174,33 +174,6 @@ public class MyCommentsActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                LinearLayoutManager manager_news = new LinearLayoutManager(MyCommentsActivity.this);
-                recyclerView_news.setLayoutManager(manager_news);
-                MyCommentsAdapter adapter_news = new MyCommentsAdapter(MyCommentsActivity.this, list_news);
-                recyclerView_news.setAdapter(adapter_news);
-            }
-        });
-    }
-    private void showResponse() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                if (list_film.size() == 0 && list_news.size() == 0) {
-                    comments_news.setVisibility(View.GONE);
-                    comments_film.setVisibility(View.GONE);
-                } else {
-                    if (list_film.size() == 0)
-                        comments_film.setVisibility(View.GONE);
-                    else if (list_news.size() == 0)
-                        comments_news.setVisibility(View.GONE);
-                }
-
-                LinearLayoutManager manager_film = new LinearLayoutManager(MyCommentsActivity.this);
-                recyclerView_film.setLayoutManager(manager_film);
-                MyCommentsAdapter adapter_film = new MyCommentsAdapter(MyCommentsActivity.this, list_film);
-                recyclerView_film.setAdapter(adapter_film);
-
                 LinearLayoutManager manager_news = new LinearLayoutManager(MyCommentsActivity.this);
                 recyclerView_news.setLayoutManager(manager_news);
                 MyCommentsAdapter adapter_news = new MyCommentsAdapter(MyCommentsActivity.this, list_news);

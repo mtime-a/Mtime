@@ -43,6 +43,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -73,6 +75,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
     private File outputImage;
     private AlertDialog.Builder builder_username;
     private View view;
+    private File postFile;
 
     private AlertDialog.Builder buider;
     public static final int TAKE_PHOTO = 1;
@@ -91,7 +94,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         mEmil.setOnClickListener(this);
         back.setOnClickListener(this);
 
-       // initThread();
+        // initThread();
     }
 
     @Override
@@ -101,8 +104,8 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         cookie = sharedPreferences.getString("cookie", "");
         username = sharedPreferences.getString("theName", "");
         nickName = sharedPreferences.getString("theNickname", "");
-        email = sharedPreferences.getString("theEmail","");
-        headImage = "http://132.232.78.106:8001/media/" + sharedPreferences.getString("theHeadImage","");
+        email = sharedPreferences.getString("theEmail", "");
+        headImage = "http://132.232.78.106:8001/media/" + sharedPreferences.getString("theHeadImage", "");
         imageUri = Uri.parse(headImage);
         mUsername.setText(nickName);
         mEmil.setText(email);
@@ -133,30 +136,28 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(PCActivity.this, "你选择了" + arrItem[which], Toast.LENGTH_LONG).show();
                         if (arrItem[which].equals("拍照")) {
-                            outputImage = new File(getExternalCacheDir(),"output_image.jpg");
+                            outputImage = new File(getExternalCacheDir(), "output_image.jpg");
                             try {
-                                if(outputImage.exists()){
+                                if (outputImage.exists()) {
                                     outputImage.delete();
                                 }
                                 outputImage.createNewFile();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            if(Build.VERSION.SDK_INT >= 24){
-                                imageUri = FileProvider.getUriForFile(PCActivity.this,"com.example.cameraAlbumTest.fileProvider",outputImage);
-                            }
-                            else {
+                            if (Build.VERSION.SDK_INT >= 24) {
+                                imageUri = FileProvider.getUriForFile(PCActivity.this, "com.example.cameraAlbumTest.fileProvider", outputImage);
+                            } else {
                                 imageUri = Uri.fromFile(outputImage);
                             }
                             Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
-                            startActivityForResult(intent,TAKE_PHOTO);
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                            startActivityForResult(intent, TAKE_PHOTO);
 
-                        }else if(arrItem[which].equals("从相册选择")){
-                            if(ContextCompat.checkSelfPermission(PCActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-                                ActivityCompat.requestPermissions(PCActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-                            }
-                            else {
+                        } else if (arrItem[which].equals("从相册选择")) {
+                            if (ContextCompat.checkSelfPermission(PCActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(PCActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            } else {
                                 openAlbum();
                             }
                         }
@@ -179,7 +180,8 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 nickName = editText.getText().toString();
-                Log.e("PC",nickName);
+                Log.e("PC", nickName);
+
                 changNickname(nickName);
 
             }
@@ -187,7 +189,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         builder_username.setView(view).create().show();
     }
 
-    private void changNickname(final String nick){
+    private void changNickname(final String nick) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -196,13 +198,13 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                 .build();
 
         FormBody formBody = new FormBody.Builder()
-                .add("nickName",nick)
+                .add("nickName", nick)
                 .add("session", cookie)
                 .build();
 
-        Log.e("PC ",cookie + nick);
+        Log.e("PC ", cookie + nick);
         Request request = new Request.Builder()
-                .addHeader("Connection","close")
+                .addHeader("Connection", "close")
                 .url("http://132.232.78.106:8001/api/changeNickName/")
                 .post(formBody)
                 .build();
@@ -223,7 +225,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                         statu = jsonObject.getString("state");
                         String msg = jsonObject.getString("msg");
                         judgeState(msg);
-                        if(statu.equals("1")) {
+                        if (statu.equals("1")) {
                             String nick = jsonObject.getString("nickName");
                             SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -239,52 +241,59 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
             }
         });
     }
-    private void judgeState(final String msg){
+
+    private void judgeState(final String msg) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
             }
         });
     }
-    private void openAlbum(){
+
+    private void openAlbum() {
         Intent intent = new Intent("android.intent.action.GET_CONTENT");
         intent.setType("image/*");
-        startActivityForResult(intent,CHOOSE_PHOTO);
+        startActivityForResult(intent, CHOOSE_PHOTO);
     }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,int[] grantResults){
-        switch (requestCode){
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
             case 1:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openAlbum();
-                }
-                else {
-                    Toast.makeText(this,"拒绝权限",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "拒绝权限", Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
         }
     }
+
     @Override
-    protected void onActivityResult(int requestCode,int resultCode,Intent data){
-        switch (requestCode){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
             case CHOOSE_PHOTO:
-                if(resultCode == RESULT_OK){
-                    if(Build.VERSION.SDK_INT >= 19){
+                if (resultCode == RESULT_OK) {
+                    if (Build.VERSION.SDK_INT >= 19) {
                         handleImageOnKitKat(data);
-                        Log.e("TAG","选择照片");
-                    }
-                    else {
+                        Log.e("TAG", "选择照片");
+                    } else {
                         handleImageBeforeKitKat(data);
-                        Log.e("TAG","拍照");
+                        Log.e("TAG", "拍照");
                     }
                 }
                 break;
             case TAKE_PHOTO:
-                if(resultCode == RESULT_OK){
-                    // Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                    //这里可以上传服务器
+                if (resultCode == RESULT_OK) {
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    bitmap = getBitmapSmall(bitmap);
                     OkHttpClient okHttpClient = new OkHttpClient.Builder()
                             .retryOnConnectionFailure(true)
                             .connectTimeout(20, TimeUnit.SECONDS)
@@ -292,11 +301,11 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                             .readTimeout(20, TimeUnit.SECONDS)
                             .build();
 
-                    RequestBody image = RequestBody.create(MediaType.parse("image/png"),outputImage);
+                    RequestBody image = RequestBody.create(MediaType.parse("image/png"),convertBitmapToFile(bitmap));
                     RequestBody requestBody = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
-                            .addFormDataPart("headImage","output_image.jpg" , image)
-                            .addFormDataPart("session",cookie)
+                            .addFormDataPart("headImage", "output_image.jpg", image)
+                            .addFormDataPart("session", cookie)
                             .build();
                     Request request = new Request.Builder()
                             .url("http://132.232.78.106:8001/api/changeHeadImage/")
@@ -314,12 +323,12 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                             if (response.isSuccessful()) {
                                 try {
                                     String responseData = response.body().string();
-                                    JSONObject jsonObject =new JSONObject(responseData);
+                                    JSONObject jsonObject = new JSONObject(responseData);
                                     statu = jsonObject.getString("state");
                                     String msg = jsonObject.getString("msg");
-                                    final String ImageUrl =  "http://132.232.78.106:8001/media/" + jsonObject.getString("imageHead");
+                                    final String ImageUrl = "http://132.232.78.106:8001/media/" + jsonObject.getString("imageHead");
                                     String HeadImageUrl = jsonObject.getString("imageHead");
-                                    Log.e("PCActivity",statu + msg + ImageUrl);
+                                    Log.e("PCActivity", statu + msg + ImageUrl);
                                     SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                     editor.putString("theHeadImage", HeadImageUrl);
@@ -346,11 +355,12 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
             default:
         }
     }
+
     @TargetApi(19)
-    private void handleImageOnKitKat(Intent data){
+    private void handleImageOnKitKat(Intent data) {
         String imagePath = null;
         Uri uri = data.getData();
-        if(DocumentsContract.isDocumentUri(this,uri)) {
+        if (DocumentsContract.isDocumentUri(this, uri)) {
             String docId = DocumentsContract.getDocumentId(uri);
             if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
                 String id = docId.split(":")[1];
@@ -360,49 +370,58 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                 Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
                 imagePath = getImagePath(contentUri, null);
             }
-        }else if("content".equalsIgnoreCase(uri.getScheme())){
-            imagePath = getImagePath(uri,null);
-        }else if("file".equalsIgnoreCase(uri.getScheme())){
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            imagePath = getImagePath(uri, null);
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             imagePath = uri.getPath();
         }
         postImage(imagePath);
     }
-    private void handleImageBeforeKitKat(Intent data){
+
+    private void handleImageBeforeKitKat(Intent data) {
         Uri uri = data.getData();
-        String imagePath = getImagePath(uri,null);
+        String imagePath = getImagePath(uri, null);
         postImage(imagePath);
     }
-    private String getImagePath(Uri uri,String selection){
+
+    private String getImagePath(Uri uri, String selection) {
         String path = null;
-        Cursor cursor = getContentResolver().query(uri,null,selection,null,null);
-        if(cursor != null){
-            if(cursor.moveToFirst()){
+        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 path = cursor.getString(cursor.getColumnIndex((MediaStore.Images.Media.DATA)));
             }
             cursor.close();
         }
         return path;
     }
-    private void postImage(String imagePath){
-        if(imagePath != null){
+
+    private void postImage(String imagePath) {
+        if (imagePath != null) {
             //这里可以上服务器;
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                                    .retryOnConnectionFailure(true)
-                                    .connectTimeout(20, TimeUnit.SECONDS)
-                                    .writeTimeout(20, TimeUnit.SECONDS)
-                                    .readTimeout(20, TimeUnit.SECONDS)
-                                    .build();
-            File file = new File(imagePath);
-            RequestBody image = RequestBody.create(MediaType.parse("image/png"), file);
+                    .retryOnConnectionFailure(true)
+                    .connectTimeout(20, TimeUnit.SECONDS)
+                    .writeTimeout(20, TimeUnit.SECONDS)
+                    .readTimeout(20, TimeUnit.SECONDS)
+                    .build();
+            //File file = new File(imagePath);
+            //File file = convertBitmapToFile(bitmap);
+            Log.e("PCActivity","ok1");
+            RequestBody image = RequestBody.create(MediaType.parse("image/png"),convertBitmapToFile(bitmap));
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("headImage", imagePath, image)
-                    .addFormDataPart("session",cookie)
+                   // .addFormDataPart("headImage", imagePath, image)
+                    .addFormDataPart("headImage" ,imagePath,image)
+                    .addFormDataPart("session", cookie)
                     .build();
-            Request request = new Request.Builder()
+            Log.e("PCActivity","为啥传不上去");
+            final Request request = new Request.Builder()
                     .url("http://132.232.78.106:8001/api/changeHeadImage/")
                     .post(requestBody)
                     .build();
+            Log.e("PCActivity","ok2");
             okHttpClient.newCall(request).enqueue(new Callback() {
                 //请求错误回调方法
                 @Override
@@ -414,13 +433,14 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
                         try {
+                            Log.e("PCActivity","ok3");
                             String responseData = response.body().string();
-                            JSONObject jsonObject =new JSONObject(responseData);
+                            JSONObject jsonObject = new JSONObject(responseData);
                             statu = jsonObject.getString("state");
                             String msg = jsonObject.getString("msg");
-                            final String ImageUrl =  "http://132.232.78.106:8001/media/" + jsonObject.getString("imageHead");
+                            final String ImageUrl = "http://132.232.78.106:8001/media/" + jsonObject.getString("imageHead");
                             String HeadImageUrl = jsonObject.getString("imageHead");
-                            Log.e("PCActivity",statu + msg + ImageUrl);
+                            Log.e("PCActivity", statu + msg + ImageUrl);
                             SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("theHeadImage", HeadImageUrl);
@@ -436,27 +456,60 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.e("PCActivity",response.body().string());
                         }
 
                     }
                 }
             });
-        }else {
-            Toast.makeText(this,"选择失败",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "选择失败", Toast.LENGTH_LONG).show();
         }
     }
-//    public Bitmap getBitmapSmall(Bitmap bitmap){
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG,10,out);                                     //压缩图片
-//        try {
-//            out.flush();
-//            out.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        bitmap = BitmapFactory.decodeByteArray(out.toByteArray(), 0, out.toByteArray().length);
-//        return bitmap;
-//    }
 
+    public Bitmap getBitmapSmall(Bitmap bitmap) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);                                     //压缩图片
+        try {
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bitmap = BitmapFactory.decodeByteArray(out.toByteArray(), 0, out.toByteArray().length);
+        return bitmap;
+    }
+    private File convertBitmapToFile(Bitmap bitmap) {
+        try {
+            // create a file to write bitmap data
+            postFile = new File(this.getCacheDir(), "output_image.jpg");
+            postFile.createNewFile();
+            // convert bitmap to byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            int num = getBitmapSize(bitmap);
+            if(num >= 20000000){
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 5 /*ignored for PNG*/, bos);
+            }else {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
+            }
+            byte[] bitmapdata = bos.toByteArray();
+            // write the bytes in file
+            FileOutputStream fos = new FileOutputStream(postFile);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+
+        }
+        return postFile;
+    }
+
+    public static int getBitmapSize(Bitmap bitmap) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {    //API 19
+            return bitmap.getAllocationByteCount();
+        }
+        // 在低版本中用一行的字节x高度
+        return bitmap.getRowBytes() * bitmap.getHeight();                //earlier version
+    }
 
 }
