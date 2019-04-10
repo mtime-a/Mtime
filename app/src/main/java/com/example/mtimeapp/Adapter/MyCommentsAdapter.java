@@ -42,7 +42,7 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
     private List<Map<String, Object>> list;
     private String cookie;
     private String statu;
-    int op = 0;
+    private int op = 0;
 
     public MyCommentsAdapter(Context context, List<Map<String, Object>> list) {
         this.context = context;

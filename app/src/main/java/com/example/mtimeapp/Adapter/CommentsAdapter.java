@@ -33,8 +33,8 @@ import okhttp3.Response;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHolder> {
 
-    Context context;
-    List<Map<String, Object>> list;
+    private Context context;
+    private List<Map<String, Object>> list;
     private String cookie;
     private String nickName;
     private String headImage;

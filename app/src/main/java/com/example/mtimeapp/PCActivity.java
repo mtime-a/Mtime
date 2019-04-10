@@ -486,10 +486,12 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
             // convert bitmap to byte array
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             int num = getBitmapSize(bitmap);
-            if(num >= 20000000){
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 5 /*ignored for PNG*/, bos);
-            }else {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
+            if(num >= 20000000&&num <= 40000000){
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 5 , bos);
+            }else if (num < 20000000){
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100 , bos);
+                }else if (num > 40000000){
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 1, bos);
             }
             byte[] bitmapdata = bos.toByteArray();
             // write the bytes in file

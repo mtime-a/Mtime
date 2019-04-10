@@ -21,8 +21,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +37,7 @@ public class Fragment_film extends Fragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Map<String, Object>> list;
+    private String url;
 
     @Nullable
     @Override
@@ -69,8 +72,20 @@ public class Fragment_film extends Fragment {
             @Override
             public void run() {
                 try {
+                    url = "http://132.232.78.106:8001/api/getHotFilmReview/";
+                    List<Map<String, String>> list_url = new ArrayList<>();
+                    Map<String, String> map = new HashMap<>();
+                    map.put("head", "0");
+                    map.put("number", "10");
+                    list_url.add(map);
+
+                    url = getUrl(url, list_url);
+
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://132.232.78.106:8001/api/getHotFilmReview/").build();
+                    Request request = new Request.Builder().url(url)
+                            .addHeader("head","0")
+                            .addHeader("number","10")
+                            .build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
@@ -132,4 +147,37 @@ public class Fragment_film extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (new CheckNet(getContext()).initNet()) {
+            initData();
+        }
+    }
+    private String getUrl(String url, List<Map<String, String>> list_url) {
+        for (int i = 0; i < list_url.size(); i++) {
+            Map<String, String> params = list_url.get(i);
+            if (params != null) {
+                Iterator<String> it = params.keySet().iterator();
+                StringBuffer sb = null;
+                while (it.hasNext()) {
+                    String key = it.next();
+                    String value = params.get(key);
+                    if (sb == null) {
+                        sb = new StringBuffer();
+                        sb.append("?");
+                    } else {
+                        sb.append("&");
+                    }
+                    sb.append(key);
+                    sb.append("=");
+                    sb.append(value);
+                }
+                url += sb.toString();
+            }
+        }
+        return url;
+    }
+
 }

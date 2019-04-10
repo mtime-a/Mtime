@@ -204,4 +204,9 @@ public class MyCommentsActivity extends AppCompatActivity {
         comments_1 = findViewById(R.id.mycomments_1);
         comments_0 = findViewById(R.id.mycomments_0);
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
