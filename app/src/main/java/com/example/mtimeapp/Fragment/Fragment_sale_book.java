@@ -3,6 +3,7 @@ package com.example.mtimeapp.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,14 +18,17 @@ import android.widget.Toast;
 
 import com.example.mtimeapp.Adapter.BookAdapter;
 import com.example.mtimeapp.R;
+import com.example.mtimeapp.Util.CheckNet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,14 +63,17 @@ public class Fragment_sale_book extends Fragment {
         recyclerView = view.findViewById(R.id.book_recyclerview);
         swipeRefreshLayout = view.findViewById(R.id.book_swipe);
 
-        initData();
+        if (new CheckNet(getContext()).initNet())
+            initData();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                initData();
+                if (new CheckNet(getContext()).initNet()) {
+                    initData();
+                    Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+                }
                 swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -76,33 +83,22 @@ public class Fragment_sale_book extends Fragment {
             @Override
             public void run() {
                 try {
+                    String url = "http://132.232.78.106:8001/api/getFilmList/";
+                    List<Map<String, String>> list_url = new ArrayList<>();
+                    Map<String, String> map = new HashMap<>();
+                    map.put("head", "0");
+                    map.put("type", "1");
+                    map.put("number", "3");
+                    list_url.add(map);
+
+                    url = getUrl(url, list_url);
+
                     OkHttpClient client = new OkHttpClient();
-                    HttpUrl url=HttpUrl.parse("http://132.232.78.106:8001/api/getFilmList/");
-                    assert url != null;
-                    url.newBuilder()
-                            .addQueryParameter("type","0")
-                            .addQueryParameter("head","0")
-                            .addQueryParameter("number","3")
+                    Request request = new Request.Builder().url(url)
                             .build();
-                    Request request=new Request.Builder()
-                            .url(url)
-//                            .addHeader("head", "1")
-//                            .addHeader("type", "1")
-//                            .addHeader("number", "3")
-                            .build();
-                    Response response=client.newCall(request).execute();
+                    Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
-
-//                    OkHttpClient client = new OkHttpClient();
-//                    Request request = new Request.Builder().url("http://132.232.78.106:8001/api/getFilmList/")
-//                            .addHeader("head", "1")
-//                            .addHeader("type", "1")
-//                            .addHeader("number", "3")
-//                            .build();
-//                    Response response = client.newCall(request).execute();
-//                    String responseData = response.body().string();
-//                    parseJSONWithJSONObject(responseData);
                 } catch (Exception e) {
                     e.printStackTrace();
                     initData();
@@ -110,6 +106,32 @@ public class Fragment_sale_book extends Fragment {
             }
         }).start();
     }
+
+    private String getUrl(String url, List<Map<String, String>> list_url) {
+        for (int i = 0; i < list_url.size(); i++) {
+            Map<String, String> params = list_url.get(i);
+            if (params != null) {
+                Iterator<String> it = params.keySet().iterator();
+                StringBuffer sb = null;
+                while (it.hasNext()) {
+                    String key = it.next();
+                    String value = params.get(key);
+                    if (sb == null) {
+                        sb = new StringBuffer();
+                        sb.append("?");
+                    } else {
+                        sb.append("&");
+                    }
+                    sb.append(key);
+                    sb.append("=");
+                    sb.append(value);
+                }
+                url += sb.toString();
+            }
+        }
+        return url;
+    }
+
 
     private void parseJSONWithJSONObject(String JsonData) {
         try {

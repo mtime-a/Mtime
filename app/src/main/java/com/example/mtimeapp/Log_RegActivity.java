@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.mtimeapp.Util.CountDownTimerUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,14 +37,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-
 public class Log_RegActivity extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout reg;
     private EditText reg_account;
     private EditText reg_password;
     private EditText reg_mail;
     private EditText reg_code;
-    private ImageView reg_send;
+    private TextView reg_send;
     private Button reg_btn;
     private TextView reg_switch;
     private TextView reg_find_password;
@@ -66,7 +67,8 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
     private String statu;
     private String session;
     private String username;
-
+    private String check_accout_password = "[a-zA-Z0-9_-]{4,16}";
+    private String check_email = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,7 +133,13 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.log_btn:
                 account = log_account.getText().toString();
                 password = log_password.getText().toString();
-                postLogJsonData();
+
+                if (!account.matches(check_accout_password))
+                    Toast.makeText(Log_RegActivity.this, "请输入正确格式的账号", Toast.LENGTH_SHORT).show();
+                else if (!password.matches(check_accout_password))
+                    Toast.makeText(Log_RegActivity.this, "请输入正确格式的密码", Toast.LENGTH_SHORT).show();
+                else
+                    postLogJsonData();
                 break;
             case R.id.log_find_password:
                 intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);
@@ -143,27 +151,31 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 log_account.setText("");
                 log_password.setText("");
                 break;
-
             case R.id.reg_send:
                 email = reg_mail.getText().toString();
-                Toast.makeText(Log_RegActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
-                RequestCode();
+                if (email.matches(check_email)) {
+                    CountDownTimerUtils countDownTimerUtils = new CountDownTimerUtils(reg_send, 60000, 1000);//总共60s每次递减1秒
+                    countDownTimerUtils.start();
+                    RequestCode();
+                } else
+                    Toast.makeText(Log_RegActivity.this, "请输入正确格式的邮箱", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.reg_btn:                                  //注册
+            case R.id.reg_btn:
                 code = reg_code.getText().toString();
                 password = reg_password.getText().toString();
-                name = reg_account.getText().toString();
+                account = reg_account.getText().toString();
                 email = reg_mail.getText().toString();
 
-                if (checkCode(password)) {
-                    if (code == null || code.equals("")) {
-                        Toast.makeText(this, "请填入验证码", Toast.LENGTH_LONG).show();
-                    } else {
-                        postRegJsonData();
-                    }
-                } else {
-                    Toast.makeText(this, "请填入正确格式的密码", Toast.LENGTH_LONG).show();
-                }
+                if (!account.matches(check_accout_password))
+                    Toast.makeText(this, "请输入正确格式的账号", Toast.LENGTH_SHORT).show();
+                else if (!password.matches(check_accout_password))
+                    Toast.makeText(this, "请输入正确格式的密码", Toast.LENGTH_SHORT).show();
+                else if (!email.matches(check_email))
+                    Toast.makeText(this, "请输入正确格式的邮箱", Toast.LENGTH_SHORT).show();
+                else if (!code.matches("\\d{4}"))
+                    Toast.makeText(this, "请输入正确格式的验证码", Toast.LENGTH_SHORT).show();
+                else
+                    postRegJsonData();
                 break;
             case R.id.reg_find_password:
                 intent.setClass(Log_RegActivity.this, FindPasswordActivity.class);
@@ -221,8 +233,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
             String status = jsonObject.getString("statu");
             String msg = jsonObject.getString("msg");
 
-//            code = jsonObject.getString("code");//全局变量要让注册状态时候的code有数据
-//            showResponse(code);
             judgeCodeState(msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -238,24 +248,15 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-//    private void showResponse(final String code) {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                reg_code.setText(code);
-//            }
-//        });
-//    }
-
     //发送注册信息
     private void postRegJsonData() {
 
         OkHttpClient okHttpClient = new OkHttpClient();
         FormBody formBody = new FormBody.Builder()
-                .add("username", name)
+                .add("username", account)
                 .add("email", email)
                 .add("password", password)
-                .add("nickname", name)
+                .add("nickname", account)
                 .add("vericode", code)
                 .build();
         Request request = new Request.Builder()
@@ -277,7 +278,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                         String responseData = response.body().string();
                         JSONObject jsonObject = new JSONObject(responseData);
                         statu = jsonObject.getString("state");
-                        String msg = jsonObject.getString("msg");
                         judgeRegState(statu);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -386,11 +386,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                     Toast.makeText(Log_RegActivity.this, "登陆成功", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent();
                     intent.setClass(Log_RegActivity.this, PCActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("username", username);
-//                    bundle.putString("nickName", nickName);
-//                    bundle.putString("headImage", headImageUrl);
-//                    intent.putExtra("UserMessage",bundle);
                     startActivity(intent);
                     finish();
                 }
@@ -402,14 +397,6 @@ public class Log_RegActivity extends AppCompatActivity implements View.OnClickLi
                 }
             }
         });
-    }
-
-    //检验密码
-    private boolean checkCode(String code) {
-        //限制密码
-        Pattern pattern = Pattern.compile("[\\S]{8,16}$");
-        Matcher matcher = pattern.matcher(code);
-        return matcher.matches();
     }
 
     @Override

@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -41,6 +44,7 @@ public class CommentsActivity extends AppCompatActivity {
     private ArrayList<Map<String, Object>> list_comment;
     private String id;
     private String type;
+    private FrameLayout mComments_none;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +56,7 @@ public class CommentsActivity extends AppCompatActivity {
         id = intent.getStringExtra("id");//电影id或者新闻id
 
         recyclerView = findViewById(R.id.comments_recyclerview);
+        mComments_none = findViewById(R.id.comments_none);
 
         SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
         cookie = sharedPreferences.getString("cookie", "");
@@ -76,7 +81,7 @@ public class CommentsActivity extends AppCompatActivity {
         new Thread(new Runnable() {                                                                 //新线程联网
             @Override
             public void run() {
-                try {                                                                                          //okHttp请求数据
+                try {
                     OkHttpClient okHttpClient = new OkHttpClient.Builder()
                             .retryOnConnectionFailure(true)
                             .connectTimeout(5, TimeUnit.SECONDS)
@@ -109,9 +114,6 @@ public class CommentsActivity extends AppCompatActivity {
 
                             if (response.isSuccessful()) {
                                 String responseData = response.body().string();
-
-                                Log.d("mlj", "dasffadsfasd" + responseData);
-
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseData);
                                     statu = jsonObject.getString("state");
@@ -127,6 +129,8 @@ public class CommentsActivity extends AppCompatActivity {
                                             String author = jsonObject_comment.getString("author");
                                             String autherHeadPhoto = jsonObject_comment.getString("autherHeadPhoto");
                                             String Time = jsonObject_comment.getString("Time");
+                                            if (Time.length() > 8)
+                                                Time = Time.substring(10, Time.length());
                                             String content = jsonObject_comment.getString("content");
 
                                             Map<String, Object> map = new HashMap();
@@ -136,10 +140,10 @@ public class CommentsActivity extends AppCompatActivity {
                                             map.put("autherHeadPhoto", "http://132.232.78.106:8001/media/" + autherHeadPhoto);
                                             map.put("Time", Time);
                                             map.put("content", content);
-                                            if(type.equals("news")){
-                                                map.put("type","news");
-                                            }else if(type.equals("film")){
-                                                map.put("type","film");
+                                            if (type.equals("news")) {
+                                                map.put("type", "news");
+                                            } else if (type.equals("film")) {
+                                                map.put("type", "film");
                                             }
 
                                             list_comment.add(map);
@@ -162,7 +166,6 @@ public class CommentsActivity extends AppCompatActivity {
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("mlj", "mlj=2");
                 }
             }
         }).start();
@@ -172,6 +175,8 @@ public class CommentsActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (list_comment.isEmpty())
+                    mComments_none.setVisibility(View.VISIBLE);
                 LinearLayoutManager manager = new LinearLayoutManager(CommentsActivity.this);
                 recyclerView.setLayoutManager(manager);
                 CommentsAdapter adapter = new CommentsAdapter(CommentsActivity.this, list_comment);

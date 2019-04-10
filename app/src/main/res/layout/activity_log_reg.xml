@@ -45,7 +45,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
+            android:layout_marginHorizontal="60dp"
             android:layout_marginTop="80dp"
             android:orientation="horizontal">
 
@@ -60,13 +60,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="请输入账号"
+                android:inputType="text"
                 android:maxLines="1" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
+            android:layout_marginHorizontal="60dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
@@ -88,7 +89,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
+            android:layout_marginHorizontal="60dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
@@ -104,20 +105,23 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="请输入邮箱"
+                android:inputType="text"
                 android:maxLines="1" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/reg_send"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@mipmap/qingqiu" />
+                android:alpha="0.55"
+                android:background="@drawable/shape_verify_btn_normal"
+                android:text="发送" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
+            android:layout_marginHorizontal="60dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
@@ -132,6 +136,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="请输入验证码"
+                android:inputType="number"
                 android:maxLines="1" />
         </LinearLayout>
 
@@ -142,6 +147,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
             android:alpha="0.55"
+            android:background="@drawable/shape_verify_btn_normal"
             android:text="注册" />
 
 
@@ -180,7 +186,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
+            android:layout_marginHorizontal="60dp"
             android:layout_marginTop="80dp"
             android:orientation="horizontal">
 
@@ -195,13 +201,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="请输入账号"
+                android:inputType="text"
                 android:maxLines="1" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="80dp"
+            android:layout_marginHorizontal="60dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
@@ -227,6 +234,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
             android:alpha="0.55"
+            android:background="@drawable/shape_verify_btn_normal"
             android:text="登陆" />
 
 

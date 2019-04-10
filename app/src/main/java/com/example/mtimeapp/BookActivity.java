@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,10 +41,9 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mDate;
     private TextView mMark;
     private LinearLayout mWriteComments;
-    private LinearLayout mComments;
-    private LinearLayout mLove;
+    private FrameLayout mComments;
+    private LinearLayout mGomark;
     private TextView mComments_num;
-    private TextView mLove_num;
     private AlertDialog.Builder builder_text;
     private View view;
 
@@ -57,6 +58,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
     private String id;
     private boolean flag;
     private boolean Flag = false;
+    private String isMark;
 
 
     @Override
@@ -85,19 +87,23 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initClick() {
-        mLove.setOnClickListener(this);
+        mGomark.setOnClickListener(this);
         mComments.setOnClickListener(this);
         mWriteComments.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+
+        Intent intent = new Intent();
         switch (v.getId()) {
-            case R.id.pager_book_love:
-                //写点赞的事件
+            case R.id.pager_book_gomark:
+                intent.setClass(BookActivity.this, MarkActivity.class);
+                intent.putExtra("id", film_id);
+                intent.putExtra("isMark", isMark);
+                startActivity(intent);
                 break;
             case R.id.pager_book_comment:
-                Intent intent = new Intent();
                 intent.setClass(BookActivity.this, CommentsActivity.class);
                 intent.putExtra("id", film_id);
                 intent.putExtra("type", "film");
@@ -166,9 +172,12 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
                                         title = jsonObject_result.getString("title");
                                         image = jsonObject_result.getString("image");
                                         mark = jsonObject_result.getString("mark");
+                                        if (mark.length() > 3)
+                                            mark = mark.substring(0, 3);
                                         relase_date = jsonObject_result.getString("relase_date");
                                         marked_members = jsonObject_result.getString("marked_members");
                                         comment_members = jsonObject_result.getString("comment_members");
+                                        isMark = jsonObject_result.getString("isMark");
 
                                         showResponse();
                                     } else {
@@ -201,7 +210,6 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
                 mDate.setText(relase_date);
                 mMark.setText(mark);
                 mComments_num.setText(comment_members);
-                mLove_num.setText(marked_members);
                 Glide.with(BookActivity.this).load("http://132.232.78.106:8001" + image).into(mPicture);
             }
         });
@@ -215,8 +223,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
         mMark = findViewById(R.id.pager_book_mark);
         mComments_num = findViewById(R.id.pager_book_comment_num);
         mComments = findViewById(R.id.pager_book_comment);
-        mLove = findViewById(R.id.pager_book_love);
-        mLove_num = findViewById(R.id.pager_book_love_num);
+        mGomark = findViewById(R.id.pager_book_gomark);
     }
 
 

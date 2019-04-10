@@ -101,13 +101,13 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/pager_news_love"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/pager_news_love"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"

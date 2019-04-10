@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,18 +57,17 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("theUser", Context.MODE_PRIVATE);
         cookie = sharedPreferences.getString("cookie", "");
-        Log.e("Adapter",cookie);
+        Log.e("Adapter", cookie);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyCommentsAdapter.ViewHolder viewHolder, final int i) {
         final Map map = list.get(i);
-
         String type = map.get("type").toString();
-        if(type.equals("film")){
+        if (type.equals("film")) {
             viewHolder.time.setText(map.get("Time").toString());
-  //        Glide.with(context).load(map.get("image")).into(viewHolder.image);
+            //        Glide.with(context).load(map.get("image")).into(viewHolder.image);
             viewHolder.content.setText(map.get("content").toString());
             viewHolder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -75,15 +75,16 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
                     Intent intent = new Intent();
                     intent.setClass(context, FilmActivity.class);
                     intent.putExtra("comment_id", map.get("filmId").toString());
+                    intent.putExtra("from", "2");
                     context.startActivity(intent);
                 }
             });
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("MyCommentsAdapter","删除news");
-                    deleteComment(map.get("id").toString(),"0");
-                    if(op == 1){
+                    Log.e("MyCommentsAdapter", "删除news");
+                    deleteComment(map.get("id").toString(), "0");
+                    if (op == 1) {
                         list.remove(i);
                         notifyItemRemoved(i);
                         notifyDataSetChanged();
@@ -92,7 +93,7 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
                 }
             });
         }
-        if(type.equals("news")){
+        if (type.equals("news")) {
             viewHolder.time.setText(map.get("create_time").toString());
             //        Glide.with(context).load(map.get("image")).into(viewHolder.image);
             viewHolder.content.setText(map.get("content").toString());
@@ -108,14 +109,15 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("MyCommentsAdapter","删除news");
-                    deleteComment(map.get("id").toString(),"1");
-                    Log.e("MyCommentsAdapter",map.get("id").toString());
-                    if(op == 1){
-                    list.remove(i);
-                    notifyItemRemoved(i);
-                    notifyDataSetChanged();
-                    op = 0;
+                    Log.e("MyCommentsAdapter", "删除news");
+                    deleteComment(map.get("id").toString(), "1");
+                    Log.e("MyCommentsAdapter", map.get("id").toString());
+                    if (op == 1) {
+                        list.remove(i);
+                        notifyItemRemoved(i);
+                        notifyDataSetChanged();
+                        op = 0;
+                        Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -143,7 +145,7 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
 
         RoundImageView image;
         TextView time;
-        Button delete;
+        ImageView delete;
         TextView content;
         LinearLayout layout;
 
@@ -157,7 +159,8 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
             delete = itemView.findViewById(R.id.deleteComment);
         }
     }
-    private void deleteComment(String id, String type){
+
+    private void deleteComment(String id, String type) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -167,8 +170,8 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
 
         final FormBody formBody = new FormBody.Builder()
                 .add("session", cookie)
-                .add("id",id)
-                .add("type",type)
+                .add("id", id)
+                .add("type", type)
                 .build();
 
         Log.e("Log", id + "/" + type + "/" + cookie);
@@ -192,8 +195,8 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
                         JSONObject jsonObject = new JSONObject(responseData);
                         statu = jsonObject.getString("state");
                         String msg = jsonObject.getString("msg");
-                       // judgeState(statu);
-                        Log.e("Adapter",msg);
+                        // judgeState(statu);
+                        Log.e("Adapter", msg);
                         op = 1;
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -134,7 +134,6 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                 buider.setItems(arrItem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(PCActivity.this, "你选择了" + arrItem[which], Toast.LENGTH_LONG).show();
                         if (arrItem[which].equals("拍照")) {
                             outputImage = new File(getExternalCacheDir(), "output_image.jpg");
                             try {

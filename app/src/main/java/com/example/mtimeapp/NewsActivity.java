@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +48,7 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mWeb;
     private TextView mAuthor;
     private TextView mLove_num;
-    private LinearLayout mLove;
+    private ImageView mLove;
     private RoundImageView mPicture;
     private LinearLayout icon_comment;
     private AlertDialog.Builder builder_text;
@@ -64,6 +65,7 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     private String replyNum;
     private String content;
     private ArrayList<Map<String, Object>> list_comment;
+    private String isLove = "0";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -212,10 +214,88 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.pager_news_love:
                 //写点赞的逻辑
+                if (isLove.equals("0")) {
+                    isLove = "1";
+                    mLove.setBackgroundResource(R.mipmap.dianzanhou);
+                    postLoveRequest(isLove);
+                } else {
+                    isLove = "0";
+                    mLove.setBackgroundResource(R.mipmap.dianzan);
+                    postLoveRequest(isLove);
+                }
                 break;
         }
     }
 
+    private void postLoveRequest(final String isLove) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)
+                            .connectTimeout(20, TimeUnit.SECONDS)
+                            .writeTimeout(20, TimeUnit.SECONDS)
+                            .readTimeout(20, TimeUnit.SECONDS)
+                            .build();
+
+                    FormBody formBody = new FormBody.Builder()
+                            .add("id", news_id)
+                            .add("operaType", isLove)
+                            .add("session", cookie)
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url("http://132.232.78.106:8001/api/goodPointNews/")
+                            .post(formBody)
+                            .addHeader("Connection", "close")
+                            .build();
+
+                    okHttpClient.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.e("TAG", "获取数据失败");
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String responseData = response.body().string();
+                            if (response.isSuccessful()) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(responseData);
+                                    String statu = jsonObject.getString("state");
+                                    if (statu.equals("1")) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (isLove.equals("1"))
+                                                    mLove_num.setText(String.valueOf(Integer.valueOf(clickNum) + 1));
+                                                else
+                                                    mLove_num.setText(String.valueOf(Integer.valueOf(clickNum)));
+                                                //Toast.makeText(NewsActivity.this, "发表成功", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    } else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+
+                                                Toast.makeText(NewsActivity.this, "点赞失败", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     private void initBuilder_text() {
         builder_text = new AlertDialog.Builder(NewsActivity.this);
@@ -268,33 +348,31 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
                             if (response.isSuccessful()) {
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseData);
-                                    String statu = jsonObject.getString("state");
-                                    if (statu.equals("1")) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
+                                    final String statu = jsonObject.getString("state");
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (statu.equals("1"))
                                                 Toast.makeText(NewsActivity.this, "发表成功", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    } else {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
+                                            else
                                                 Toast.makeText(NewsActivity.this, "发表失败", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
+                                        }
+                                    });
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                         }
                     });
-                } catch (Exception e) {
+                } catch (
+                        Exception e) {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        }).
+
+                start();
+
     }
 
     @Override

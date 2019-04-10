@@ -74,7 +74,11 @@ public class Fragment_news extends Fragment {
             public void run() {
                 try {
                     OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder().url("http://132.232.78.106:8001/api/getNewsList/").build();
+                    Request request = new Request.Builder().url("http://132.232.78.106:8001/api/getNewsList/")
+                            .addHeader("head","0")
+                            .addHeader("type","6")
+                            .addHeader("number","9")
+                            .build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
@@ -89,6 +93,7 @@ public class Fragment_news extends Fragment {
     private void parseJSONWithJSONObject(String JsonData) {
         try {
             list = new ArrayList<>();
+            Log.d("mljmlfjasldfjf",JsonData);
             JSONObject jsonObject = new JSONObject(JsonData);
             String status = jsonObject.getString("state");
             if (status.equals("1")) {
@@ -114,12 +119,10 @@ public class Fragment_news extends Fragment {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.d("mlj", "第2个");
         }
     }
 
     private void showResponse() {
-
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -129,13 +132,6 @@ public class Fragment_news extends Fragment {
                 recyclerView.setAdapter(adapter);
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (new CheckNet(getContext()).initNet())
-            initData();
     }
 
 }

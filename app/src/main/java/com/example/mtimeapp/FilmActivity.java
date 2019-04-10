@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -45,12 +46,10 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mDate;
     private TextView mWeb;
     private TextView mTitle;
-    private LinearLayout mLove;
+    private ImageView mLove;
     private TextView mLove_num;
     private TextView mName;
     private LinearLayout icon_comment;
-    private LinearLayout mComment;
-    private TextView mComment_num;
     private AlertDialog.Builder builder_text;
     private View view;
 
@@ -63,24 +62,33 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     private String clickNum;
     private String replyNum;
     private String content;
+    private String isLove = "0";
     private ArrayList<Map<String, Object>> list_comment;
     private String picture;
     private String author_head;
+    private String ClassName;
+    private String from;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pager_film);
 
-        Intent intent = getIntent();
-        film_id = intent.getStringExtra("comment_id");
-        picture = intent.getStringExtra("picture");
-        author_head = intent.getStringExtra("author_head");
-        Log.d("mljmljmlj", picture);
         initUI();
 
+        Intent intent = getIntent();
+        film_id = intent.getStringExtra("comment_id");
+        //1来自fragment2来自评论
+        from = intent.getStringExtra("from");
+        if (from.equals("1")) {
+            picture = intent.getStringExtra("picture");
+            author_head = intent.getStringExtra("author_head");
+        } else {
+            mPicture.setVisibility(View.GONE);
+            mAuthor_icon.setVisibility(View.GONE);
+        }
+
         icon_comment.setOnClickListener(this);
-        mComment.setOnClickListener(this);
         mLove.setOnClickListener(this);
 
         SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
@@ -179,14 +187,17 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 mTitle.setText(Title);
                 mName.setText(author);
-                mComment_num.setText(replyNum);
                 mLove_num.setText(clickNum);
                 mDate.setText(Time);
-                if (photo.equals("None"))
-                    Glide.with(FilmActivity.this).load(picture).into(mPicture);
-                else
-                    Glide.with(FilmActivity.this).load("http://132.232.78.106:8001/media/" + photo).into(mPicture);
-                Glide.with(FilmActivity.this).load(author_head).into(mAuthor_icon);
+
+                if (from.equals("1")) {
+                    if (photo.equals("None"))
+                        Glide.with(FilmActivity.this).load(picture).into(mPicture);
+                    else
+                        Glide.with(FilmActivity.this).load("http://132.232.78.106:8001/media/" + photo).into(mPicture);
+
+                    Glide.with(FilmActivity.this).load(author_head).into(mAuthor_icon);
+                }
                 new RichText(FilmActivity.this, mWeb, content);
             }
         });
@@ -203,8 +214,8 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
         mTitle = findViewById(R.id.pager_film_title);
         mName = findViewById(R.id.pager_film_name);
         icon_comment = findViewById(R.id.pager_film_write_comment);
-        mComment = findViewById(R.id.pager_film_comment);
-        mComment_num = findViewById(R.id.pager_film_comment_num);
+//        mComment = findViewById(R.id.pager_film_comment);
+////        mComment_num = findViewById(R.id.pager_film_comment_num);
     }
 
     @Override
@@ -213,17 +224,95 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.pager_film_write_comment:
                 initBuilder_text();
                 break;
-            case R.id.pager_film_comment:
-                Intent intent = new Intent();
-                intent.setClass(FilmActivity.this, CommentsActivity.class);
-                intent.putExtra("id", film_id);
-                intent.putExtra("type", "film");
-                startActivity(intent);
-                break;
+//            case R.id.pager_film_comment:
+//                Intent intent = new Intent();
+//                intent.setClass(FilmActivity.this, CommentsActivity.class);
+//                intent.putExtra("id", film_id);
+//                intent.putExtra("type", "film");
+//                startActivity(intent);
+//                break;
             case R.id.pager_film_love:
                 //点赞操作还没写
+                if (isLove.equals("0")) {
+                    isLove = "1";
+                    mLove.setBackgroundResource(R.mipmap.dianzanhou);
+                    postLoveRequest(isLove);
+                } else {
+                    isLove = "0";
+                    mLove.setBackgroundResource(R.mipmap.dianzan);
+                    postLoveRequest(isLove);
+                }
                 break;
         }
+    }
+
+    private void postLoveRequest(final String isLove) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)
+                            .connectTimeout(20, TimeUnit.SECONDS)
+                            .writeTimeout(20, TimeUnit.SECONDS)
+                            .readTimeout(20, TimeUnit.SECONDS)
+                            .build();
+
+                    FormBody formBody = new FormBody.Builder()
+                            .add("id", film_id)
+                            .add("operaType", isLove)
+                            .add("session", cookie)
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url("http://132.232.78.106:8001/api/getPointFilmReview/")
+                            .post(formBody)
+                            .addHeader("Connection", "close")
+                            .build();
+
+                    okHttpClient.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.e("TAG", "获取数据失败");
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String responseData = response.body().string();
+                            if (response.isSuccessful()) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(responseData);
+                                    String statu = jsonObject.getString("state");
+                                    if (statu.equals("1")) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (isLove.equals("1"))
+                                                    mLove_num.setText(String.valueOf(Integer.valueOf(clickNum) + 1));
+                                                else
+                                                    mLove_num.setText(String.valueOf(Integer.valueOf(clickNum)));
+                                                //Toast.makeText(NewsActivity.this, "发表成功", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    } else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(FilmActivity.this, "点赞失败", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void initBuilder_text() {

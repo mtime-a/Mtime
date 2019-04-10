@@ -50,31 +50,35 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     public CommentsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_comment, viewGroup, false);
         CommentsAdapter.ViewHolder holder = new CommentsAdapter.ViewHolder(view);
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences("theUser", Context.MODE_PRIVATE);
-        cookie = sharedPreferences.getString("cookie", "");
-        nickName = sharedPreferences.getString("theNickname", "");
-        headImage = "http://132.232.78.106:8001/media/" + sharedPreferences.getString("theHeadImage","");
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull CommentsAdapter.ViewHolder viewHolder, final int i) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("theUser", Context.MODE_PRIVATE);
+        cookie = sharedPreferences.getString("cookie", "");
+        nickName = sharedPreferences.getString("theNickname", "");
+        headImage = "http://132.232.78.106:8001/media/" + sharedPreferences.getString("theHeadImage", "");
+
         final Map map = list.get(i);
         Glide.with(context).load(map.get("autherHeadPhoto")).into(viewHolder.autherHeadPhoto);
         viewHolder.author.setText(map.get("author").toString());
         viewHolder.title.setText(map.get("content").toString());
         viewHolder.time.setText(map.get("Time").toString());
-        if(nickName.equals(map.get("author").toString())||headImage.equals(map.get("autherHeadPhoto"))){viewHolder.delete.setVisibility(View.VISIBLE);}
-        else {viewHolder.delete.setVisibility(View.INVISIBLE);}
+        if (nickName.equals(map.get("author").toString()) || headImage.equals(map.get("autherHeadPhoto"))) {
+            viewHolder.delete.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.delete.setVisibility(View.INVISIBLE);
+        }
         viewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(nickName.equals(map.get("author").toString())||headImage.equals(map.get("autherHeadPhoto"))){
-                    if(map.get("type").toString().equals("news")){
-                    deleteComment(map.get("id").toString(),"1");
-                    }else if (map.get("type").toString().equals("film")){
-                        deleteComment(map.get("id").toString(),"0");
+                if (nickName.equals(map.get("author").toString()) || headImage.equals(map.get("autherHeadPhoto"))) {
+                    if (map.get("type").toString().equals("news")) {
+                        deleteComment(map.get("id").toString(), "1");
+                    } else if (map.get("type").toString().equals("film")) {
+                        deleteComment(map.get("id").toString(), "0");
                     }
                     list.remove(i);
                     notifyItemRemoved(i);
@@ -94,7 +98,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         TextView author;
         TextView title;
         TextView time;
-        Button delete;
+        ImageView delete;
         ImageView autherHeadPhoto;
 
         public ViewHolder(@NonNull View itemView) {
@@ -107,7 +111,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             autherHeadPhoto = itemView.findViewById(R.id.item_comment_icon);
         }
     }
-    private void deleteComment(String id, String type){
+
+    private void deleteComment(String id, String type) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -117,8 +122,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
         final FormBody formBody = new FormBody.Builder()
                 .add("session", cookie)
-                .add("id",id)
-                .add("type",type)
+                .add("id", id)
+                .add("type", type)
                 .build();
 
         Log.e("Log", id + "/" + type + "/" + cookie);
@@ -143,7 +148,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                         statu = jsonObject.getString("state");
                         String msg = jsonObject.getString("msg");
                         // judgeState(statu);
-                        Log.e("Adapter",msg);
+                        Log.e("Adapter", msg);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

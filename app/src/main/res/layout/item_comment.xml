@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
+
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/item_comment_icon"
         android:layout_width="45dp"
         android:layout_height="45dp"
+        android:layout_centerInParent="true"
         android:layout_marginTop="20dp"
-        android:id="@+id/item_comment_icon"
-        android:src="@drawable/dianyingtup"
-        android:layout_centerInParent="true"/>
+        android:src="@drawable/dianyingtup" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,6 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
+                android:maxLength="20"
                 android:text="行者"
                 android:textSize="18dp" />
 
@@ -50,16 +52,20 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
-            android:text="发的斯拉夫卡上的洛夫卡了的反抗拉萨扩大"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:textColor="@android:color/black"
             android:textSize="20dp" />
 
-        <Button
-            android:layout_gravity="right"
-            android:text="删除"
+        <ImageView
             android:id="@+id/deleteCommentOutside"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="right"
+            android:layout_margin="5dp"
+            android:src="@mipmap/shanchu"
+            android:text="删除" />
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1dp"

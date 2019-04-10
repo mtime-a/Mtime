@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.mtimeapp.Adapter.BookAdapter;
-import com.example.mtimeapp.Adapter.ShowAdapter;
 import com.example.mtimeapp.R;
+import com.example.mtimeapp.Util.CheckNet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,10 +23,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -50,14 +50,17 @@ public class Fragment_sale_show extends Fragment {
         recyclerView = view.findViewById(R.id.show_recyclerview);
         swipeRefreshLayout = view.findViewById(R.id.show_swipe);
 
-        initData();
+        if (new CheckNet(getContext()).initNet())
+            initData();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                initData();
+                if (new CheckNet(getContext()).initNet()) {
+                    initData();
+                    Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+                }
                 swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -67,20 +70,20 @@ public class Fragment_sale_show extends Fragment {
             @Override
             public void run() {
                 try {
+                    String url = "http://132.232.78.106:8001/api/getFilmList/";
+                    List<Map<String, String>> list_url = new ArrayList<>();
+                    Map<String, String> map = new HashMap<>();
+                    map.put("head", "0");
+                    map.put("type", "0");
+                    map.put("number", "3");
+                    list_url.add(map);
+
+                    url = getUrl(url, list_url);
+
                     OkHttpClient client = new OkHttpClient();
-                    HttpUrl url=HttpUrl.parse("http://132.232.78.106:8001/api/getFilmList/");
-                    url.newBuilder()
-                            .addQueryParameter("head","0")
-                            .addQueryParameter("type","1")
-                            .addQueryParameter("number","3")
+                    Request request = new Request.Builder().url(url)
                             .build();
-                    Request request=new Request.Builder()
-                            .url(url)
-//                            .addHeader("head", "0")
-//                            .addHeader("type", "1")
-//                            .addHeader("number", "3")
-                            .build();
-                    Response response=client.newCall(request).execute();
+                    Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     parseJSONWithJSONObject(responseData);
                 } catch (Exception e) {
@@ -89,6 +92,31 @@ public class Fragment_sale_show extends Fragment {
                 }
             }
         }).start();
+    }
+
+    private String getUrl(String url, List<Map<String, String>> list_url) {
+        for (int i = 0; i < list_url.size(); i++) {
+            Map<String, String> params = list_url.get(i);
+            if (params != null) {
+                Iterator<String> it = params.keySet().iterator();
+                StringBuffer sb = null;
+                while (it.hasNext()) {
+                    String key = it.next();
+                    String value = params.get(key);
+                    if (sb == null) {
+                        sb = new StringBuffer();
+                        sb.append("?");
+                    } else {
+                        sb.append("&");
+                    }
+                    sb.append(key);
+                    sb.append("=");
+                    sb.append(value);
+                }
+                url += sb.toString();
+            }
+        }
+        return url;
     }
 
     private void parseJSONWithJSONObject(String JsonData) {
@@ -107,7 +135,7 @@ public class Fragment_sale_show extends Fragment {
                     String image = jsonObject1.getString("image");
                     String info = jsonObject1.getString("info");
 
-                    Log.d("mlj",title);
+                    Log.d("mlj", title);
 
                     Map<String, Object> map = new HashMap();
                     map.put("info", info);
