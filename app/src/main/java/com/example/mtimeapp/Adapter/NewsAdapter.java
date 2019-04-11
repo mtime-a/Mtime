@@ -27,6 +27,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Map<String, Object>> list;
     private final static int ITEM_CONTENT = 0;
     private final static int ITEM_FOOT = 1;
+    private boolean hasMore;
 
     public NewsAdapter(Context context, List<Map<String, Object>> list) {
         this.context = context;
@@ -38,7 +39,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         if (viewType == ITEM_CONTENT){
             View view = LayoutInflater.from(context).inflate(R.layout.item_news, viewGroup, false);
-            NewsAdapter.ViewHolder holder = new NewsAdapter.ViewHolder(view);
             return new ViewHolder(view);
         }
         if (viewType==ITEM_FOOT){
@@ -68,8 +68,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
         }
-        if (viewHolder instanceof FooterViewHolder){
-            ((FooterViewHolder) viewHolder).remind.setText("正在加载...");
+        if (viewHolder instanceof FooterViewHolder) {
+            ((FooterViewHolder) viewHolder).remind.setVisibility(View.INVISIBLE);
+            //((FooterViewHolder) viewHolder).remind.setText("正在加载...");
         }
     }
 
@@ -111,6 +112,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             remind = itemView.findViewById(R.id.tips);
         }
     }
+
 }
 
 

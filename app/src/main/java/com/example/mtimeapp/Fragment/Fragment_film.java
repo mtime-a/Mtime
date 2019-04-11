@@ -51,18 +51,38 @@ public class Fragment_film extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         swipeRefreshLayout = view.findViewById(R.id.fragment_film_swipe);
         recyclerView = view.findViewById(R.id.fragment_film_recyclerview);
-
-        if (new CheckNet(getContext()).initNet())
+        if (new CheckNet(getContext()).initNet()) {
             initData();
-
+        }
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (new CheckNet(getContext()).initNet()) {
-                    initData();
-                    Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
-                }
-                swipeRefreshLayout.setRefreshing(false);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (new CheckNet(getContext()).initNet()) {
+                                            initData();
+                                            Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+                                        }
+                                        swipeRefreshLayout.setRefreshing(false);
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                }).start();
             }
         });
     }
@@ -179,5 +199,4 @@ public class Fragment_film extends Fragment {
         }
         return url;
     }
-
 }

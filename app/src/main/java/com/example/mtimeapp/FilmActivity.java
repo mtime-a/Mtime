@@ -49,8 +49,8 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mLove;
     private TextView mLove_num;
     private TextView mName;
-    private LinearLayout icon_comment;
     private AlertDialog.Builder builder_text;
+    private TextView mSubtitle;
     private View view;
 
     private String film_id;
@@ -61,12 +61,11 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     private String Time;
     private String clickNum;
     private String replyNum;
+    private String subtitle;
     private String content;
     private String isLove = "0";
-    private ArrayList<Map<String, Object>> list_comment;
     private String picture;
     private String author_head;
-    private String ClassName;
     private String from;
 
     @Override
@@ -80,6 +79,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
         film_id = intent.getStringExtra("comment_id");
         //1来自fragment2来自评论
         from = intent.getStringExtra("from");
+        subtitle = intent.getStringExtra("subtitle");
         if (from.equals("1")) {
             picture = intent.getStringExtra("picture");
             author_head = intent.getStringExtra("author_head");
@@ -88,7 +88,6 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
             mAuthor_icon.setVisibility(View.GONE);
         }
 
-        icon_comment.setOnClickListener(this);
         mLove.setOnClickListener(this);
 
         SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
@@ -98,7 +97,6 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        initData();
         if (cookie.equals("")) {
             Toast.makeText(FilmActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent();
@@ -142,7 +140,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             String responseData = response.body().string();
-                            Log.d("mlj", responseData);
+                            Log.d("mlj////////", responseData);
                             if (response.isSuccessful()) {
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseData);
@@ -160,6 +158,20 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
 
                                         showResponse();
                                     } else {
+                                        if(statu.equals("-1")){
+                                            SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString("cookie", "");
+                                            editor.putString("theName", "");
+                                            editor.putString("theNickname", "");
+                                            editor.putString("theHeadImage", "");
+                                            editor.putString("theEmail", "");
+                                            editor.apply();
+                                            Intent intent = new Intent();
+                                            intent.setClass(getApplicationContext(),Log_RegActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
                                         final String msg = jsonObject.getString("msg");
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -187,9 +199,10 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 mTitle.setText(Title);
                 mName.setText(author);
+                Log.e("Showresponse",author);
                 mLove_num.setText(clickNum);
                 mDate.setText(Time);
-
+                mSubtitle.setText(subtitle);
                 if (from.equals("1")) {
                     if (photo.equals("None"))
                         Glide.with(FilmActivity.this).load(picture).into(mPicture);
@@ -213,7 +226,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
         mPicture = findViewById(R.id.pager_film_picture);
         mTitle = findViewById(R.id.pager_film_title);
         mName = findViewById(R.id.pager_film_name);
-        icon_comment = findViewById(R.id.pager_film_write_comment);
+        mSubtitle = findViewById(R.id.pager_film_subTitle);
 //        mComment = findViewById(R.id.pager_film_comment);
 ////        mComment_num = findViewById(R.id.pager_film_comment_num);
     }
@@ -221,18 +234,7 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.pager_film_write_comment:
-                initBuilder_text();
-                break;
-//            case R.id.pager_film_comment:
-//                Intent intent = new Intent();
-//                intent.setClass(FilmActivity.this, CommentsActivity.class);
-//                intent.putExtra("id", film_id);
-//                intent.putExtra("type", "film");
-//                startActivity(intent);
-//                break;
             case R.id.pager_film_love:
-                //点赞操作还没写
                 if (isLove.equals("0")) {
                     isLove = "1";
                     mLove.setBackgroundResource(R.mipmap.dianzanhou);
@@ -315,20 +317,12 @@ public class FilmActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
-    private void initBuilder_text() {
-        builder_text = new AlertDialog.Builder(FilmActivity.this);
-        builder_text.setTitle("评论");
-        view = LayoutInflater.from(FilmActivity.this).inflate(R.layout.dialog, null);
-        builder_text.setPositiveButton("发表", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(FilmActivity.this, "发表成功", Toast.LENGTH_LONG).show();
-
-                //从这里上传到服务器
-            }
-        });
-        builder_text.setView(view).create().show();
-    }
+//    private void initBuilder_text() {
+//        builder_text = new AlertDialog.Builder(FilmActivity.this);
+//        builder_text.setTitle("评论");
+//        view = LayoutInflater.from(FilmActivity.this).inflate(R.layout.dialog, null);
+//        builder_text.setView(view).create().show();
+//    }
 
     @Override
     public void onBackPressed() {

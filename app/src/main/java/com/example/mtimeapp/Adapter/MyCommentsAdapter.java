@@ -1,9 +1,12 @@
 package com.example.mtimeapp.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mtimeapp.BookActivity;
 import com.example.mtimeapp.CustomView.RoundImageView;
 import com.example.mtimeapp.FilmActivity;
 import com.example.mtimeapp.NewsActivity;
@@ -73,9 +77,8 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent();
-                    intent.setClass(context, FilmActivity.class);
-                    intent.putExtra("comment_id", map.get("filmId").toString());
-                    intent.putExtra("from", "2");
+                    intent.setClass(context, BookActivity.class);
+                    intent.putExtra("film_id", map.get("filmId").toString());
                     context.startActivity(intent);
                 }
             });
@@ -84,6 +87,7 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
                 public void onClick(View v) {
                     Log.e("MyCommentsAdapter", "删除news");
                     deleteComment(map.get("id").toString(), "0");
+                    Log.e("Adapter", String.valueOf(op));
                     if (op == 1) {
                         list.remove(i);
                         notifyItemRemoved(i);
@@ -95,7 +99,6 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
         }
         if (type.equals("news")) {
             viewHolder.time.setText(map.get("create_time").toString());
-            //        Glide.with(context).load(map.get("image")).into(viewHolder.image);
             viewHolder.content.setText(map.get("content").toString());
             viewHolder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -109,7 +112,30 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("MyCommentsAdapter", "删除news");
+//                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+//                    dialog.setTitle("是否删除?");
+//                    dialog.setCancelable(false);
+//                    dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            deleteComment(map.get("id").toString(), "1");
+//                            Log.e("MyCommentsAdapter", map.get("id").toString());
+//                            if (op == 1) {
+//                                list.remove(i);
+//                                notifyItemRemoved(i);
+//                                notifyDataSetChanged();
+//                                op = 0;
+//                                Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+//                    dialog.setNegativeButton("否", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                        }
+//                    });
+//                    dialog.show();
                     deleteComment(map.get("id").toString(), "1");
                     Log.e("MyCommentsAdapter", map.get("id").toString());
                     if (op == 1) {
@@ -117,22 +143,11 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
                         notifyItemRemoved(i);
                         notifyDataSetChanged();
                         op = 0;
-                        Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "删除成功", Toast.LENGTH_LONG).show();
                     }
                 }
             });
         }
-//
-//        viewHolder.layout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent();
-//                if (Integer.parseInt(map.get("type").toString()) == 0)
-//                    intent.setClass(context, NewsActivity.class);
-//                else intent.setClass(context, FilmActivity.class);
-//                context.startActivity(intent);
-//            }
-//        });
 
     }
 
@@ -152,7 +167,6 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            image = itemView.findViewById(R.id.item_mycomment_image);
             time = itemView.findViewById(R.id.item_commentTime);
             content = itemView.findViewById(R.id.item_mycomment_content);
             layout = itemView.findViewById(R.id.item_mycomment_layout);
@@ -161,51 +175,56 @@ public class MyCommentsAdapter extends RecyclerView.Adapter<MyCommentsAdapter.Vi
     }
 
     private void deleteComment(String id, String type) {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .retryOnConnectionFailure(true)
-                .connectTimeout(20, TimeUnit.SECONDS)
-                .writeTimeout(20, TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS)
-                .build();
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .retryOnConnectionFailure(true)
+                    .connectTimeout(20, TimeUnit.SECONDS)
+                    .writeTimeout(20, TimeUnit.SECONDS)
+                    .readTimeout(20, TimeUnit.SECONDS)
+                    .build();
 
-        final FormBody formBody = new FormBody.Builder()
-                .add("session", cookie)
-                .add("id", id)
-                .add("type", type)
-                .build();
+            final FormBody formBody = new FormBody.Builder()
+                    .add("session", cookie)
+                    .add("id", id)
+                    .add("type", type)
+                    .build();
 
-        Log.e("Log", id + "/" + type + "/" + cookie);
-        Request request = new Request.Builder()
-                .url("http://132.232.78.106:8001/api/deleteMyNewsComment/")
-                .post(formBody)
-                .build();
+            Log.e("Log", id + "/" + type + "/" + cookie);
+            Request request = new Request.Builder()
+                    .url("http://132.232.78.106:8001/api/deleteMyNewsComment/")
+                    .post(formBody)
+                    .build();
 
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("TAG", "获取数据失败");
-            }
+            op = 1;
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseData = response.body().string();
-                Log.e("Adapter", responseData);
-                if (response.isSuccessful()) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseData);
-                        statu = jsonObject.getString("state");
-                        String msg = jsonObject.getString("msg");
-                        // judgeState(statu);
-                        Log.e("Adapter", msg);
-                        op = 1;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            okHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("TAG", "获取数据失败");
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String responseData = response.body().string();
+                    Log.e("Adapter", responseData);
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseData);
+                            statu = jsonObject.getString("state");
+                            if (statu.equals("1")) {
+                                op = 1;
+                            }
+                            Log.e("MyComment", statu);
+                            String msg = jsonObject.getString("msg");
+                            // judgeState(statu);
+                            Log.e("Adapter", msg);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-        });
+            });
     }
+}
 //    private void judgeState(String msg){
 //        Toast.makeText(context,msg,Toast.LENGTH_LONG).show();
 //    }
-}

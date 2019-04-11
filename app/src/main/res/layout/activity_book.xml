@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -27,7 +28,7 @@
                     android:layout_height="200dp"
                     android:layout_margin="15dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/dianyingtup" />
+                     />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -42,7 +43,7 @@
                         android:layout_height="0dp"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
-                        android:text="把哥哥推动或可以吗"
+
                         android:textColor="@android:color/black"
                         android:textSize="18dp" />
 
@@ -53,7 +54,7 @@
                         android:layout_marginTop="15dp"
 
                         android:layout_weight="1"
-                        android:text="167分钟" />
+                         />
 
                     <TextView
                         android:id="@+id/pager_book_relase_date"
@@ -61,7 +62,7 @@
                         android:layout_height="0dp"
                         android:layout_marginTop="15dp"
                         android:layout_weight="1"
-                        android:text="March 15" />
+                         />
 
 
                     <TextView
@@ -72,7 +73,7 @@
                         android:layout_weight="1"
                         android:background="#659C0D"
                         android:gravity="center"
-                        android:text="7.5分"
+
                         android:textColor="@android:color/white" />
                 </LinearLayout>
             </LinearLayout>

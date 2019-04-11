@@ -45,7 +45,7 @@
                         android:layout_height="wrap_content"
                         android:text="惊奇队长"
                         android:textColor="@android:color/black"
-                        android:textSize="25dp" />
+                        android:textSize="20dp" />
 
                     <!--<TextView-->
                     <!--android:id="@+id/item_film_date"-->
@@ -102,16 +102,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center">
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@mipmap/pinglun" />
-
-                    <TextView
-                        android:id="@+id/item_film_commentnum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="15" />
                 </LinearLayout>
             </FrameLayout>
         </FrameLayout>

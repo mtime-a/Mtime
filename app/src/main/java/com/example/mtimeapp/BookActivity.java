@@ -45,6 +45,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout mGomark;
     private TextView mComments_num;
     private AlertDialog.Builder builder_text;
+    private TextView Info;
     private View view;
 
     private String title;
@@ -59,6 +60,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
     private boolean flag;
     private boolean Flag = false;
     private String isMark;
+    private String filmInfo;
 
 
     @Override
@@ -70,6 +72,8 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         film_id = intent.getStringExtra("film_id");
+        filmInfo = intent.getStringExtra("film_info");
+
 
         SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
         cookie = sharedPreferences.getString("cookie", "");
@@ -90,6 +94,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
         mGomark.setOnClickListener(this);
         mComments.setOnClickListener(this);
         mWriteComments.setOnClickListener(this);
+        Info.setText(filmInfo);
     }
 
     @Override
@@ -181,6 +186,20 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
 
                                         showResponse();
                                     } else {
+                                        if(statu.equals("-1")){
+                                            SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString("cookie", "");
+                                            editor.putString("theName", "");
+                                            editor.putString("theNickname", "");
+                                            editor.putString("theHeadImage", "");
+                                            editor.putString("theEmail", "");
+                                            editor.apply();
+                                            Intent intent = new Intent();
+                                            intent.setClass(getApplicationContext(),Log_RegActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
                                         final String msg = jsonObject.getString("msg");
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -224,6 +243,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
         mComments_num = findViewById(R.id.pager_book_comment_num);
         mComments = findViewById(R.id.pager_book_comment);
         mGomark = findViewById(R.id.pager_book_gomark);
+        Info = findViewById(R.id.pager_book_info);
     }
 
 
@@ -266,10 +286,17 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(DialogInterface dialog, int which) {
                 String contents = editText_content.getText().toString();
                 //点击后切换成长影评Flay返回true则为长影评反之为短影评
-                if (Flag) {
+                if(contents.equals("")){
+                    Toast.makeText(getApplicationContext(),"请填入内容",Toast.LENGTH_LONG).show();
+                }
+                else if (Flag) {
                     String title = editText_long_title.getText().toString();
                     String subtitle = editText_long_subtitle.getText().toString();
-                    postReplyRequest_long(title, subtitle, contents);
+                    if(title.equals("")){
+                        Toast.makeText(getApplicationContext(),"请填入标题",Toast.LENGTH_LONG).show();
+                    }else {
+                       postReplyRequest_long(title, subtitle, contents);
+                    }
                 } else
                     postReplyRequest_short(contents);
                 //从这里上传到服务器

@@ -179,9 +179,19 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 nickName = editText.getText().toString();
-                Log.e("PC", nickName);
-
-                changNickname(nickName);
+                int i = nickName.length();
+                if (i > 16) {
+                    Toast.makeText(getApplicationContext(), "昵称不能超过12位", Toast.LENGTH_LONG).show();
+                } else {
+                    boolean judge = checkNickname(nickName);
+                    if(judge){
+                        Log.e("Nickname","可以");
+                        changNickname(nickName);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"昵称不能为空白字符",Toast.LENGTH_LONG).show();
+                    }
+                }
 
             }
         });
@@ -300,7 +310,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                             .readTimeout(20, TimeUnit.SECONDS)
                             .build();
 
-                    RequestBody image = RequestBody.create(MediaType.parse("image/png"),convertBitmapToFile(bitmap));
+                    RequestBody image = RequestBody.create(MediaType.parse("image/png"), convertBitmapToFile(bitmap));
                     RequestBody requestBody = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
                             .addFormDataPart("headImage", "output_image.jpg", image)
@@ -407,20 +417,20 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                     .build();
             //File file = new File(imagePath);
             //File file = convertBitmapToFile(bitmap);
-            Log.e("PCActivity","ok1");
-            RequestBody image = RequestBody.create(MediaType.parse("image/png"),convertBitmapToFile(bitmap));
+            Log.e("PCActivity", "ok1");
+            RequestBody image = RequestBody.create(MediaType.parse("image/png"), convertBitmapToFile(bitmap));
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                   // .addFormDataPart("headImage", imagePath, image)
-                    .addFormDataPart("headImage" ,imagePath,image)
+                    // .addFormDataPart("headImage", imagePath, image)
+                    .addFormDataPart("headImage", imagePath, image)
                     .addFormDataPart("session", cookie)
                     .build();
-            Log.e("PCActivity","为啥传不上去");
+            Log.e("PCActivity", "为啥传不上去");
             final Request request = new Request.Builder()
                     .url("http://132.232.78.106:8001/api/changeHeadImage/")
                     .post(requestBody)
                     .build();
-            Log.e("PCActivity","ok2");
+            Log.e("PCActivity", "ok2");
             okHttpClient.newCall(request).enqueue(new Callback() {
                 //请求错误回调方法
                 @Override
@@ -432,7 +442,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
                         try {
-                            Log.e("PCActivity","ok3");
+                            Log.e("PCActivity", "ok3");
                             String responseData = response.body().string();
                             JSONObject jsonObject = new JSONObject(responseData);
                             statu = jsonObject.getString("state");
@@ -455,7 +465,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Log.e("PCActivity",response.body().string());
+                            Log.e("PCActivity", response.body().string());
                         }
 
                     }
@@ -478,6 +488,7 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         bitmap = BitmapFactory.decodeByteArray(out.toByteArray(), 0, out.toByteArray().length);
         return bitmap;
     }
+
     private File convertBitmapToFile(Bitmap bitmap) {
         try {
             // create a file to write bitmap data
@@ -486,11 +497,11 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
             // convert bitmap to byte array
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             int num = getBitmapSize(bitmap);
-            if(num >= 20000000&&num <= 40000000){
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 5 , bos);
-            }else if (num < 20000000){
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100 , bos);
-                }else if (num > 40000000){
+            if (num >= 20000000 && num <= 40000000) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 5, bos);
+            } else if (num < 20000000) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            } else if (num > 40000000) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 1, bos);
             }
             byte[] bitmapdata = bos.toByteArray();
@@ -513,4 +524,11 @@ public class PCActivity extends AppCompatActivity implements View.OnClickListene
         return bitmap.getRowBytes() * bitmap.getHeight();                //earlier version
     }
 
+    public static boolean checkNickname(String nickname) {
+        Pattern pattern = Pattern.compile("^[\\S\u4e00-\u9fa5]{1,12}$");
+        Matcher matcher = pattern.matcher(nickname);
+        return matcher.matches();
+    }
 }
+
+

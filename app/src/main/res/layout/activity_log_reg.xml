@@ -59,7 +59,7 @@
                 android:id="@+id/reg_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="请输入账号"
+                android:hint="请输入账号(4-16位英文、数字)"
                 android:inputType="text"
                 android:maxLines="1" />
         </LinearLayout>
@@ -81,7 +81,7 @@
                 android:id="@+id/reg_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="请输入密码"
+                android:hint="请输入密码(4-16位英文、数字)"
                 android:inputType="textPassword"
                 android:maxLines="1" />
         </LinearLayout>

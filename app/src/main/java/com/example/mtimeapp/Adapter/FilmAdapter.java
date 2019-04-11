@@ -51,7 +51,6 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         Glide.with(context).load(map.get("author_head").toString()).into(viewHolder.author_head);
         viewHolder.subtitle.setText(map.get("subtitle").toString());
         viewHolder.author_name.setText(map.get("author_name").toString());
-        viewHolder.comment_num.setText(map.get("comment_num").toString());
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +61,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
                 intent.putExtra("from","1");
                 intent.putExtra("picture",map.get("poster").toString());
                 intent.putExtra("author_head",map.get("author_head").toString());
+                intent.putExtra("subtitle",map.get("subtitle").toString());
                 context.startActivity(intent);
 
                 Log.e("FilmAdapter",map.get("comment_id").toString());
@@ -92,7 +92,6 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
             title = itemView.findViewById(R.id.item_film_title);
             subtitle = itemView.findViewById(R.id.item_film_subtitle);
             author_name = itemView.findViewById(R.id.item_film_username);
-            comment_num = itemView.findViewById(R.id.item_film_commentnum);
             author_head = itemView.findViewById(R.id.item_film_icon);
         }
     }

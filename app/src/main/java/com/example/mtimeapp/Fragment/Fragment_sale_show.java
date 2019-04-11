@@ -56,11 +56,28 @@ public class Fragment_sale_show extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (new CheckNet(getContext()).initNet()) {
-                    initData();
-                    Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
-                }
-                swipeRefreshLayout.setRefreshing(false);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run () {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (new CheckNet(getContext()).initNet()) {
+                                    initData();
+                                    Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+                                }
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+
+                    }
+                }).start();
+
             }
         });
     }
@@ -75,7 +92,7 @@ public class Fragment_sale_show extends Fragment {
                     Map<String, String> map = new HashMap<>();
                     map.put("head", "0");
                     map.put("type", "0");
-                    map.put("number", "3");
+                    map.put("number", "30");
                     list_url.add(map);
 
                     url = getUrl(url, list_url);

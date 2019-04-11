@@ -24,9 +24,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -37,10 +39,11 @@ import okhttp3.Response;
 public class Fragment_news extends Fragment {
 
     private RecyclerView recyclerView;
-    private List<Map<String, Object>> list;
+    private List<Map<String, Object>> list = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private String headId = "0";
-    private int headnum = 0;
+    private Integer headnum = 0;
+    private NewsAdapter adapter;
 
     @Nullable
     @Override
@@ -56,39 +59,69 @@ public class Fragment_news extends Fragment {
         recyclerView = view.findViewById(R.id.fragment_news_recyclerview);
         swipeRefreshLayout = view.findViewById(R.id.fragment_news_swipe);
 
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (new CheckNet(getContext()).initNet()) {
-                    headId = "0";
-                    initData();
-                    Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
-                }
-                swipeRefreshLayout.setRefreshing(false);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (new CheckNet(getContext()).initNet()) {
+                                    list = new ArrayList<>();
+                                    headnum = 0;
+                                    headId = "0";
+                                    initData();
+                                   // adapter.notifyDataSetChanged();
+                                    Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
+                                    Log.e("swip","shuaxin");
+                                }
+                                swipeRefreshLayout.setRefreshing(false);
+
+                            }
+                        });
+                    }
+
+                }).start();
             }
         });
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {}
-            @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                //得到当前显示的最后一个item的view
-                Log.e("FragmentFillm","2");
-                View lastChildView = recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount()-1);
-                //得到lastChildView的bottom坐标值
-                int lastChildBottom = lastChildView.getBottom();
-                //得到Recyclerview的底部坐标减去底部padding值，也就是显示内容最底部的坐标
-                int recyclerBottom = recyclerView.getBottom()-recyclerView.getPaddingBottom();
-                //通过这个lastChildView得到这个view当前的position值
-                int lastPosition = recyclerView.getLayoutManager().getPosition(lastChildView);
-                //判断lastChildView的bottom值跟recyclerBottom
-                //判断lastPosition是不是最后一个position
-                //如果两个条件都满足则说明是真正的滑动到了底部   lastChildBottom == recyclerBottom && lastPosition == recyclerView.getLayoutManager().getItemCount()-1 不可用
-                if( lastChildBottom == recyclerBottom && lastPosition == recyclerView.getLayoutManager().getItemCount()-1 ){
-                    //加载数据
-                    initData();
-                }
-            }
-        });
+
+
+        //*****************************************
+        //滑动监听
+        //*****************************************
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                //得到当前显示的最后一个item的view
+//                Log.e("FragmentFillm", "2");
+//                View lastChildView = recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount() - 1);
+//                //得到lastChildView的bottom坐标值
+//                int lastChildBottom = lastChildView.getBottom();
+//                //得到Recyclerview的底部坐标减去底部padding值，也就是显示内容最底部的坐标
+//                int recyclerBottom = recyclerView.getBottom() - recyclerView.getPaddingBottom();
+//                //通过这个lastChildView得到这个view当前的position值
+//                int lastPosition = recyclerView.getLayoutManager().getPosition(lastChildView);
+//                //判断lastChildView的bottom值跟recyclerBottom
+//                //判断lastPosition是不是最后一个position
+//                //如果两个条件都满足则说明是真正的滑动到了底部   lastChildBottom == recyclerBottom && lastPosition == recyclerView.getLayoutManager().getItemCount()-1 不可用
+//                if (lastChildBottom == recyclerBottom && lastPosition == recyclerView.getLayoutManager().getItemCount() - 1) {
+//                    //加载数据
+//                    initData();
+//                    // UpdateData();
+//                }
+//            }
+//        });
     }
 
     private void initData() {
@@ -96,13 +129,15 @@ public class Fragment_news extends Fragment {
             @Override
             public void run() {
                 try {
-
                     String url = "http://132.232.78.106:8001/api/getNewsList/";
                     List<Map<String, String>> list_url = new ArrayList<>();
                     Map<String, String> map = new HashMap<>();
-                    map.put("head", headId);
+//                    map.put("id",headnum.toString());
+//                    headnum = headnum + 10;
+                    map.put("id","0");
                     map.put("type", "1");
-                    map.put("number", "10");
+                    map.put("number","30");
+//                    map.put("number", "10");
                     list_url.add(map);
 
                     url = getUrl(url, list_url);
@@ -112,7 +147,7 @@ public class Fragment_news extends Fragment {
                             .build();
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
-                    Log.e("response",responseData);
+                    Log.e("response", responseData);
                     parseJSONWithJSONObject(responseData);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -124,20 +159,14 @@ public class Fragment_news extends Fragment {
 
     private void parseJSONWithJSONObject(String JsonData) {
         try {
-            list = new ArrayList<>();
-            Log.d("mljmlfjasldfjf",JsonData);
+
+            Log.d("mljmlfjasldfjf", JsonData);
             JSONObject jsonObject = new JSONObject(JsonData);
             String status = jsonObject.getString("state");
             if (status.equals("1")) {
                 JSONArray jsonArray = jsonObject.getJSONArray("result");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    if(i == 0){
-                        String num = jsonObject1.getString("id");
-                        int num1 = Integer.parseInt(num);
-                        //headId = jsonObject1.getString("id");
-                        headId = String.valueOf(num1 - 10);
-                    }
                     Integer id = Integer.parseInt(jsonObject1.getString("id"));
                     String Title = jsonObject1.getString("Title");
                     String author = jsonObject1.getString("author");
@@ -162,6 +191,7 @@ public class Fragment_news extends Fragment {
         }
     }
 
+
     private void showResponse() {
 
         getActivity().runOnUiThread(new Runnable() {
@@ -169,7 +199,8 @@ public class Fragment_news extends Fragment {
             public void run() {
                 LinearLayoutManager manager = new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-                NewsAdapter adapter = new NewsAdapter(getContext(), list);
+                //NewsAdapter adapter = new NewsAdapter(getContext(), list);
+                adapter = new NewsAdapter(getContext(), list);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -204,7 +235,7 @@ public class Fragment_news extends Fragment {
                 url += sb.toString();
             }
         }
-        Log.d("mljmljmljmlj",url);
+        Log.d("mljmljmljmlj", url);
         return url;
     }
 }

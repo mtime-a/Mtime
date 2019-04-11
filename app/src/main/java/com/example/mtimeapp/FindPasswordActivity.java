@@ -66,6 +66,7 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
         switch (v.getId()) {
             case R.id.find_password_close:
                 finish();
+                Log.e("TAG","关闭");
                 break;
             case R.id.find_password_send:
                 //进行发送验证码请求

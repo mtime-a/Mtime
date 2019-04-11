@@ -20,7 +20,7 @@
                 android:layout_height="240dp"
                 android:layout_margin="15dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/dianyingtup" />
+                 />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -33,9 +33,14 @@
                     android:id="@+id/pager_film_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="把哥哥推动或可以吗"
                     android:textColor="@android:color/black"
                     android:textSize="20dp" />
+                <TextView
+                    android:id="@+id/pager_film_subTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:textColor="@android:color/black"/>
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -52,7 +57,7 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/dianyingtup" />
+                            />
 
                         <TextView
                             android:id="@+id/pager_film_name"
@@ -60,7 +65,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
-                            android:text="行者" />
+                            />
                     </LinearLayout>
 
                     <TextView
@@ -68,7 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|bottom"
-                        android:text="2019-10-22" />
+                        />
                 </FrameLayout>
             </LinearLayout>
 
@@ -90,9 +95,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp">
 
-        <include
+        <!--<include
             android:id="@+id/pager_film_write_comment"
-            layout="@layout/icon_comment" />
+            layout="@layout/icon_comment" />-->
 
         <!--<LinearLayout-->
             <!--android:id="@+id/pager_film_comment"-->

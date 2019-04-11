@@ -137,6 +137,7 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseData);
                                     statu = jsonObject.getString("state");
+                                    Log.e("NewsActivity",statu);
                                     if (statu.equals("1")) {
 
                                         JSONObject jsonObject_result = jsonObject.getJSONObject("result");
@@ -150,6 +151,20 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
 
                                         showResponse();
                                     } else {
+                                        if(statu.equals("-1")){
+                                            SharedPreferences sharedPreferences = getSharedPreferences("theUser", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString("cookie", "");
+                                            editor.putString("theName", "");
+                                            editor.putString("theNickname", "");
+                                            editor.putString("theHeadImage", "");
+                                            editor.putString("theEmail", "");
+                                            editor.apply();
+                                            Intent intent = new Intent();
+                                            intent.setClass(getApplicationContext(),Log_RegActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
                                         final String msg = jsonObject.getString("msg");
                                         runOnUiThread(new Runnable() {
                                             @Override

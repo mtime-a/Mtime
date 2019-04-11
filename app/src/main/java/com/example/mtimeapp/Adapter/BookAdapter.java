@@ -53,6 +53,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context, BookActivity.class);
+                intent.putExtra("film_info",list.get(i).get("info").toString());
                 intent.putExtra("film_id", list.get(i).get("film_id").toString());
                 context.startActivity(intent);
             }

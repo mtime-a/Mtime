@@ -50,10 +50,11 @@
                 <EditText
                     android:id="@+id/dialog_change_long_title"
                     android:layout_width="match_parent"
+                    android:maxLength="16"
                     android:layout_height="50dp"
                     android:background="@android:color/white"
                     android:gravity="start"
-                    android:hint="请输入标题" />
+                    android:hint="请输入标题(不得多于16字)" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -66,7 +67,8 @@
                     android:layout_height="50dp"
                     android:background="@android:color/white"
                     android:gravity="start"
-                    android:hint="请输入副标题" />
+                    android:maxLength="20"
+                    android:hint="请输入副标题(不得多于20字）" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
