@@ -129,6 +129,7 @@ public class Fragment_news extends Fragment {
             @Override
             public void run() {
                 try {
+                    list = new ArrayList<>();
                     String url = "http://132.232.78.106:8001/api/getNewsList/";
                     List<Map<String, String>> list_url = new ArrayList<>();
                     Map<String, String> map = new HashMap<>();
